@@ -37,7 +37,7 @@ export async function getStaticProps() {
 	
 	//const res = await fetch('http://kpt.weareopen.com.au/snv/api_json/products_data.js');
 	//let products = await res.json();
-	const {data : res} = await axios.get('http://kpt.weareopen.com.au/snv/api_json/product/products_data.js');
+	const {data : res} = await axios.get('https://pooltableoffers.com.au/snv/api_json/product/products_data.js');
 
   
 	return {
