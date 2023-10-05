@@ -20,6 +20,6 @@ module.exports = {
 	 * @see https://nextjs.org/docs/basic-features/image-optimization#domains
 	 */
 	images: {
-		domains: [ allowedImageWordPressDomain,'via.placeholder.com', 'kpt.weareopen.com.au', 'secure.gravatar.com','paylatershop.com','cdn.paylatershop.com.au' ],
+		domains: [ allowedImageWordPressDomain,'via.placeholder.com', 'pooltableoffers.com.au', 'secure.gravatar.com','paylatershop.com','cdn.paylatershop.com.au' ],
 	},
 }
