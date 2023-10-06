@@ -2,7 +2,7 @@
  * Internal Dependencies.
  */
 import Products from '../../src/components/products';
-import { HEADER_FOOTER_ENDPOINT } from '../../src/utils/constants/endpoints';
+import { HEADER_FOOTER_ENDPOINT, SHOP_PRODUCTLIST } from '../../src/utils/constants/endpoints';
 
 /**
  * External Dependencies.
@@ -37,7 +37,7 @@ export async function getStaticProps() {
 	
 	//const res = await fetch('http://kpt.weareopen.com.au/snv/api_json/products_data.js');
 	//let products = await res.json();
-	const {data : res} = await axios.get('https://pooltableoffers.com.au/snv/api_json/product/products_data.js');
+	const {data : res} = await axios.get(SHOP_PRODUCTLIST);
 
   
 	return {

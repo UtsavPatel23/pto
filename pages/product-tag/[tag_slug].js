@@ -12,7 +12,7 @@
 import Products from '../../src/components/products';
 
 
- export default function cat_slug({ headerFooter, products }) {
+ export default function tag_slug({ headerFooter, products }) {
     //console.log('params',params);
     //console.log('products',products);
     

@@ -17,5 +17,9 @@ export const WOOCOMMERCE_STATES_ENDPOINT = `${ process.env.NEXT_PUBLIC_WORDPRESS
 
 //Shipping shingle product API
 export const SHOP_SHIPPING_SINGLE = `${ process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL }/wp-json/shop-nj/v1/shipping_single`;
+
 export const SHOP_CATEGORIES = `${ process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL }/wp-json/shop-nj/v1/categories`;
-export const SHOP_PRODUCTLIST_BY_CAT = `${ process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL }/snv/api_json/product/filter_data.php`;
+export const SHOP_PRODUCTLIST_BY_PARAMETER = `${ process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL }/snv/api_json/product/filter_data.php`;
+export const SHOP_PRODUCTLIST = `${ process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL }/snv/api_json/product/products_data.js`;
+
+
