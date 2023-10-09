@@ -15,7 +15,7 @@ const Product = ( { product } ) => {
 	
 	return (
 		<div className="h-fit">
-			<Link href={ `/product/${ product?.slug }`} >
+			<Link href={ `/product/${ product?.slug }`} legacyBehavior>
 				<a>
 					<Image
 						sourceUrl={ img?.src ?? '' }
