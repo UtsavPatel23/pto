@@ -41,3 +41,23 @@ export function getCookie(cname) {
     }
     return "";
   }
+
+
+  export const isLoggedIn = () => {
+    return sessionStorage.getItem( 'token' );
+  };
+  
+  export const getUserName = () => (
+    sessionStorage.getItem( 'userName' )
+  );
+  
+  export const getLoginFields = () => {
+    const loginFields = sessionStorage.getItem( 'loginFields' );
+    return loginFields ? JSON.parse(loginFields) : '';
+  };
+
+  export const getUser_lgdt = () => {
+    const user_lgdt = sessionStorage.getItem( 'user_lgdt' );
+    return user_lgdt ? JSON.parse(user_lgdt) : '';
+  };
+  

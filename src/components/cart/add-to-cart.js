@@ -33,11 +33,11 @@ const AddToCart = ( { product } ) => {
 			</button>
 			{ isAddedToCart && ! loading ? (
 				<Link href="/cart">
-					<a
+					<div
 						className="bg-white hover:bg-gray-100 text-gray-800 font-semibold ml-4 py-11px px-4 border border-gray-400 rounded shadow"
 					>
 						View cart
-					</a>
+					</div>
 				</Link>
 			) : null }
 		</>
