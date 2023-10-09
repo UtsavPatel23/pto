@@ -16,7 +16,7 @@ const Product = ( { product } ) => {
 	return (
 		<div className="h-fit">
 			<Link href={ `/product/${ product?.slug }`} >
-				
+				<a>
 					<Image
 						sourceUrl={ img?.src ?? '' }
 						altText={ img?.alt ?? ''}
@@ -26,7 +26,7 @@ const Product = ( { product } ) => {
 					/>
 					<h6 className="font-bold uppercase my-2 tracking-0.5px">{ product?.name ?? '' }</h6>
 					<div className="mb-4" dangerouslySetInnerHTML={{ __html: sanitize( product?.price_html ?? '' ) }}/>
-				
+				</a>
 			</Link>
 			<div> 
 				{(() => {
