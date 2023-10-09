@@ -188,9 +188,9 @@
 							return(
 							<div key={'your_browsing_history'+key}>
 								<Link href={ `/product/${ your_browsing_history[key]?.slug }`} >
-									<a>
+									
 									{your_browsing_history[key].name}
-									</a>
+									
 								</Link>
 							</div>
 							);
