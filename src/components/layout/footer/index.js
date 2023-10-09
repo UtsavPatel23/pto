@@ -46,7 +46,7 @@ const Footer = ( { footer } ) => {
 								{ footerMenuItems.map( menuItem => (
 									<li key={ menuItem?.ID }>
 										<Link href={ getPathNameFromUrl( menuItem?.url ?? '' ) || '/' }>
-											{ menuItem?.title }
+											<a>{ menuItem?.title }</a>
 										</Link>
 									</li>
 								) ) }
@@ -64,11 +64,11 @@ const Footer = ( { footer } ) => {
 							<ul className="flex item-center mb-0">
 								{ socialLinks.map( socialLink => (
 									<li key={ socialLink?.iconName } className="no-dots-list mb-0 flex items-center">
-										<Link href={ socialLink?.iconUrl || '/' } target="_blank"
+										<a href={ socialLink?.iconUrl || '/' } target="_blank"
 										   title={ socialLink?.iconName } className="ml-2 inline-block">
 											{ getIconComponentByName( socialLink?.iconName ) }
 											<span className="sr-only">{ socialLink?.iconName }</span>
-										</Link>
+										</a>
 									</li>
 								) ) }
 							</ul>
