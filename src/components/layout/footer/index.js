@@ -45,8 +45,8 @@ const Footer = ( { footer } ) => {
 							<ul>
 								{ footerMenuItems.map( menuItem => (
 									<li key={ menuItem?.ID }>
-										<Link href={ getPathNameFromUrl( menuItem?.url ?? '' ) || '/' }>
-											<a>{ menuItem?.title }</a>
+										<Link href={ getPathNameFromUrl( menuItem?.url ?? '' ) || '/' } legacyBehavior>
+											{ menuItem?.title }
 										</Link>
 									</li>
 								) ) }
@@ -63,8 +63,8 @@ const Footer = ( { footer } ) => {
 						{ ! isEmpty( socialLinks ) && isArray( socialLinks ) ? (
 							<ul className="flex item-center mb-0">
 								{ socialLinks.map( socialLink => (
-									<li key={ socialLink?.iconName } className="no-dots-list mb-0 flex items-center">
-										<a href={ socialLink?.iconUrl || '/' } target="_blank"
+									<li href={ socialLink?.iconUrl || '/' } key={ socialLink?.iconName } className="no-dots-list mb-0 flex items-center" legacyBehavior>
+										<a  target="_blank"
 										   title={ socialLink?.iconName } className="ml-2 inline-block">
 											{ getIconComponentByName( socialLink?.iconName ) }
 											<span className="sr-only">{ socialLink?.iconName }</span>
