@@ -36,18 +36,3 @@ export const getProductBySlug = async ( productSlug = '' ) => {
 		},
 	);
 };
-
-/**
- * Get Products.
- *
- * @return {Promise<void>}
- */
- export const getRelatedProductData = async (include) => {
-	return await api.get(
-		'products',
-		{
-			prodict_list : 1,
-			include : include,
-		},
-	);
-};

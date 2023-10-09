@@ -5,11 +5,6 @@ import { isEmpty } from 'lodash';
 import { BurgerIcon, TailwindIcon, Bag, User, Wishlist } from '../../icons';
 import { AppContext } from '../../context';
 import { getPathNameFromUrl } from '../../../utils/miscellaneous';
-import { useEffect } from 'react';
-import Cookies from 'js-cookie';
-import Router from 'next/router';
-
-
 
 const Header = ( { header } ) => {
 	
@@ -18,24 +13,6 @@ const Header = ( { header } ) => {
 	
 	const [ isMenuVisible, setMenuVisibility ] = useState( false );
 	
-	//get token
-	 const [tmpToken,setTmpToken] = useState(0);
-	//hook useEffect
-    useEffect(() => {
-        //check token
-        if(Cookies.get('token')) {
-			setTmpToken(1)
-        }
-    }, []);
-//function logout
-const logoutHanlder = async () => {
-
-	//remove token from cookies
-	Cookies.remove("token");
-
-	//redirect halaman login
-	Router.push('/login');
-};
 	return (
 		<>
 			<div className="header">
@@ -43,7 +20,7 @@ const logoutHanlder = async () => {
 					<div className="flex items-center justify-between flex-wrap container mx-auto">
 						<div className="flex items-center flex-shrink-0 text-black mr-20">
 							<Link href="/">
-								
+								<a>
 									{
 										siteLogoUrl ? (
 											<img className="mr-2" src={ siteLogoUrl } alt={ `${ siteTitle } logo` }
@@ -51,11 +28,11 @@ const logoutHanlder = async () => {
 											     height="86"/>
 										) : <TailwindIcon/>
 									}
-								
+								</a>
 							</Link>
 							<span>
 								<Link href="/">
-									<div className="font-semibold text-xl tracking-tight">{ siteTitle || 'WooNext' }</div>
+									<a className="font-semibold text-xl tracking-tight">{ siteTitle || 'WooNext' }</a>
 								</Link>
 								{ siteDescription ? <p className="mb-0">{ siteDescription }</p> : null }
 							</span>
@@ -73,32 +50,37 @@ const logoutHanlder = async () => {
 								{ ! isEmpty( headerMenuItems ) && headerMenuItems.length ? headerMenuItems.map( menuItem => (
 									<Link key={ menuItem?.ID }
 									      href={ getPathNameFromUrl( menuItem?.url ?? '' ) || '/' }>
-										<div className="block mt-4 lg:inline-block lg:mt-0 hover:text-brand-royal-blue duration-500 mr-10"
+										<a className="block mt-4 lg:inline-block lg:mt-0 hover:text-brand-royal-blue duration-500 mr-10"
 										   dangerouslySetInnerHTML={ { __html: menuItem.title } }/>
 									</Link>
 								) ) : null }
 								<Link href="/blog">
-									<div className="block mt-4 lg:inline-block lg:mt-0 hover:text-brand-royal-blue duration-500 mr-10">Blog</div>
+									<a className="block mt-4 lg:inline-block lg:mt-0 hover:text-brand-royal-blue duration-500 mr-10">Blog</a>
 								</Link>
 							</div>
-							
-							{ tmpToken ? <button onClick={logoutHanlder}>logout</button> : <Link href="/login"><p className="mb-0">login</p></Link> }
 							<div className="text-sm font-medium">
-								<div href="#responsive-header"
+								<a href="#responsive-header"
+								   className="flex mt-4 lg:inline-block lg:mt-0 text-black hover:text-black mr-10">
+									<span className="flex flex-row items-center lg:flex-col">
+									<User className="mr-1 lg:mr-0"/>
+									Profile
+									</span>
+								</a>
+								<a href="#responsive-header"
 								   className="flex mt-4 lg:inline-block lg:mt-0 text-black hover:text-black mr-10">
 									<span className="flex flex-row items-center lg:flex-col">
 										<Wishlist className="mr-1 lg:mr-0"/>
 										Wishlist
 									</span>
-								</div>
+								</a>
 								<Link href="/cart">
-									<div className="flex mt-4 lg:inline-block lg:mt-0 text-black hover:text-black mr-10">
+									<a className="flex mt-4 lg:inline-block lg:mt-0 text-black hover:text-black mr-10">
 									<span className="flex flex-row items-center lg:flex-col">
 									<Bag className="mr-1 lg:mr-0"/>
 										<span
 											className="ml-1">Bag{ cart?.totalQty ? `(${ cart?.totalQty })` : null }</span>
 									</span>
-									</div>
+									</a>
 								</Link>
 							</div>
 						</div>

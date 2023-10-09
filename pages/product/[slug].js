@@ -2,7 +2,7 @@
  * Internal Dependencies.
  */
 import { HEADER_FOOTER_ENDPOINT } from '../../src/utils/constants/endpoints';
-import { getProductsData, getProductBySlug, getRelatedProductData } from '../../src/utils/products';
+import { getProductsData, getProductBySlug } from '../../src/utils/products';
 import Layout from '../../src/components/layout';
 import SingleProduct from '../../src/components/single-product';
 
@@ -16,9 +16,8 @@ import { useEffect } from 'react';
 import { isEmpty } from 'lodash';
 import { useState } from 'react';
 
-export default function Product( { headerFooter, product ,RelatedProduct} ) {
+export default function Product( { headerFooter, product } ) {
 	console.log('product',product);
-	console.log('RelatedProduct',RelatedProduct);
 	const router = useRouter();
 	const [your_browsing_history, setYour_browsing_history] = useState('');
 	// If the page is not yet generated, this will be displayed
@@ -79,7 +78,7 @@ export default function Product( { headerFooter, product ,RelatedProduct} ) {
 				list_bh_product.splice(display_list_index, 1); // 2nd parameter means remove one item only
 			}
 		  //console.log('list_bh_product',list_bh_product);
-		//setYour_browsing_history(list_bh_product);
+		setYour_browsing_history(list_bh_product);
 		}
 	},[]);
 	return (
@@ -98,12 +97,11 @@ export async function getStaticProps( { params } ) {
 	const { slug } = params || {};
 	const { data: headerFooterData } = await axios.get( HEADER_FOOTER_ENDPOINT );
 	const { data: product } = await getProductBySlug( slug );
-	const { data: RelatedProduct } = await getRelatedProductData(product[ 0 ].related_ids);
+	
 	return {
 		props: {
 			headerFooter: headerFooterData?.data ?? {},
 			product: product.length ? product[ 0 ] : {},
-			RelatedProduct: RelatedProduct.length ? RelatedProduct : {},
 		},
 		revalidate: 1,
 	};

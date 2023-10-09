@@ -9,7 +9,6 @@
  import axios from 'axios';
  import { SHOP_SHIPPING_SINGLE } from '../../utils/constants/endpoints';
  import Link from 'next/link';
- import jQuery from "jquery";
  
  const SingleProduct = ( { product ,your_browsing_history} ) => {
 		 //console.log('in product',product);
@@ -76,7 +75,6 @@
 					 var seconds = Math.floor((distance % (1000 * 60)) / 1000);
 						 
 					 var count_down_time = days + "d " + hours + "h " + minutes + "m " + seconds + "s ";
-					 jQuery('#timer_count_down').html(count_down_time);
 					  //setTimer(count_down_time)
 				  }
 				  }, 1000);
@@ -104,10 +102,7 @@
 						className="product-price mb-5"
 					/> 
 					 <div key="product_info2">
-						{
-						//timer != 0?<div id="timer_count_down">{timer}</div>:null
-						}
-						<div id="timer_count_down"></div>
+						{timer != 0?<div id="timer_count_down">{timer}</div>:null}
 						{timer != 0?<div>Extra Discount{product.meta_data.product_discount}%Off</div>:null}
 					</div>
 					<div key="product_info3"> 
@@ -187,15 +182,15 @@
 					if(your_browsing_history != '')
 					{
 						//your_browsing_history = JSON.parse(your_browsing_history);
-						//console.log('your_browsing_history2',your_browsing_history);
+						console.log('your_browsing_history2',your_browsing_history);
 						return Object.keys(your_browsing_history).map(function(key) {
 							//console.log('key',your_browsing_history[key].id);
 							return(
 							<div key={'your_browsing_history'+key}>
 								<Link href={ `/product/${ your_browsing_history[key]?.slug }`} >
-									
+									<a>
 									{your_browsing_history[key].name}
-									
+									</a>
 								</Link>
 							</div>
 							);
