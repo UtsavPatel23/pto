@@ -22,9 +22,9 @@ function Error404( { headerFooter } ) {
 							</h1>
 							<div className="flex justify-center">
 								<Link href="/">
-									<div className="inline-flex text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded text-lg">
+									<a className="inline-flex text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded text-lg">
 										Back to Home
-									</div>
+									</a>
 								</Link>
 							</div>
 						</div>

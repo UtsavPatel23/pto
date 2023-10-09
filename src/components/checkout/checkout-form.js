@@ -44,8 +44,9 @@ const defaultCustomerInfo = {
 	errors: null
 }
 
-const CheckoutForm = ( { countriesData } ) => {
+const CheckoutForm = ( { countriesData , paymentModes } ) => {
 
+	
 	const { billingCountries, shippingCountries } = countriesData || {};
 
 	const initialState = {
@@ -216,7 +217,7 @@ const CheckoutForm = ( { countriesData } ) => {
 							<YourOrder cart={ cart }/>
 
 							{/*Payment*/ }
-							<PaymentModes input={ input } handleOnChange={ handleOnChange }/>
+							<PaymentModes input={input} handleOnChange={handleOnChange} paymentModes={paymentModes } />
 
 							<div className="woo-next-place-order-btn-wrap mt-5">
 								<button

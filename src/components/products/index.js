@@ -287,7 +287,7 @@ const handleChangePriceRange = (event, newValue) => {
 // ************* ********************************  ************************ 
 const side_bar_li_search = (e) => {
 	const searchValue = e.target.value;
-	const childen_class = e.target.getAttribute('data-inputulclass');
+	const childen_class = e.target.getAttribute('data-inputUlClass');
 	jQuery('.'+childen_class+' li').each(function () {
 		if (jQuery(this).text().search(new RegExp(searchValue, "i")) < 0) {
 			jQuery(this).hide();
@@ -344,14 +344,15 @@ const max_num_pages = Math.ceil(ProductsTmp.length / itemsPerPage);
 			{
 			return(
 			Object.keys(cat_data).length ? 
-			<div key={'cat_key'+cat_data[0].term_id}>
+			<>
 				<ul className='li_search_res_cat'>
 				{
 					Object.keys(cat_data).map(function(key) {
+						
 							return(
-								<div key={'cat_keyinn'+key}>
+								<>
 								{cat_data[key].cat_count != 0 ?  
-								<div key={'cat_keyinn_inn'+key}>
+								<>
 								<li key={cat_data[key].term_id}>
 									<label htmlFor={cat_data[key].name} className="" onClick={(e) => {
 										setCat_name(e.target.htmlFor);
@@ -374,15 +375,15 @@ const max_num_pages = Math.ceil(ProductsTmp.length / itemsPerPage);
 									</label>
 									{get_categories_dis(cat_data[key]['children'])}
 								</li>
-								</div>
+								</>
 								: null
 								} 
-								</div>
+								</>
 							);
 						})
 				}
 				</ul>
-			</div>
+			</>
 			: 
 			null
 			);
@@ -454,467 +455,356 @@ const encodeDataToURL = (data) => {
 	return (
 		<>
 		<div id="main_filter">
-			<div key="section1">
-				{options_itemsPerPage.length ?  
-				<select key="section1_1"
-						value={itemsPerPage}
-						onChange={itemsPerPageChange}
-					>
-					{Object.keys(options_itemsPerPage).map(function(key){
-					return(<option key={key} value={options_itemsPerPage[key].value}>{options_itemsPerPage[key].label}</option>);	
-					})}
-				</select>
-				: null}
-				{options_orderby.length ?  
-				<select key="section1_2"
-						value={orderby}
-						onChange={orderbyChange}
-					>
-					{Object.keys(options_orderby).map(function(key){
-					return(<option key={key} value={options_orderby[key].value}>{options_orderby[key].label}</option>);	
-					})}
-				</select>
-				: null}
-				
-			</div>
-			<div key="section2" className='grid grid-cols-12 gap-4'>
-				<div  key="section2_1" className="col-span-4">
-					<div  key="section2_1_1" className=''>
-						{ProductsTmp.length > 1? <>{ProductsTmp.length} Results</>:<>{ProductsTmp.length} Result</>}
-						<button className='mx-1 my-1 bg-blue-500 hover:bg-blue-700 text-white py-1 px-2 rounded' onClick={clearallClick}>Clear All</button>
-					</div>
-					{
-						// Price selected box min 
-						priceValue[0] > minPrice? 
-						<div   key="section2_1_2">
-							Min Price : 
-							{
-								<>
-								<button className='mx-1 my-1 bg-blue-500 hover:bg-blue-700 text-white py-1 px-2 rounded' value={priceValue[0]} onClick={remove_minprice_selected}> Price {priceValue[0]} &#10060;
-									</button>
-								</>
-							}
-								
-						</div> : null
-					}
-					{
-						// Price selected box min 
-						priceValue[1] < maxPrice? 
-						<div   key="section2_1_3">
-							Max Price : 
-							{
-								<>
-								<button className='mx-1 my-1 bg-blue-500 hover:bg-blue-700 text-white py-1 px-2 rounded' value={priceValue[1]} onClick={remove_maxprice_selected}> Price {priceValue[1]} &#10060;
-									</button>
-								</>
-							}
-								
-						</div> : null
-					}
-					{
-						// Category selected box
-					cat_name != ''? 
-					<div   key="section2_1_4">
-						Category :  <button className='mx-1 my-1 bg-blue-500 hover:bg-blue-700 text-white py-1 px-2 rounded' onClick={(e) => {
-							setCat_name('');
-							var tmp_filter_option = {
-								"attributes":filter_option['attributes'],
-								"categories":[],
-								"discount":filter_option['discount'],
-								"tags":filter_option['tags'],
-								"average_rating":filter_option['average_rating'],
-								"shipping":filter_option['shipping'],
-								"availability":filter_option['availability'],
-							}
-							setFilter_option(tmp_filter_option);
-							}}>{cat_name} &#10060;</button> 
-					</div> : null
-					}
-					
-					{
-						// Discount selected box
-						Object.keys(filter_option['discount']).length? 
-						<div   key="section2_1_5">
-							Discount : 
-							{filter_option['discount'].map(function(discount){
-								return(
-								<div key={discount}>
-								<button className='mx-1 my-1 bg-blue-500 hover:bg-blue-700 text-white py-1 px-2 rounded' value={discount} onClick={remove_discount_selected}> {discount.split("to")[1]}% &#10060;
-									</button>
-								</div>
-								);
-							})}
-								
-						</div> : null
-					}
-					{
-						// Attributs selected box
-						Object.keys(filter_option['attributes']).length? 
-						<div   key="section2_1_6">
-							{Object.keys(filter_option['attributes']).map(function(attribut){
-								return (
-								<div   key={'section2_1_6'+attribut}>
-									{attribut} :
-									{
-										Object.keys(filter_option['attributes'][attribut]).length? 
-										Object.keys(filter_option['attributes'][attribut]).map(function(attr_key){
-										return(
-											<div key={"section2_1_6"+attr_key}>
-											<button className='mx-1 my-1 bg-blue-500 hover:bg-blue-700 text-white py-1 px-2 rounded' data-attr_name={attribut} value={filter_option['attributes'][attribut][attr_key]} onClick={remove_attributes_selected}> {filter_option['attributes'][attribut][attr_key]} &#10060;
-												</button>
-											</div>
-											);
-										})
-										: null
-									}
-								</div>
-								);
-								
-							})}
-								
-						</div> : null
-					}
-					{
-						// Tags selected box
-						Object.keys(filter_option['tags']).length? 
-						<div   key="section2_1_7">
-							Tag : 
-							{filter_option['tags'].map(function(tag){
-								return(
-								<div key={tag}>
-								<button className='mx-1 my-1 bg-blue-500 hover:bg-blue-700 text-white py-1 px-2 rounded' value={tag} onClick={remove_tags_selected}> {tag} &#10060;
-									</button>
-								</div>
-								);
-							})}
-								
-						</div> : null
-					}
-
-					{
-						// average_rating selected box
-						Object.keys(filter_option['average_rating']).length? 
-						<div  key="section2_1_8">
-							Averaged : 
-							{filter_option['average_rating'].map(function(average_rating){
-								return(
-								<div key={average_rating}>
-								<button className='mx-1 my-1 bg-blue-500 hover:bg-blue-700 text-white py-1 px-2 rounded' value={average_rating} onClick={remove_average_rating_selected}> {average_rating} &#10060;
-									</button>
-								</div>
-								);
-							})}
-								
-						</div> : null
-					}
-					{
-						// shipping selected box
-						Object.keys(filter_option['shipping']).length? 
-						<div   key="section2_1_9">
-							Shipping : 
-							{filter_option['shipping'].map(function(shipping){
-								return(
-								<div key={shipping}>
-								<button className='mx-1 my-1 bg-blue-500 hover:bg-blue-700 text-white py-1 px-2 rounded' value={shipping} onClick={remove_shipping_selected}> {shipping.replace('-',' ')} &#10060;
-									</button>
-								</div>
-								);
-							})}
-								
-						</div> : null
-					}
-					{
-						// availability selected box
-						Object.keys(filter_option['availability']).length? 
-						<div   key="section2_1_10">
-							Availability : 
-							{filter_option['availability'].map(function(availability){
-								return(
-								<div  key="section2_1_10_1">
-								<button className='mx-1 my-1 bg-blue-500 hover:bg-blue-700 text-white py-1 px-2 rounded' value={availability} onClick={remove_availability_selected}> {availability} &#10060;
-									</button>
-								</div>
-								);
-							})}
-								
-						</div> : null
-					}
-					
-					
-					<form method='' name='form_sidebar_filter' id='form_sidebar_filter'>
-					<input type="hidden" seturl="yes" name="cat_name" value={cat_name} default_cat_id="" id="cat_name"></input>
-					{ /* *************** Price range  ************** */}
-					<div key="form_s1"><b>Price Range</b></div>
-					<Slider
-						getAriaLabel={() => 'Temperature range'}
-						value={priceValue}
-						onChange={handleChangePriceRange}
-						valueLabelDisplay="auto"
-						max={maxPrice}
-						min={minPrice}
-						step={10}
-					/>
-					{ /* *************** Category ************** */}
-					<div key="form_s2"><b>Categories</b></div>	
-					{Object.keys(attr_count_data_final_list['categories']).length > 5 ? 
-						<>
-						<input  type="text" placeholder="Search Cat" onKeyUp={side_bar_li_search} data-inputulclass="li_search_res_cat" />
-						</>	: null
-					}
-					{ 
-					cat_data != undefined?
-					get_categories_dis(cat_data) : null
-					}
-					{ /* *************** Discount ************** */}
-					{
-						count_total_discount > 0 ? 
-						<div key="form_s3" > 
-						<div><b>Discount</b></div>
-						<ul>
+		<div>
+			{options_itemsPerPage.length ?  
+			<select
+					value={itemsPerPage}
+					onChange={itemsPerPageChange}
+				>
+				{Object.keys(options_itemsPerPage).map(function(key){
+				return(<option value={options_itemsPerPage[key].value}>{options_itemsPerPage[key].label}</option>);	
+				})}
+			</select>
+			: null}
+			{options_orderby.length ?  
+			<select
+					value={orderby}
+					onChange={orderbyChange}
+				>
+				{Object.keys(options_orderby).map(function(key){
+				return(<option value={options_orderby[key].value}>{options_orderby[key].label}</option>);	
+				})}
+			</select>
+			: null}
+			
+			<div className="mt-4">
+         
+        </div>
+		</div>
+		<div className='grid grid-cols-12 gap-4'>
+			<div className="col-span-4">
+				<div className=''>
+					{ProductsTmp.length > 1? <>{ProductsTmp.length} Results</>:<>{ProductsTmp.length} Result</>}
+					<button className='mx-1 my-1 bg-blue-500 hover:bg-blue-700 text-white py-1 px-2 rounded' onClick={clearallClick}>Clear All</button>
+				</div>
+				{
+					// Price selected box min 
+					priceValue[0] > minPrice? 
+					<div>
+						Min Price : 
 						{
-						Object.keys(filter_discount).map(function(key_inn) {
-							let checked = '';
-							if(!isEmpty(filter_option['discount']))
-							{
-								if(filter_option['discount'] !=  undefined )
+							<>
+							<button className='mx-1 my-1 bg-blue-500 hover:bg-blue-700 text-white py-1 px-2 rounded' value={priceValue[0]} onClick={remove_minprice_selected}> Price {priceValue[0]} &#10060;
+								</button>
+							</>
+						}
+							
+					</div> : null
+				}
+				{
+					// Price selected box min 
+					priceValue[1] < maxPrice? 
+					<div>
+						Max Price : 
+						{
+							<>
+							<button className='mx-1 my-1 bg-blue-500 hover:bg-blue-700 text-white py-1 px-2 rounded' value={priceValue[1]} onClick={remove_maxprice_selected}> Price {priceValue[1]} &#10060;
+								</button>
+							</>
+						}
+							
+					</div> : null
+				}
+				{
+					// Category selected box
+				cat_name != ''? 
+				<div>
+					Category :  <button className='mx-1 my-1 bg-blue-500 hover:bg-blue-700 text-white py-1 px-2 rounded' onClick={(e) => {
+						setCat_name('');
+						var tmp_filter_option = {
+							"attributes":filter_option['attributes'],
+							"categories":[],
+							"discount":filter_option['discount'],
+							"tags":filter_option['tags'],
+							"average_rating":filter_option['average_rating'],
+							"shipping":filter_option['shipping'],
+							"availability":filter_option['availability'],
+						}
+						setFilter_option(tmp_filter_option);
+						}}>{cat_name} &#10060;</button> 
+				</div> : null
+				}
+				
+				{
+					// Discount selected box
+					Object.keys(filter_option['discount']).length? 
+					<div>
+						Discount : 
+						{filter_option['discount'].map(function(discount){
+							return(
+							<>
+							<button className='mx-1 my-1 bg-blue-500 hover:bg-blue-700 text-white py-1 px-2 rounded' value={discount} onClick={remove_discount_selected}> {discount.split("to")[1]}% &#10060;
+								</button>
+							</>
+							);
+						})}
+							
+					</div> : null
+				}
+				{
+					// Attributs selected box
+					Object.keys(filter_option['attributes']).length? 
+					<div>
+						{Object.keys(filter_option['attributes']).map(function(attribut){
+							return (<>
+							<div>
+								{attribut} :
 								{
-									if(jQuery.inArray( filter_discount[key_inn].name, filter_option['discount']) >= 0)
-									{
-										checked = 'checked';
-									}
+									Object.keys(filter_option['attributes'][attribut]).length? 
+									Object.keys(filter_option['attributes'][attribut]).map(function(attr_key){
+									return(
+										<>
+										<button className='mx-1 my-1 bg-blue-500 hover:bg-blue-700 text-white py-1 px-2 rounded' data-attr_name={attribut} value={filter_option['attributes'][attribut][attr_key]} onClick={remove_attributes_selected}> {filter_option['attributes'][attribut][attr_key]} &#10060;
+											</button>
+										</>
+										);
+									})
+									: null
+								}
+							</div>
+							</>);
+							
+						})}
+							
+					</div> : null
+				}
+				{
+					// Tags selected box
+					Object.keys(filter_option['tags']).length? 
+					<div>
+						Tag : 
+						{filter_option['tags'].map(function(tag){
+							return(
+							<>
+							<button className='mx-1 my-1 bg-blue-500 hover:bg-blue-700 text-white py-1 px-2 rounded' value={tag} onClick={remove_tags_selected}> {tag} &#10060;
+								</button>
+							</>
+							);
+						})}
+							
+					</div> : null
+				}
+
+				{
+					// average_rating selected box
+					Object.keys(filter_option['average_rating']).length? 
+					<div>
+						Averaged : 
+						{filter_option['average_rating'].map(function(average_rating){
+							return(
+							<>
+							<button className='mx-1 my-1 bg-blue-500 hover:bg-blue-700 text-white py-1 px-2 rounded' value={average_rating} onClick={remove_average_rating_selected}> {average_rating} &#10060;
+								</button>
+							</>
+							);
+						})}
+							
+					</div> : null
+				}
+				{
+					// shipping selected box
+					Object.keys(filter_option['shipping']).length? 
+					<div>
+						Shipping : 
+						{filter_option['shipping'].map(function(shipping){
+							return(
+							<>
+							<button className='mx-1 my-1 bg-blue-500 hover:bg-blue-700 text-white py-1 px-2 rounded' value={shipping} onClick={remove_shipping_selected}> {shipping.replace('-',' ')} &#10060;
+								</button>
+							</>
+							);
+						})}
+							
+					</div> : null
+				}
+				{
+					// availability selected box
+					Object.keys(filter_option['availability']).length? 
+					<div>
+						Averaged : 
+						{filter_option['availability'].map(function(availability){
+							return(
+							<>
+							<button className='mx-1 my-1 bg-blue-500 hover:bg-blue-700 text-white py-1 px-2 rounded' value={availability} onClick={remove_availability_selected}> {availability} &#10060;
+								</button>
+							</>
+							);
+						})}
+							
+					</div> : null
+				}
+				
+				
+				<form method='' name='form_sidebar_filter' id='form_sidebar_filter'>
+				<input type="hidden" seturl="yes" name="cat_name" value={cat_name} default_cat_id="" id="cat_name"></input>
+				{ /* *************** Price range  ************** */}
+				<div><b>Price Range</b></div>
+				<Slider
+					getAriaLabel={() => 'Temperature range'}
+					value={priceValue}
+					onChange={handleChangePriceRange}
+					valueLabelDisplay="auto"
+					max={maxPrice}
+					min={minPrice}
+					step={10}
+				/>
+				{ /* *************** Category ************** */}
+				<div><b>Categories</b></div>	
+				{Object.keys(attr_count_data_final_list['categories']).length > 5 ? 
+					<>
+					<input  type="text" placeholder="Search Cat" onKeyUp={side_bar_li_search} data-inputUlClass="li_search_res_cat" />
+					</>	: null
+				}
+				{ 
+				cat_data != undefined?
+				get_categories_dis(cat_data) : null
+				}
+				
+				{ /* *************** Discount ************** */}
+				{
+					count_total_discount > 0 ? 
+					<> 
+					<div><b>Discount</b></div>
+					<ul>
+					{
+					Object.keys(filter_discount).map(function(key_inn) {
+						let checked = '';
+						if(!isEmpty(filter_option['discount']))
+						{
+							if(filter_option['discount'] !=  undefined )
+							{
+								if(jQuery.inArray( filter_discount[key_inn].name, filter_option['discount']) >= 0)
+								{
+									checked = 'checked';
 								}
 							}
-							if(filter_discount[key_inn].count > 0)
-							{
+						}
+						if(filter_discount[key_inn].count > 0)
+						{
+							return(
+								<>
+								<li key={filter_discount[key_inn].name}>
+								<input 
+								checked  ={checked}
+								onChange={formEventChange} className="shop_filter_ajax_click_fun mr-1" name="discount[]" type="checkbox" id={filter_discount[key_inn].name} value={filter_discount[key_inn].name}></input>
+								<label htmlFor={filter_discount[key_inn].name}>
+								{filter_discount[key_inn].valueEnd}% ({filter_discount[key_inn].count})
+								</label>	
+								</li>
+								</>
+							);
+						}
+						})
+						}
+						</ul>
+						</>
+					: 
+					null
+				}
+				{ /* *************** Attributes ************** */}
+						{
+						Object.keys(filter_attributes).length ? 
+							Object.keys(filter_attributes).map(function(key) {
+								var tmp_key = key.replace(' ','_');
 								return(
-									
-									<li key={filter_discount[key_inn].name}>
-									<input 
-									checked  ={checked}
-									onChange={formEventChange} className="shop_filter_ajax_click_fun mr-1" name="discount[]" type="checkbox" id={filter_discount[key_inn].name} value={filter_discount[key_inn].name}></input>
-									<label htmlFor={filter_discount[key_inn].name}>
-									{filter_discount[key_inn].valueEnd}% ({filter_discount[key_inn].count})
-									</label>	
-									</li>
-								);
-							}
-							})
-							}
-							</ul>
-							</div>
-						: 
-						null
-					}
-					{ /* *************** Attributes ************** */}
-							{
-							Object.keys(filter_attributes).length ? 
-								Object.keys(filter_attributes).map(function(key) {
-									var tmp_key = key.replace(' ','_');
-									return(
-										<div key={key}>
-										<div><b>{key}</b></div>
-										{
-										Object.keys(filter_attributes[key]).length > 5 ? 
-										<>
-										<input  type="text" placeholder="Search Tag" onKeyUp={side_bar_li_search} data-inputulclass={"li_search_res_attr_"+tmp_key} />
-										</>	: null
-										}
-										<ul key={key+'-attr'} className={"li_search_res_attr_"+tmp_key}>
-										{
-											Object.keys(filter_attributes[key]).length ? 
-											Object.keys(filter_attributes[key]).map(function(key_inn) {
-												var tmp_id = key+'_'+key_inn;
-												tmp_id = tmp_id.replace(/^\s+|\s+$/gm,'');
-												tmp_id = tmp_id.replaceAll(' ','XXX');
-												let checked = '';
-												if(!isEmpty(filter_option['attributes']))
+									<>
+									<div><b>{key}</b></div>
+									{
+									Object.keys(filter_attributes[key]).length > 5 ? 
+									<>
+									<input  type="text" placeholder="Search Tag" onKeyUp={side_bar_li_search} data-inputUlClass={"li_search_res_attr_"+tmp_key} />
+									</>	: null
+									}
+									<ul key={key+'-attr'} className={"li_search_res_attr_"+tmp_key}>
+									{
+										Object.keys(filter_attributes[key]).length ? 
+										Object.keys(filter_attributes[key]).map(function(key_inn) {
+											var tmp_id = key+'_'+key_inn;
+											tmp_id = tmp_id.replace(/^\s+|\s+$/gm,'');
+											tmp_id = tmp_id.replaceAll(' ','XXX');
+											let checked = '';
+											if(!isEmpty(filter_option['attributes']))
+											{
+												if(filter_option['attributes'][key] !=  undefined )
 												{
-													if(filter_option['attributes'][key] !=  undefined )
+													if(jQuery.inArray( key_inn, filter_option['attributes'][key] ) >= 0)
 													{
-														if(jQuery.inArray( key_inn, filter_option['attributes'][key] ) >= 0)
-														{
-															checked = 'checked';
-														}
+														checked = 'checked';
 													}
 												}
-												
-												return(
-													<li key={tmp_id}>
-													<input 
-													checked  ={checked}
-													onChange={formEventChange} className="shop_filter_ajax_click_fun mr-1" name={"attr_"+key+"[]"} type="checkbox" id={tmp_id} value={key_inn}></input>
-													<label htmlFor={tmp_id}>
-														{key_inn} ({filter_attributes[key][key_inn]})
-													</label>	
-													</li>
-												);	
+											}
+											
+											return(
+												<>
+												<li key={tmp_id}>
+												<input 
+												checked  ={checked}
+												onChange={formEventChange} className="shop_filter_ajax_click_fun mr-1" name={"attr_"+key+"[]"} type="checkbox" id={tmp_id} value={key_inn}></input>
+												<label htmlFor={tmp_id}>
+													{key_inn} ({filter_attributes[key][key_inn]})
+												</label>	
+												</li>
+												</>
+											);	
 
-												})
-											: 
-											null
-										}
-										</ul>
-										</div>
-									);
-								})
-							: 
-							null }
-						{ /* *************** Tags ************** */}
-					
-						{
-							Object.keys(filter_tags).length ? 
-							<> 
-							<div><b>Tags</b></div>
-							{Object.keys(filter_tags).length > 5 ? 
-							<>
-							<input  type="text" placeholder="Search Tag" onKeyUp={side_bar_li_search} data-inputulclass="li_search_res_tag" />
-							</>	: null
-							}
-
-							<ul className='li_search_res_tag'>
-							{
-							Object.keys(filter_tags).map(function(key_inn) {
-								let checked = '';
-								if(!isEmpty(filter_option['tags']))
-								{
-									if(filter_option['tags'] !=  undefined )
-									{
-										if(jQuery.inArray( filter_tags[key_inn].name, filter_option['tags']) >= 0)
-										{
-											checked = 'checked';
-										}
+											})
+										: 
+										null
 									}
-								}
-								return(
-									<li key={filter_tags[key_inn].term_id}>
-									<input 
-									checked  ={checked}
-									onChange={formEventChange} className="shop_filter_ajax_click_fun mr-1" name="tags[]" type="checkbox" id={filter_tags[key_inn].term_id} value={filter_tags[key_inn].name}></input>
-									<label htmlFor={filter_tags[key_inn].term_id}>
-									{filter_tags[key_inn].name}  ({filter_tags[key_inn].tag_count})
-									</label>	
-									</li>
-								);	
-
-								})
-								}
-								</ul>
-								</>
-							: 
-							null
-						}
-						{ /* *************** Review ************** */}
-					
-						{
-							Object.keys(filter_average_rating).length ? 
-							<>
-							<div><b>Review</b></div>
-							<ul>
-							{
-							Object.keys(filter_average_rating).map(function(key_inn) {
-								let checked = '';
-								if(!isEmpty(filter_option['average_rating']))
-								{
-									if(filter_option['average_rating'] !=  undefined )
-									{
-										var key_select_tmp = key_inn.toString();
-										if(jQuery.inArray( key_select_tmp, filter_option['average_rating']) >= 0)
-										{
-											checked = 'checked';
-										}
-									}
-								}
-								return(
-									<li key={'average_rating_'+key_inn}>
-									<input 
-									checked  ={checked}
-									onChange={formEventChange} className="shop_filter_ajax_click_fun mr-1" name="average_rating[]" type="checkbox" id={'average_rating_'+key_inn} value={key_inn}></input>
-									<label htmlFor={'average_rating_'+key_inn}>
-									{key_inn}  ({filter_average_rating[key_inn]})
-									</label>	
-									</li>
-								);	
-
-								})
-								}
-								</ul>
-								</>
-							: 
-							null
-						}
-						{ /* *************** shipping ************** */}
-					
-					{
-						Object.keys(filter_shipping).length ? 
-						<> 
-						<div><b>Shipping</b></div>
-						<ul>
-						{
-						Object.keys(filter_shipping).map(function(key_inn) {
-							if(filter_shipping[key_inn].name != undefined)
-							{
-								let checked = '';
-								if(!isEmpty(filter_option['shipping']))
-								{
-									if(filter_option['shipping'] !=  undefined )
-									{
-										if(jQuery.inArray( filter_shipping[key_inn].name, filter_option['shipping']) >= 0)
-										{
-											checked = 'checked';
-										}
-									}
-								}
-								return(
-									
-									<li key={'shipping'+key_inn}>
-									<input 
-									checked  ={checked}
-									onChange={formEventChange} className="shop_filter_ajax_click_fun mr-1" name="shipping[]" type="checkbox" id={'shipping'+key_inn} value={filter_shipping[key_inn].name}></input>
-									<label htmlFor={'shipping'+key_inn}>
-									{filter_shipping[key_inn].name.replace('-',' ')}
-									({filter_shipping[key_inn].shipping_count})
-									</label>	
-									</li>
-								);	
-							}
+									</ul>
+									</>
+								);
 							})
-							}
-							</ul>
-							
-							</>
 						: 
-						null
-					}
-					{ /* *************** Availability ************** */}
-					
+						null }
+				
+				{ /* *************** Tags ************** */}
+				
 					{
-						Object.keys(filter_availability).length ? 
+						Object.keys(filter_tags).length ? 
+						<> 
+						<div><b>Tags</b></div>
+						{Object.keys(filter_tags).length > 5 ? 
 						<>
-						<div><b>Availability</b></div>
-						<ul>
+						<input  type="text" placeholder="Search Tag" onKeyUp={side_bar_li_search} data-inputUlClass="li_search_res_tag" />
+						</>	: null
+						}
+
+						<ul className='li_search_res_tag'>
 						{
-						Object.keys(filter_availability).map(function(key_inn) {
+						Object.keys(filter_tags).map(function(key_inn) {
 							let checked = '';
-							if(!isEmpty(filter_option['availability']))
+							if(!isEmpty(filter_option['tags']))
 							{
-								if(filter_option['availability'] !=  undefined )
+								if(filter_option['tags'] !=  undefined )
 								{
-									var key_select_tmp = filter_availability[key_inn];
-									if(jQuery.inArray( key_select_tmp, filter_option['availability']) >= 0)
+									if(jQuery.inArray( filter_tags[key_inn].name, filter_option['tags']) >= 0)
 									{
 										checked = 'checked';
 									}
 								}
 							}
 							return(
-								<li key={'availability_'+key_inn}>
+								<>
+								<li key={filter_tags[key_inn].term_id}>
 								<input 
 								checked  ={checked}
-								onChange={formEventChange} className="shop_filter_ajax_click_fun mr-1" name="availability[]" type="checkbox" id={'availability_'+key_inn} value={filter_availability[key_inn]}></input>
-								<label htmlFor={'availability_'+key_inn}>
-								{filter_availability[key_inn]}
+								onChange={formEventChange} className="shop_filter_ajax_click_fun mr-1" name="tags[]" type="checkbox" id={filter_tags[key_inn].term_id} value={filter_tags[key_inn].name}></input>
+								<label htmlFor={filter_tags[key_inn].term_id}>
+								{filter_tags[key_inn].name}  ({filter_tags[key_inn].tag_count})
 								</label>	
 								</li>
+								</>
 							);	
 
 							})
@@ -924,58 +814,187 @@ const encodeDataToURL = (data) => {
 						: 
 						null
 					}
-					</form>
-				</div>
-				<div key="section2_2"  className="col-span-8 ">
-					
+				
+				{ /* *************** Review ************** */}
+				
 					{
-					currentProduct.length ? 
+						Object.keys(filter_average_rating).length ? 
 						<>
-						<div className='grid grid-cols-4 gap-4'>
+						 <div><b>Review</b></div>
+						 <ul>
 						{
-							currentProduct.map( product => {
-								
-									return (
-										<Product key={ product?.id } product={product} />
-									)
+						Object.keys(filter_average_rating).map(function(key_inn) {
+							let checked = '';
+							if(!isEmpty(filter_option['average_rating']))
+							{
+								if(filter_option['average_rating'] !=  undefined )
+								{
+									var key_select_tmp = key_inn.toString();
+									if(jQuery.inArray( key_select_tmp, filter_option['average_rating']) >= 0)
+									{
+										checked = 'checked';
+									}
+								}
+							}
+							return(
+								<>
+								<li key={'average_rating_'+key_inn}>
+								<input 
+								checked  ={checked}
+								onChange={formEventChange} className="shop_filter_ajax_click_fun mr-1" name="average_rating[]" type="checkbox" id={'average_rating_'+key_inn} value={key_inn}></input>
+								<label htmlFor={'average_rating_'+key_inn}>
+								{key_inn}  ({filter_average_rating[key_inn]})
+								</label>	
+								</li>
+								</>
+							);	
+
 							})
+							}
+							</ul>
+							</>
+						: 
+						null
+					}
+			{ /* *************** shipping ************** */}
+				
+				{
+					Object.keys(filter_shipping).length ? 
+					<> 
+					<div><b>Shipping</b></div>
+					<ul>
+					{
+					Object.keys(filter_shipping).map(function(key_inn) {
+						if(filter_shipping[key_inn].name != undefined)
+						{
+							let checked = '';
+							if(!isEmpty(filter_option['shipping']))
+							{
+								if(filter_option['shipping'] !=  undefined )
+								{
+									if(jQuery.inArray( filter_shipping[key_inn].name, filter_option['shipping']) >= 0)
+									{
+										checked = 'checked';
+									}
+								}
+							}
+							return(
+								<>
+								<li key={'shipping'+key_inn}>
+								<input 
+								checked  ={checked}
+								onChange={formEventChange} className="shop_filter_ajax_click_fun mr-1" name="shipping[]" type="checkbox" id={'shipping'+key_inn} value={filter_shipping[key_inn].name}></input>
+								<label htmlFor={'shipping'+key_inn}>
+								{filter_shipping[key_inn].name.replace('-',' ')}
+								({filter_shipping[key_inn].shipping_count})
+								</label>	
+								</li>
+								</>
+							);	
 						}
-						</div>
+						})
+						}
+						</ul>
+						
 						</>
 					: 
-						<div className='grid gap-4'>
-							<p>No products were found matching your selection.</p>
-						</div> 
-					}
-					
-					<div className="rpagination">
-						{max_num_pages > 1 ? <>
-							{ itemOffset==0 ? 
-							<ReactPaginate
-								breakLabel="..."
-								nextLabel="next >"
-								onPageChange={handlePageClick}
-								pageRangeDisplayed={2}
-								pageCount={max_num_pages}
-								previousLabel="< previous"
-								renderOnZeroPageCount={null}
-								forcePage={itemOffset}
-							/>
-							: 
-							<ReactPaginate
-								breakLabel="..."
-								nextLabel="next >"
-								onPageChange={handlePageClick}
-								pageRangeDisplayed={2}
-								pageCount={max_num_pages}
-								previousLabel="< previous"
-								renderOnZeroPageCount={null}
-							/>
-							} </> : ''
+					null
+				}
+				{ /* *************** Availability ************** */}
+				
+				{
+					Object.keys(filter_availability).length ? 
+					<>
+					 <div><b>Availability</b></div>
+					 <ul>
+					{
+					Object.keys(filter_availability).map(function(key_inn) {
+						let checked = '';
+						if(!isEmpty(filter_option['availability']))
+						{
+							if(filter_option['availability'] !=  undefined )
+							{
+								var key_select_tmp = filter_availability[key_inn];
+								if(jQuery.inArray( key_select_tmp, filter_option['availability']) >= 0)
+								{
+									checked = 'checked';
+								}
+							}
 						}
-						</div>
-				</div>
+						return(
+							<>
+							<li key={'availability_'+key_inn}>
+							<input 
+							checked  ={checked}
+							onChange={formEventChange} className="shop_filter_ajax_click_fun mr-1" name="availability[]" type="checkbox" id={'availability_'+key_inn} value={filter_availability[key_inn]}></input>
+							<label htmlFor={'availability_'+key_inn}>
+							{filter_availability[key_inn]}
+							</label>	
+							</li>
+							</>
+						);	
+
+						})
+						}
+						</ul>
+						</>
+					: 
+					null
+				}
+					
+				</form>
 			</div>
+			<div className="col-span-8 ">
+				
+				{
+				currentProduct.length ? 
+					<>
+					<div className='grid grid-cols-4 gap-4'>
+					{
+						currentProduct.map( product => {
+							
+								return (
+									<Product key={ product?.id } product={product} />
+								)
+						})
+					}
+					</div>
+					</>
+				: 
+					<div className='grid gap-4'>
+						<p>No products were found matching your selection.</p>
+					</div> 
+				}
+				
+				<div className="rpagination">
+					{max_num_pages != 1 ? <>
+						{ itemOffset==0 ? 
+						<ReactPaginate
+							breakLabel="..."
+							nextLabel="next >"
+							onPageChange={handlePageClick}
+							pageRangeDisplayed={2}
+							pageCount={max_num_pages}
+							previousLabel="< previous"
+							renderOnZeroPageCount={null}
+							forcePage={itemOffset}
+						/>
+						: 
+						<ReactPaginate
+							breakLabel="..."
+							nextLabel="next >"
+							onPageChange={handlePageClick}
+							pageRangeDisplayed={2}
+							pageCount={max_num_pages}
+							previousLabel="< previous"
+							renderOnZeroPageCount={null}
+						/>
+						} </> : ''
+					}
+					</div>
+			</div>
+		</div>
+			
 			<style>{`
 					li.selected {
 						color: #3b82f6;
