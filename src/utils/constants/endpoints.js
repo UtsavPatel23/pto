@@ -25,4 +25,5 @@ export const SHOP_PRODUCTLIST = `${ process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL }
 
 //User API
 export const USER_LOGIN = `${ process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL }/wp-json/jwt-auth/v1/token`;
+export const USER_REGIS = `${ process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL }/wp-json/shop-nj/v1/registration`;
 
