@@ -5,9 +5,6 @@ import { isEmpty } from 'lodash';
 import { BurgerIcon, TailwindIcon, Bag, User, Wishlist } from '../../icons';
 import { AppContext } from '../../context';
 import { getPathNameFromUrl } from '../../../utils/miscellaneous';
-import { useEffect } from 'react';
-import Cookies from 'js-cookie';
-import Router from 'next/router';
 
 
 
@@ -17,25 +14,7 @@ const Header = ( { header } ) => {
 	const { headerMenuItems, siteDescription, siteLogoUrl, siteTitle } = header || {};
 	
 	const [ isMenuVisible, setMenuVisibility ] = useState( false );
-	
-	//get token
-	 const [tmpToken,setTmpToken] = useState(0);
-	//hook useEffect
-    useEffect(() => {
-        //check token
-        if(Cookies.get('token')) {
-			setTmpToken(1)
-        }
-    }, []);
-//function logout
-const logoutHanlder = async () => {
 
-	//remove token from cookies
-	Cookies.remove("token");
-
-	//redirect halaman login
-	Router.push('/login');
-};
 	return (
 		<>
 			<div className="header">
@@ -81,8 +60,7 @@ const logoutHanlder = async () => {
 									<div className="block mt-4 lg:inline-block lg:mt-0 hover:text-brand-royal-blue duration-500 mr-10">Blog</div>
 								</Link>
 							</div>
-							
-							{ tmpToken ? <button onClick={logoutHanlder}>logout</button> : <Link href="/login"><p className="mb-0">login</p></Link> }
+							<Link href="/my-account"><p className="mb-0">My account</p></Link>
 							<div className="text-sm font-medium">
 								<div href="#responsive-header"
 								   className="flex mt-4 lg:inline-block lg:mt-0 text-black hover:text-black mr-10">
