@@ -287,7 +287,7 @@ const handleChangePriceRange = (event, newValue) => {
 // ************* ********************************  ************************ 
 const side_bar_li_search = (e) => {
 	const searchValue = e.target.value;
-	const childen_class = e.target.getAttribute('data-inputUlClass');
+	const childen_class = e.target.getAttribute('data-inputulclass');
 	jQuery('.'+childen_class+' li').each(function () {
 		if (jQuery(this).text().search(new RegExp(searchValue, "i")) < 0) {
 			jQuery(this).hide();
@@ -662,7 +662,7 @@ const encodeDataToURL = (data) => {
 				<div><b>Categories</b></div>	
 				{Object.keys(attr_count_data_final_list['categories']).length > 5 ? 
 					<>
-					<input  type="text" placeholder="Search Cat" onKeyUp={side_bar_li_search} data-inputUlClass="li_search_res_cat" />
+					<input  type="text" placeholder="Search Cat" onKeyUp={side_bar_li_search} data-inputulclass="li_search_res_cat" />
 					</>	: null
 				}
 				{ 
@@ -722,7 +722,7 @@ const encodeDataToURL = (data) => {
 									{
 									Object.keys(filter_attributes[key]).length > 5 ? 
 									<>
-									<input  type="text" placeholder="Search Tag" onKeyUp={side_bar_li_search} data-inputUlClass={"li_search_res_attr_"+tmp_key} />
+									<input  type="text" placeholder="Search Tag" onKeyUp={side_bar_li_search} data-inputulclass={"li_search_res_attr_"+tmp_key} />
 									</>	: null
 									}
 									<ul key={key+'-attr'} className={"li_search_res_attr_"+tmp_key}>
@@ -776,7 +776,7 @@ const encodeDataToURL = (data) => {
 						<div><b>Tags</b></div>
 						{Object.keys(filter_tags).length > 5 ? 
 						<>
-						<input  type="text" placeholder="Search Tag" onKeyUp={side_bar_li_search} data-inputUlClass="li_search_res_tag" />
+						<input  type="text" placeholder="Search Tag" onKeyUp={side_bar_li_search} data-inputulclass="li_search_res_tag" />
 						</>	: null
 						}
 

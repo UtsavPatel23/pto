@@ -121,7 +121,20 @@ const Product = ( { product } ) => {
 			})}
 
 		{*/}
-			{ 'simple' === productType ? <AddToCart product={product}/> : null }
+			{(() => {
+				if (product.stock_quantity >= 1) 
+				{
+					return (
+						<>{ 'simple' == productType ? <AddToCart product={product}/> : null }</>
+						)
+				}else{
+					return (<Link href={ `/product/${ product?.slug }`} legacyBehavior>
+						Read more
+					</Link>)
+				} 
+			})()} 
+			
+			
 			{
 				'external' === productType ?
 					<ExternalLink

@@ -17,7 +17,7 @@ const api = new WooCommerceRestApi({
 
 export default function Checkout({ headerFooter, countries, paymentModes }) {
 
-	var paymentModes = paymentModes.filter(obj => 
+	paymentModes = paymentModes.filter(obj => 
 		{
 		if (obj.enabled == true) {
 			return true;
