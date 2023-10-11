@@ -36,3 +36,18 @@ export const getProductBySlug = async ( productSlug = '' ) => {
 		},
 	);
 };
+
+/**
+ * Get Single Product By Slug.
+ *
+ * @return {Promise<void>}
+ */
+ export const getreviewsByProID = async ( productId = '' ) => {
+	return await api.get(
+		'products/reviews',
+		{
+			product: productId,
+		},
+	);
+};
+
