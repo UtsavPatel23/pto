@@ -7,9 +7,7 @@ const Categories = ({ categories }) => {
 	}
 	
 	return (
-		<>
-		<div>
-			<div className=" flex flex-wrap -mx-3 overflow-hidden product-filter-right ">
+			<div key={"cat_"+categories.length} className=" flex flex-wrap -mx-3 overflow-hidden product-filter-right ">
 				
 				{ categories.length ? categories.map( category => {
 					return (
@@ -18,9 +16,7 @@ const Categories = ({ categories }) => {
 				} ) : null }
 			
 			</div>
-		</div>
-		</>
-	)
+		)
 }
 
 export default Categories;

@@ -12,7 +12,7 @@ const Category = ( { category } ) => {
 	
 	
 	return (
-		<div className="mt-4 mb-8 px-3 w-full overflow-hidden sm:w-1/2 md:w-1/3 xl:w-1/4">
+		<div key={'cat_li'+category?.id} className="mt-4 mb-8 px-3 w-full overflow-hidden sm:w-1/2 md:w-1/3 xl:w-1/4">
 			<Link href={ `/categories/${ category?.slug }`} legacyBehavior>
 				<a>
 					{/*}<Image
