@@ -1,3 +1,6 @@
+import { SHOP_SHIPPING_MULI } from "../constants/endpoints";
+import axios from 'axios';
+
 export function go_to_main_filter()
 {
 const id = 'main_filter';
@@ -40,4 +43,50 @@ export function getCookie(cname) {
       }
     }
     return "";
+  }
+
+  export const getShipping = async(postcode,cartItems) => {
+        var responce = {};
+        var product_code_sku = {};
+        cartItems.map((item)=>{
+          //console.log('item',item.data);
+          var sku = item.data.sku;
+          
+          if(item.data.meta_data.length > 0)
+          {
+            var product_code = '';
+            const meta_data_result = item.data.meta_data.find(({ key }) => key === "product_code");
+            if(meta_data_result.value == 'SN')
+            {
+              product_code = 'DZ';
+            }else{
+              product_code = meta_data_result.value;
+            }
+            if(undefined == product_code_sku[product_code])
+            {
+              product_code_sku[product_code] = [sku];
+            }else{
+              product_code_sku[product_code].push(sku);
+            }
+            //console.log('result',product_code_sku);
+          }
+          
+        });
+        const payload = {postcode: postcode, product_code_sku: product_code_sku};
+        const {data : ShippingData} = await axios.post( SHOP_SHIPPING_MULI,payload );
+        //console.log('ShippingData cusume',ShippingData);
+        var tmp_notice = [];
+        var shippingTotal  = 0;
+        cartItems.map((item)=>{
+          var sku = item.data.sku;
+          if(undefined == ShippingData[sku])
+          {
+            tmp_notice.push(sku);
+          }else{
+            shippingTotal +=(parseFloat(ShippingData[sku])  * item.quantity);
+          }
+        });
+       responce['notice'] = tmp_notice;
+       responce['shippingTotal'] = parseFloat(shippingTotal.toFixed(2));
+      return responce;
   }

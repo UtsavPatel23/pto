@@ -648,7 +648,8 @@ const encodeDataToURL = (data) => {
 				<form method='' name='form_sidebar_filter' id='form_sidebar_filter'>
 				<input type="hidden" seturl="yes" name="cat_name" value={cat_name} default_cat_id="" id="cat_name"></input>
 				{ /* *************** Price range  ************** */}
-				<div><b>Price Range</b></div>
+				{products.length > 20?
+				<div key={'price-'+priceValue}><b>Price Range</b>
 				<Slider
 					getAriaLabel={() => 'Temperature range'}
 					value={priceValue}
@@ -658,6 +659,7 @@ const encodeDataToURL = (data) => {
 					min={minPrice}
 					step={10}
 				/>
+				</div>: null}
 				{ /* *************** Category ************** */}
 				<div><b>Categories</b></div>	
 				{Object.keys(attr_count_data_final_list['categories']).length > 5 ? 

@@ -17,6 +17,7 @@ export const WOOCOMMERCE_STATES_ENDPOINT = `${ process.env.NEXT_PUBLIC_WORDPRESS
 
 //Shipping shingle product API
 export const SHOP_SHIPPING_SINGLE = `${ process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL }/wp-json/shop-nj/v1/shipping_single`;
+export const SHOP_SHIPPING_MULI = `${ process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL }/wp-json/shop-nj/v1/shipping_muli`;
 
 //Shop product API
 export const SHOP_CATEGORIES = `${ process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL }/wp-json/shop-nj/v1/categories`;
