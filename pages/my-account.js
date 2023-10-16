@@ -46,7 +46,7 @@ export default function Login ({headerFooter}){
 	const formState_l = action_Data.formState;
 	const  errorsLogin  = formState_l.errors;
 	//const { errorsLogin } = formState_l;
-	const onFormSubmitLogin = ( event ) => {
+	const onFormSubmitLogin = async( event ) => {
 			
 
 			const loginData = {
@@ -70,10 +70,6 @@ export default function Login ({headerFooter}){
 
 					const { token, user_nicename, user_email,user_id } = res.data;
 
-					sessionStorage.setItem( 'user_lgdt', JSON.stringify(res.data));
-					sessionStorage.setItem( 'token', token );
-					sessionStorage.setItem( 'userName', user_nicename );
-
 					setLoginFields( {
 						...loginFields,
 						loading: false,
@@ -87,7 +83,7 @@ export default function Login ({headerFooter}){
 					Cookies.set('token',token);
 					Cookies.set('user_lgdt',JSON.stringify(res.data));
 					//redirect to dashboard
-					
+					get_customer();
 					
 					setTokenValid(1);
 					reset_l();
@@ -102,6 +98,42 @@ export default function Login ({headerFooter}){
 			setLoginFields( { ...loginFields, [event.target.name]: event.target.value } );
 		};
 		const { username, password, userNiceName, error, loading } = loginFields;
+
+		const get_customer = async()=>
+		{
+			let responseCus = {
+                success: false,
+                customers: null,
+                error: '',
+            };
+			const customerData =  {
+                email: loginFields.userEmail,
+              };
+			  //const tmp = await axios.get( 'http://localhost:3000/api/get-customers?email=satish.dharavia@multicodes.in' );
+			  //console.log('tmp',tmp);
+            try {
+                const {data:resultCus} = await axios.get( '/api/get-customers?email='+loginFields.userEmail);
+                
+                //const resultCus = await requestCus.json();
+				if ( resultCus.error ) {
+                    responseCus.error = resultCus.error;
+                   // setOrderFailedError( 'Something went wrong. Order creation failed. Please try again' );
+                }
+               
+				responseCus.success = true;
+				if(resultCus.customers != undefined)
+				{
+					responseCus.customers = resultCus.customers[0];
+					Cookies.set('customerData',JSON.stringify(resultCus.customers[0]));
+				}
+            } catch ( error ) {
+                // @TODO to be handled later.
+                console.warn( 'Handle create order error', error?.message );
+            }
+			//console.log('responseCus',loginFields.userEmail);
+			console.log('responseCus',responseCus);
+			
+		}
 
 	/*************** Regis ******************************/
 	const [ regisFields, setRegisFields ] = useState({
@@ -169,8 +201,8 @@ export default function Login ({headerFooter}){
 	
 	const { user_email, user_pass, regis_error,regis_success, regis_loading } = regisFields;
 
-console.log('loginFields',loginFields)
-console.log('regisFields',regisFields)
+//console.log('loginFields',loginFields)
+//console.log('regisFields',regisFields)
 
 //console.log('userlogin',userlogin)
 
@@ -198,6 +230,7 @@ console.log('regisFields',regisFields)
 	const logoutHanlder = async () => {
 		//remove token from cookies
 		Cookies.remove("token");
+		Cookies.remove("user_lgdt");
 		setTokenValid(0);
 	};
 
