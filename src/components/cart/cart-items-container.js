@@ -14,30 +14,30 @@ import { isEmpty } from 'lodash';
 const CartItemsContainer = () => {
 	const [ cart, setCart ] = useContext( AppContext );
 	const { cartItems, totalPrice, totalQty,shippingCost } = cart || {};
+	const [totalPriceDis,setTotalPriceDis] =useState(totalPrice);
+	const [discoutDis,setDiscoutDis] =useState('');
 	const [ isClearCartProcessing, setClearCartProcessing ] = useState( false );
 	const [inputshipdisabled,setInputshipdisabled] = useState(false);
 	const [notice,setNotice] = useState('');
 	const [validatorPostcode,setValidatorPostcode] = useState('');
 	const [postcodedis,setPostcodedis] = useState('');
 
+	// Coupon
 	const [couponCodeText, setCouponCodeText] = useState('');
-    const [couponCodeRes, setCouponCodeRes] = useState('');
-    
+    const [couponCodeResTmp, setCouponCodeResTmp] = useState('');
 	const [loading, SetLoading] = useState(false);
 	const [coutData,setCoutData]  = useState('');
 	
 	// Clear the entire cart.
 	const handleClearCart = async ( event ) => {
 		event.stopPropagation();
-		
 		if (isClearCartProcessing) {
 			return;
 		}
-		
 		await clearCart( setCart, setClearCartProcessing );
-
 	};
-	
+
+	/** Shipping calculation  */
 	const shippingCalculation = async(e) => {
 		const postcode = e.target.value;
 		//console.log('postcode',postcode);
@@ -62,7 +62,7 @@ const CartItemsContainer = () => {
 			setInputshipdisabled(false);
 		}
 	}
-
+	/*  Coupon validatoin with API */
 	const validCoupon = async()=>{
 				let response = {
 					success: false,
@@ -73,7 +73,7 @@ const CartItemsContainer = () => {
 				if(couponCodeText == '')
 				{
 					response.error = "Please enter valid coupon";
-					setCouponCodeRes(response);
+					setCouponCodeResTmp(response);
 					return ;
 				}
 				SetLoading(true);
@@ -123,69 +123,131 @@ const CartItemsContainer = () => {
 					if(result.couponData.code != couponCodeText)
 					{
 					response.error = "Coupon '"+couponCodeText+"' does not exist!";
+					response.success = false;
 					}
-					/*else if(couponData.code == coutData.CouponApply)
+					else if(couponData.code == coutData.CouponApply)
 					{
 					response.error = "SORRY, COUPON "+couponCodeText+" HAS ALREADY BEEN APPLIED AND CANNOT BE USED IN CONJUNCTION WITH OTHER COUPONS.";
-					}*/
+					response.success = false;
+					}
 					else if(parseFloat(result.couponData.minimum_amount) >	cart.totalPrice && result.couponData.minimum_amount != 0)
 					{
 						response.error = "THE MINIMUM SPEND FOR THIS COUPON IS $ "+result.couponData.minimum_amount+".";
+						response.success = false;
 					}else if(parseFloat(result.couponData.maximum_amount) <	cart.totalPrice && result.couponData.maximum_amount != 0)
 					{
 						response.error = "THE MAXIMUM SPEND FOR THIS COUPON IS $ "+result.couponData.maximum_amount+".";
+						response.success = false;
 					}else if(usage_left == 0)
 					{
 						response.error = "SORRY, COUPON USAGE LIMIT HAS BEEN REACHED.";
+						response.success = false;
 					}else if(date_expires < toDay && result.couponData.date_expires != null)
 					{
 						response.error = "THIS COUPON HAS EXPIRED.";
+						response.success = false;
 					}else if(used_byMsg)
 					{
 						response.error = "COUPON USAGE LIMIT HAS BEEN REACHED.";
+						response.success = false;
 					}
 					else{
 					response.success = true;
-					setCoutData( {
-						...coutData,
-						"CouponApply":couponCodeText }
-						);
-						console.log('CouponApply' + parseFloat(result.couponData.minimum_amount) + '<'+cart.totalPrice);
-						console.log('ct',cart.totalPrice);
 					}
-					console.log('used_byMsg',used_byMsg);
 					response.couponData = result?.couponData ?? '';
 					response.couponId = result?.couponId ?? '';
 				} catch ( error ) {
 					// @TODO to be handled later.
 					console.warn( 'Handle create order error', error?.message );
 				}
-				setCouponCodeRes(response);
+				setCoutData( {
+					...coutData,
+					"CouponApply":response }
+					);
+				setCouponCodeResTmp(response);
 				SetLoading(false);
 			console.log('response',response);
 		}
-
-	const handleCouponCodeVariable = (e) => {
+	
+		const handleCouponCodeVariable = (e) => {
 		setCouponCodeText(e.target.value);
 	  }
+	/* Remove coupon  */
+	const removeCouponCode = ()=>{
+		setCouponCodeResTmp('');
+		setCoutData( {
+			...coutData,
+			"CouponApply":''}
+			);
+	}
 
-	//hook useEffect
+	//hook useEffect variable data set
     useEffect(() => {
-        //check token
         if(Cookies.get('coutData')) {
 			setCoutData(JSON.parse(Cookies.get('coutData')));
 		}
     }, []);
-	//hook useEffect
+
+	//hook useEffect Checkout data set in cookies
     useEffect(() => {
-        //check token
         Cookies.set('coutData',JSON.stringify(coutData));
     }, [coutData]);
 
-	console.log('coutData in',coutData);
-	console.log('shippingCost',shippingCost);
-	console.log('notice',notice);
-	console.log('cart',cart);
+	//hook useEffect Cart change evemt
+    useEffect(() => {
+		if(coutData.CouponApply != undefined && coutData.CouponApply != '')
+		{
+			if(parseFloat(coutData.CouponApply.couponData.minimum_amount) >	cart.totalPrice && coutData.CouponApply.couponData.minimum_amount != 0)
+			{
+				setCoutData( {
+					...coutData,
+					"CouponApply":''}
+					);
+			}else if(parseFloat(coutData.CouponApply.couponData.maximum_amount) <	cart.totalPrice && coutData.CouponApply.couponData.maximum_amount != 0)
+			{
+				setCoutData( {
+					...coutData,
+					"CouponApply":''}
+					);
+			}
+		}
+    }, [cart]);
+	
+	//hook useEffect Total Price change
+    useEffect(() => {
+		var totalPriceSum = totalPrice;
+		var discount_cal = 0;
+        const {CouponApply} = coutData;
+		if(undefined != shippingCost)
+		{
+			totalPriceSum = totalPriceSum+shippingCost
+		}
+		if(CouponApply != '' && CouponApply != undefined)
+		{
+			if(CouponApply.success)
+			{
+			if(CouponApply.couponData.discount_type == "fixed_cart")
+			{
+				discount_cal = parseFloat(CouponApply.couponData.amount);
+				
+			}
+			if(CouponApply.couponData.discount_type == "percent")
+			{
+				discount_cal = ((totalPrice*parseFloat(CouponApply.couponData.amount))/100);
+			}
+			totalPriceSum = totalPriceSum - discount_cal;
+			}
+		}
+		setDiscoutDis(discount_cal);
+		setTotalPriceDis(totalPriceSum);
+		
+    }, [totalPrice,shippingCost,coutData]);
+	
+	
+	//console.log('coutData in',coutData);
+	//console.log('shippingCost',shippingCost);
+	//console.log('notice',notice);
+	//console.log('cart',cart);
 	return (
 		<div className="content-wrap-cart">
 			{ loading && <img className="loader" src={Loader.src} alt="Loader" width={50}/> }
@@ -205,14 +267,20 @@ const CartItemsContainer = () => {
 							/>
 						) ) }
 						<div key="calculat-shipping">
-							<h4>Calculate Shipping Charge</h4>
+							<h5>Calculate Shipping Charge</h5>
 							<input type="number" onKeyUp={shippingCalculation}  size="4"  name="product_code" placeholder="POSTCODE"  disabled={inputshipdisabled} /> 
 							<button onClick={shippingCalculation}>Calculate</button>
 							<span>{validatorPostcode}</span>
 						</div>
 						<div key="coupon">
-							<label for="coupon_code" className="">Coupon:</label> 
-							 Message : {couponCodeRes.error} {couponCodeRes.success?<>APPLIED</>:null}<br></br>
+							<h5 htmlFor="coupon_code" className="">Coupon:</h5> 
+							 {/*Message : {coutData.CouponApply != undefined? 
+							 <>
+							 {coutData.CouponApply.error} {coutData.CouponApply.success?<>APPLIED</>:null}
+							 </>
+							 : null} */}
+							 Message : {couponCodeResTmp.error} {couponCodeResTmp.success?<>APPLIED</>:null}<br></br>
+							 <br></br>
         						<input type='text' name="coupon" id="coupon_code" onChange={handleCouponCodeVariable} value={couponCodeText} className=" border border-sky-500"></input>
         						<button onClick={validCoupon}>Apply coupon</button>
 						</div>
@@ -228,15 +296,29 @@ const CartItemsContainer = () => {
 								return (
 										<div className="flex grid grid-cols-3 bg-gray-100 mb-4">
 											<p className="col-span-2 p-2 mb-0">Shipping Cost</p>
-											<p className="col-span-1 p-2 mb-0">{cartItems?.[0]?.currency ?? ''}{ shippingCost }</p>
+											<p className="col-span-1 p-2 mb-0">+{cartItems?.[0]?.currency ?? ''}{ shippingCost }</p>
 										</div>
 										)	
 							} 
 						})()} 
-						
+						{(() => {
+							if(coutData.CouponApply != undefined) 
+							{
+								if(coutData.CouponApply.success)
+								{
+									return (
+										<div className="flex grid grid-cols-3 bg-gray-100 mb-4">
+											<p className="col-span-2 p-2 mb-0">Discount <button onClick={removeCouponCode}>Remove</button></p>
+											<p className="col-span-1 p-2 mb-0">-{cartItems?.[0]?.currency ?? ''}{ discoutDis }</p>
+										</div>
+										)
+								}
+									
+							} 
+						})()} 
 						<div className="flex grid grid-cols-3 bg-gray-100 mb-4">
 							<p className="col-span-2 p-2 mb-0">Total({totalQty})</p>
-							<p className="col-span-1 p-2 mb-0">{cartItems?.[0]?.currency ?? ''}{ shippingCost? totalPrice+shippingCost : totalPrice}</p>
+							<p className="col-span-1 p-2 mb-0">{cartItems?.[0]?.currency ?? ''}{parseFloat(totalPriceDis).toFixed(2)}</p>
 						</div>
 						
 						<div className="flex justify-between">
