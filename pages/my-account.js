@@ -228,7 +228,9 @@ export default function Login ({headerFooter}){
 		//remove token from cookies
 		Cookies.remove("token");
 		Cookies.remove("user_lgdt");
-		Cookies.set('customerData','');
+		Cookies.remove('customerData');
+		Cookies.remove('coutData');
+		
 		setTokenValid(0);
 	};
 

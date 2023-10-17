@@ -128,7 +128,7 @@ const CartItemsContainer = () => {
 									used_coun_user++; 
 								}
 							});
-							if(used_coun_user >= result.couponData.usage_limit_per_user)
+							if(used_coun_user >= result.couponData.usage_limit_per_user && (result.couponData.usage_limit_per_user != null))
 							{
 								used_byMsg = true;
 							}
@@ -171,6 +171,8 @@ const CartItemsContainer = () => {
 					
 				} catch ( error ) {
 					// @TODO to be handled later.
+					response.error = "In validate Coupon";
+					response.success = false;
 					console.warn( 'Handle create order error', error?.message );
 				}
 				setCoutData( {
