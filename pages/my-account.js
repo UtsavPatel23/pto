@@ -83,7 +83,7 @@ export default function Login ({headerFooter}){
 					Cookies.set('token',token);
 					Cookies.set('user_lgdt',JSON.stringify(res.data));
 					//redirect to dashboard
-					get_customer();
+					get_customer(user_email);
 					
 					setTokenValid(1);
 					reset_l();
@@ -99,7 +99,7 @@ export default function Login ({headerFooter}){
 		};
 		const { username, password, userNiceName, error, loading } = loginFields;
 
-		const get_customer = async()=>
+		const get_customer = async(arg_user_email)=>
 		{
 			let responseCus = {
                 success: false,
@@ -107,20 +107,17 @@ export default function Login ({headerFooter}){
                 error: '',
             };
 			const customerData =  {
-                email: loginFields.userEmail,
+                email: arg_user_email,
               };
-			  //const tmp = await axios.get( 'http://localhost:3000/api/get-customers?email=satish.dharavia@multicodes.in' );
-			  //console.log('tmp',tmp);
-            try {
-                const {data:resultCus} = await axios.get( '/api/get-customers?email='+loginFields.userEmail);
+			try {
+                const {data:resultCus} = await axios.get( '/api/get-customers?email='+arg_user_email);
                 
-                //const resultCus = await requestCus.json();
-				if ( resultCus.error ) {
+                if ( resultCus.error ) {
                     responseCus.error = resultCus.error;
-                   // setOrderFailedError( 'Something went wrong. Order creation failed. Please try again' );
                 }
                
 				responseCus.success = true;
+				console.log('resultCus',resultCus);
 				if(resultCus.customers != undefined)
 				{
 					responseCus.customers = resultCus.customers[0];
@@ -231,6 +228,7 @@ export default function Login ({headerFooter}){
 		//remove token from cookies
 		Cookies.remove("token");
 		Cookies.remove("user_lgdt");
+		Cookies.set('customerData','');
 		setTokenValid(0);
 	};
 

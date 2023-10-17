@@ -76,6 +76,16 @@ const CartItemsContainer = () => {
 					setCouponCodeResTmp(response);
 					return ;
 				}
+				if(coutData.CouponApply != undefined && coutData.CouponApply != '')
+				{
+					if(coutData.CouponApply.couponData != null && coutData.CouponApply.couponData.code == couponCodeText)
+					{
+						response.error = "SORRY, COUPON "+couponCodeText+" HAS ALREADY BEEN APPLIED AND CANNOT BE USED IN CONJUNCTION WITH OTHER COUPONS.";
+						setCouponCodeResTmp(response);
+						return ;
+					}
+				}
+				
 				SetLoading(true);
 				const couponData =  {
 					//code: "snv22",
@@ -96,8 +106,13 @@ const CartItemsContainer = () => {
 						response.error = result.error;
 					// setOrderFailedError( 'Something went wrong. Order creation failed. Please try again' );
 					}
-
-					var usage_left = result.couponData.usage_limit - result.couponData.usage_count;
+					console.log('result return ',result);
+					var usage_left = 1;
+					if(result.couponData.usage_limit != null)
+					{
+						usage_left = result.couponData.usage_limit - result.couponData.usage_count;
+					}
+					
 					const toDay = new Date();
 					const date_expires = new Date(result.couponData.date_expires);
 					var used_byMsg = false;
@@ -106,16 +121,18 @@ const CartItemsContainer = () => {
 						var customerData = JSON.parse(Cookies.get('customerData'));
 						if(customerData.email != undefined)
 						{
-							used_byMsg = result.couponData.used_by.find((element) => {
-								if(element == customerData.email)
+							var used_coun_user = 0;
+							result.couponData.used_by.find((element) => {
+								if(element == customerData.email || element == customerData.id)
 								{
-									return true;
+									used_coun_user++; 
 								}
 							});
-							if(used_byMsg != undefined)
+							if(used_coun_user >= result.couponData.usage_limit_per_user)
 							{
 								used_byMsg = true;
 							}
+							
 						}
 						
 					}
@@ -123,11 +140,6 @@ const CartItemsContainer = () => {
 					if(result.couponData.code != couponCodeText)
 					{
 					response.error = "Coupon '"+couponCodeText+"' does not exist!";
-					response.success = false;
-					}
-					else if(couponData.code == coutData.CouponApply)
-					{
-					response.error = "SORRY, COUPON "+couponCodeText+" HAS ALREADY BEEN APPLIED AND CANNOT BE USED IN CONJUNCTION WITH OTHER COUPONS.";
 					response.success = false;
 					}
 					else if(parseFloat(result.couponData.minimum_amount) >	cart.totalPrice && result.couponData.minimum_amount != 0)
@@ -153,9 +165,10 @@ const CartItemsContainer = () => {
 					}
 					else{
 					response.success = true;
-					}
 					response.couponData = result?.couponData ?? '';
 					response.couponId = result?.couponId ?? '';
+					}
+					
 				} catch ( error ) {
 					// @TODO to be handled later.
 					console.warn( 'Handle create order error', error?.message );
@@ -195,7 +208,7 @@ const CartItemsContainer = () => {
 
 	//hook useEffect Cart change evemt
     useEffect(() => {
-		if(coutData.CouponApply != undefined && coutData.CouponApply != '')
+		if(coutData.CouponApply != undefined && coutData.CouponApply != '' && coutData.CouponApply.couponData != null)
 		{
 			if(parseFloat(coutData.CouponApply.couponData.minimum_amount) >	cart.totalPrice && coutData.CouponApply.couponData.minimum_amount != 0)
 			{
