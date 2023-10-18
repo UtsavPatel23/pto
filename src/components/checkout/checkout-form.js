@@ -12,6 +12,8 @@ import {
 	handleCreateAccount, handleOtherPaymentMethodCheckout, handleStripeCheckout,
 	setStatesForCountry,
 } from '../../utils/checkout';
+import { useEffect } from 'react';
+import Cookies from 'js-cookie';
 
 // Use this for testing purposes, so you dont have to fill the checkout form over an over again.
 // const defaultCustomerInfo = {
@@ -72,6 +74,12 @@ const CheckoutForm = ( { countriesData , paymentModes } ) => {
 	const [ isOrderProcessing, setIsOrderProcessing ] = useState( false );
 	const [ createdOrderData, setCreatedOrderData ] = useState( {} );
 
+	const [coutData,setCoutData]=useState('');
+	const { totalPrice, shippingCost } = cart || {};
+	const [totalPriceDis,setTotalPriceDis] =useState(totalPrice);
+	const [discoutDis,setDiscoutDis] =useState('');
+	const [couponName,setCouponName] =useState('');
+
 	/**
 	 * Handle form submit.
 	 *
@@ -82,6 +90,7 @@ const CheckoutForm = ( { countriesData , paymentModes } ) => {
 	const handleFormSubmit = async ( event ) => {
 		event.preventDefault();
 
+		
 		/**
 		 * Validate Billing and Shipping Details
 		 *
@@ -106,15 +115,16 @@ const CheckoutForm = ( { countriesData , paymentModes } ) => {
 		if ( ! shippingValidationResult.isValid || ! billingValidationResult.isValid ) {
 			return null;
 		}
-
+		
+		
 		// For stripe payment mode, handle the strip payment and thank you.
 		if ( 'stripe' === input.paymentMethod ) {
-			const createdOrderData = await handleStripeCheckout( input, cart?.cartItems, setRequestError, setCart, setIsOrderProcessing, setCreatedOrderData );
+			const createdOrderData = await handleStripeCheckout( shippingCost,couponName,input, cart?.cartItems, setRequestError, setCart, setIsOrderProcessing, setCreatedOrderData );
 			return null;
 		}
 		
 		// For Any other payment mode, create the order and redirect the user to payment url.
-		const createdOrderData = await handleOtherPaymentMethodCheckout( input, cart?.cartItems, setRequestError, setCart, setIsOrderProcessing, setCreatedOrderData );
+		const createdOrderData = await handleOtherPaymentMethodCheckout(shippingCost,couponName,input, cart?.cartItems, setRequestError, setCart, setIsOrderProcessing, setCreatedOrderData );
 		
 		if ( createdOrderData.paymentUrl ) {
 			window.location.href = createdOrderData.paymentUrl;
@@ -163,6 +173,71 @@ const CheckoutForm = ( { countriesData , paymentModes } ) => {
 		setInput( newState );
 		await setStatesForCountry( target, setTheBillingStates, setIsFetchingBillingStates );
 	};
+	console.log('input',input);
+	useEffect(() => {
+        if(Cookies.get('customerData')) {
+			var customerDataTMP =  JSON.parse(Cookies.get('customerData'));
+			console.log('customerDataTMP',customerDataTMP);
+			if(customerDataTMP != undefined && customerDataTMP != '')
+			{
+				// Shipping field
+				customerDataTMP.shipping.firstName = customerDataTMP.shipping.first_name;
+				customerDataTMP.shipping.lastName = customerDataTMP.shipping.last_name;
+				customerDataTMP.shipping.address1 = customerDataTMP.shipping.address_1;
+				customerDataTMP.shipping.address2 = customerDataTMP.shipping.address_2;
+
+				// Billing field
+				customerDataTMP.billing.firstName = customerDataTMP.billing.first_name;
+				customerDataTMP.billing.lastName = customerDataTMP.billing.last_name;
+				customerDataTMP.billing.address1 = customerDataTMP.billing.address_1;
+				customerDataTMP.billing.address2 = customerDataTMP.billing.address_2;
+
+				setInput( {
+					...input,
+					billing: customerDataTMP.billing,
+					shipping: customerDataTMP.shipping,
+				} );
+			}
+			
+		}
+
+		//hook useEffect variable data set
+		if(Cookies.get('coutData')) {
+			setCoutData(JSON.parse(Cookies.get('coutData')));
+		}
+	}, []);
+
+	//hook useEffect Total Price change
+    useEffect(() => {
+		var totalPriceSum = totalPrice;
+		var discount_cal = 0;
+        const {CouponApply} = coutData;
+		if(undefined != shippingCost)
+		{
+			totalPriceSum = totalPriceSum+shippingCost
+		}
+		if(CouponApply != '' && CouponApply != undefined)
+		{
+			if(CouponApply.success)
+			{
+				setCouponName(CouponApply.couponData.code);
+				if(CouponApply.couponData.discount_type == "fixed_cart")
+				{
+					discount_cal = parseFloat(CouponApply.couponData.amount);
+					
+				}
+				if(CouponApply.couponData.discount_type == "percent")
+				{
+					discount_cal = ((totalPrice*parseFloat(CouponApply.couponData.amount))/100);
+				}
+				totalPriceSum = totalPriceSum - discount_cal;
+			}
+		}
+		
+		setDiscoutDis(discount_cal);
+		setTotalPriceDis(totalPriceSum);
+		
+    }, [totalPrice,shippingCost,coutData]);
 
 	return (
 		<>
@@ -170,31 +245,7 @@ const CheckoutForm = ( { countriesData , paymentModes } ) => {
 				<form onSubmit={ handleFormSubmit } className="woo-next-checkout-form">
 					<div className="grid grid-cols-1 md:grid-cols-2 gap-20">
 						<div>
-							{/*Shipping Details*/ }
-							<div className="billing-details">
-								<h2 className="text-xl font-medium mb-4">Shipping Details</h2>
-								<Address
-									states={ theShippingStates }
-									countries={ shippingCountries }
-									input={ input?.shipping }
-									handleOnChange={ ( event ) => handleOnChange( event, true, true ) }
-									isFetchingStates={ isFetchingShippingStates }
-									isShipping
-									isBillingOrShipping
-								/>
-							</div>
-							<div>
-								<CheckboxField
-									name="billingDifferentThanShipping"
-									type="checkbox"
-									checked={ input?.billingDifferentThanShipping }
-									handleOnChange={ handleOnChange }
-									label="Billing different than shipping"
-									containerClassNames="mb-4 pt-4"
-								/>
-							</div>
 							{/*Billing Details*/ }
-							{ input?.billingDifferentThanShipping ? (
 								<div className="billing-details">
 									<h2 className="text-xl font-medium mb-4">Billing Details</h2>
 									<Address
@@ -207,6 +258,30 @@ const CheckoutForm = ( { countriesData , paymentModes } ) => {
 										isBillingOrShipping
 									/>
 								</div>
+							<div>
+								<CheckboxField
+									name="billingDifferentThanShipping"
+									type="checkbox"
+									checked={ input?.billingDifferentThanShipping }
+									handleOnChange={ handleOnChange }
+									label="Shipping different than shipping"
+									containerClassNames="mb-4 pt-4"
+								/>
+							</div>
+							{/*Shipping Details*/ }
+							{ input?.billingDifferentThanShipping ? (
+								<div className="billing-details">
+									<h2 className="text-xl font-medium mb-4">Shipping Details</h2>
+									<Address
+										states={ theShippingStates }
+										countries={ shippingCountries }
+										input={ input?.shipping }
+										handleOnChange={ ( event ) => handleOnChange( event, true, true ) }
+										isFetchingStates={ isFetchingShippingStates }
+										isShipping
+										isBillingOrShipping
+									/>
+								</div>
 							) : null }
 
 						</div>
@@ -214,10 +289,10 @@ const CheckoutForm = ( { countriesData , paymentModes } ) => {
 						<div className="your-orders">
 							{/*	Order*/ }
 							<h2 className="text-xl font-medium mb-4">Your Order</h2>
-							<YourOrder cart={ cart }/>
+							<YourOrder cart={ cart } shippingCost={shippingCost} discoutDis={discoutDis} totalPriceDis={totalPriceDis}/>
 
 							{/*Payment*/ }
-							<PaymentModes input={input} handleOnChange={handleOnChange} paymentModes={paymentModes } />
+							<PaymentModes input={input}  handleOnChange={handleOnChange} paymentModes={paymentModes } />
 
 							<div className="woo-next-place-order-btn-wrap mt-5">
 								<button

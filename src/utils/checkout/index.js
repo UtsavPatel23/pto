@@ -17,9 +17,9 @@ import { WOOCOMMERCE_STATES_ENDPOINT } from '../constants/endpoints';
  * @param setCreatedOrderData
  * @return {Promise<{orderId: null, error: string}|null>}
  */
-export const handleOtherPaymentMethodCheckout = async ( input, products, setRequestError, setCart, setIsOrderProcessing, setCreatedOrderData ) => {
+export const handleOtherPaymentMethodCheckout = async (shippingCost,couponName, input, products, setRequestError, setCart, setIsOrderProcessing, setCreatedOrderData ) => {
 	setIsOrderProcessing( true );
-	const orderData = getCreateOrderData( input, products);
+	const orderData = getCreateOrderData(shippingCost,couponName, input, products);
 	const customerOrderData = await createTheOrder( orderData, setRequestError, '' );
 	const cartCleared = await clearCart( setCart, () => {
 	} );
@@ -51,9 +51,9 @@ export const handleOtherPaymentMethodCheckout = async ( input, products, setRequ
  *
  * @param setCreatedOrderData
  */
-export const handleStripeCheckout = async ( input, products, setRequestError, setCart, setIsProcessing, setCreatedOrderData ) => {
+export const handleStripeCheckout = async (shippingCost,couponName, input, products, setRequestError, setCart, setIsProcessing, setCreatedOrderData ) => {
 	setIsProcessing( true );
-	const orderData = getCreateOrderData( input, products );
+	const orderData = getCreateOrderData(shippingCost,couponName, input, products );
 	const customerOrderData = await createTheOrder( orderData, setRequestError, '' );
 	const cartCleared = await clearCart( setCart, () => {
 	} );
@@ -121,7 +121,7 @@ const getStripeLineItems = ( products ) => {
 			quantity: product?.quantity ?? 0,
 			name: product?.data?.name ?? '',
 			images: [ product?.data?.images?.[ 0 ]?.src ?? '' ?? '' ],
-			amount: Math.round( ( product?.line_subtotal ?? 0 ) * 100 ),
+			amount: Math.round( ( parseFloat(product?.data?.price) ?? 0 ) * 100 ),
 			currency: 'aud',
 		};
 	} );

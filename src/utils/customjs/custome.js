@@ -79,7 +79,7 @@ export function getCookie(cname) {
         var shippingTotal  = 0;
         cartItems.map((item)=>{
           var sku = item.data.sku;
-          if(undefined == ShippingData[sku])
+          if(undefined == ShippingData[sku] || ShippingData[sku] < 0)
           {
             tmp_notice.push(sku);
           }else{

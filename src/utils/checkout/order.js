@@ -31,12 +31,11 @@ export const getCreateOrderLineItems = ( products ) => {
  * @param products
  * @return {{shipping: {country: *, city: *, phone: *, address_1: (string|*), address_2: (string|*), postcode: (string|*), last_name: (string|*), company: *, state: *, first_name: (string|*), email: *}, payment_method_title: string, line_items: (*[]|*), payment_method: string, billing: {country: *, city: *, phone: *, address_1: (string|*), address_2: (string|*), postcode: (string|*), last_name: (string|*), company: *, state: *, first_name: (string|*), email: *}}}
  */
-export const getCreateOrderData = ( order, products ) => {
+export const getCreateOrderData = ( shippingCost,couponName,order, products ) => {
 	// Set the billing Data to shipping, if applicable.
 	const billingData = order.billingDifferentThanShipping ? order.billing : order.shipping;
 	
-	// Checkout data.
-	return {
+	var tmpOrderData = {
 		shipping: {
 			first_name: order?.shipping?.firstName,
 			last_name: order?.shipping?.lastName,
@@ -63,10 +62,29 @@ export const getCreateOrderData = ( order, products ) => {
 			phone: billingData?.phone,
 			company: billingData?.company,
 		},
+		"fee_lines":[             
+			{    
+				"name":"Shipping:",
+				"total":shippingCost.toString()
+			}
+		],
 		payment_method: order?.paymentMethod,
 		payment_method_title: order?.paymentMethod,
 		line_items: getCreateOrderLineItems( products ),
-	};
+	}
+	// Add discount coupon
+	if(couponName != '' && (undefined != couponName)) {
+		tmpOrderData = { ...tmpOrderData, ...{
+			"coupon_lines" :[
+				{
+						"code" : couponName
+				}
+			]
+			}};
+	}
+	
+	// Checkout data.
+	return tmpOrderData;
 };
 
 /**
