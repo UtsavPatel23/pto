@@ -4,8 +4,8 @@ import { Fragment } from 'react';
 import CheckoutCartItem from "./checkout-cart-item";
 
 const YourOrder = ( { cart,shippingCost,discoutDis,totalPriceDis } ) => {
-	console.log('totalPriceDis',totalPriceDis);
-	console.log('shippingCost',shippingCost);
+	//console.log('totalPriceDis',totalPriceDis);
+	//console.log('shippingCost',shippingCost);
 	return (
 		<Fragment>
 			{ cart ? (

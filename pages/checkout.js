@@ -24,7 +24,7 @@ export default function Checkout({ headerFooter, countries, paymentModes }) {
 		}
 	});
 	
-	console.log("paymentModes", paymentModes);
+	//console.log("paymentModes", paymentModes);
 	return (
 		<Layout headerFooter={headerFooter || {}}>
 			<h1>Checkout</h1>

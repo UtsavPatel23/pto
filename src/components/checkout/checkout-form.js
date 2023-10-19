@@ -14,6 +14,7 @@ import {
 } from '../../utils/checkout';
 import { useEffect } from 'react';
 import Cookies from 'js-cookie';
+import axios from 'axios';
 
 // Use this for testing purposes, so you dont have to fill the checkout form over an over again.
 // const defaultCustomerInfo = {
@@ -120,7 +121,7 @@ const CheckoutForm = ( { countriesData , paymentModes } ) => {
 		
 		// For stripe payment mode, handle the strip payment and thank you.
 		if ( 'stripe' === input.paymentMethod ) {
-			const createdOrderData = await handleStripeCheckout( shippingCost,couponName,input, cart?.cartItems, setRequestError, setCart, setIsOrderProcessing, setCreatedOrderData );
+			const createdOrderData = await handleStripeCheckout( shippingCost,couponName,totalPriceDis,input, cart?.cartItems, setRequestError, setCart, setIsOrderProcessing, setCreatedOrderData );
 			return null;
 		}
 		
@@ -150,12 +151,30 @@ const CheckoutForm = ( { countriesData , paymentModes } ) => {
 		if ( 'createAccount' === target.name ) {
 			handleCreateAccount( input, setInput, target );
 		} else if ( 'billingDifferentThanShipping' === target.name ) {
-			handleBillingDifferentThanShipping( input, setInput, target );
+			await handleBillingDifferentThanShipping( input, setInput, target );
+			if(input?.billingDifferentThanShipping)
+			{
+				//console.log('yes billing post code',input.billing.postcode);
+				await getAuspost(input.billing.postcode,true);
+			}else{
+				//console.log('yes sipping post code',input.shipping.postcode);
+				await getAuspost(input.shipping.postcode,true);
+			}
 		} else if ( isBillingOrShipping ) {
 			if ( isShipping ) {
 				await handleShippingChange( target );
 			} else {
 				await handleBillingChange( target );
+			}
+			if(input?.billingDifferentThanShipping && isShipping)
+			{
+				//console.log('Shipping name',target.name);
+				//console.log('Shipping value',target.value);
+				await getAuspost(target.value,false);
+			}else if(!input?.billingDifferentThanShipping){
+				//console.log('billing name',target.name);
+				//console.log('billing value',target.value);
+				await getAuspost(target.value,false);
 			}
 		} else {
 			const newState = { ...input, [ target.name ]: target.value };
@@ -174,11 +193,11 @@ const CheckoutForm = ( { countriesData , paymentModes } ) => {
 		setInput( newState );
 		await setStatesForCountry( target, setTheBillingStates, setIsFetchingBillingStates );
 	};
-	console.log('input',input);
+	//console.log('input',input);
 	useEffect(() => {
         if(Cookies.get('customerData')) {
 			var customerDataTMP =  JSON.parse(Cookies.get('customerData'));
-			console.log('customerDataTMP',customerDataTMP);
+			//console.log('customerDataTMP',customerDataTMP);
 			if(customerDataTMP != undefined && customerDataTMP != '')
 			{
 				// Shipping field
@@ -239,6 +258,35 @@ const CheckoutForm = ( { countriesData , paymentModes } ) => {
 		setTotalPriceDis(totalPriceSum);
 		
     }, [totalPrice,shippingCost,coutData]);
+
+	/******     *******/
+	const getAuspost = async (postcode,onlyShippingCalculation)=>{
+		
+		if(undefined != postcode)
+		{
+			var postcodeLength = postcode.length;
+			if(postcodeLength >= 3 && postcodeLength <= 4)
+			{
+				console.log('postcode',postcode)
+				const config = {
+					headers:{
+						'accept': 'application/json',
+					  'AUTH-KEY': '62b9613ddab3f8cdaf89c47c0234729e'
+					}
+				  };
+				const dataPost = await axios.get('https://digitalapi.auspost.com.au/postcode/search?q='+postcode,config)
+				.then(res=> console.log(res))
+				.catch(err=> console.log(err))
+				console.log('dataPost',dataPost);
+				if(onlyShippingCalculation)
+				{
+					console.log('onlyShippingCalculation');
+				}
+			}
+			
+		}
+		
+	}
 
 	return (
 		<>

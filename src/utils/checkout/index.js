@@ -51,7 +51,7 @@ export const handleOtherPaymentMethodCheckout = async (shippingCost,couponName, 
  *
  * @param setCreatedOrderData
  */
-export const handleStripeCheckout = async (shippingCost,couponName, input, products, setRequestError, setCart, setIsProcessing, setCreatedOrderData ) => {
+export const handleStripeCheckout = async (shippingCost,couponName,totalPriceDis, input, products, setRequestError, setCart, setIsProcessing, setCreatedOrderData ) => {
 	setIsProcessing( true );
 	const orderData = getCreateOrderData(shippingCost,couponName, input, products );
 	const customerOrderData = await createTheOrder( orderData, setRequestError, '' );
@@ -66,7 +66,7 @@ export const handleStripeCheckout = async (shippingCost,couponName, input, produ
 	
 	// On success show stripe form.
 	setCreatedOrderData( customerOrderData );
-	await createCheckoutSessionAndRedirect( products, input, customerOrderData?.orderId,customerOrderData?.orderPostID );
+	await createCheckoutSessionAndRedirect( totalPriceDis,products, input, customerOrderData?.orderId,customerOrderData?.orderPostID );
 	
 	return customerOrderData;
 };
@@ -78,12 +78,19 @@ export const handleStripeCheckout = async (shippingCost,couponName, input, produ
  * @param orderId
  * @return {Promise<void>}
  */
-const createCheckoutSessionAndRedirect = async ( products, input, orderId,orderPostID ) => {
+const createCheckoutSessionAndRedirect = async ( totalPriceDis,products, input, orderId,orderPostID ) => {
 	const sessionData = {
 		success_url: window.location.origin + `/thank-you?session_id={CHECKOUT_SESSION_ID}&order_id=${ orderId }`,
 		cancel_url: window.location.href,
-		customer_email: input.billingDifferentThanShipping ? input?.billing?.email : input?.shipping?.email,
-		line_items: getStripeLineItems( products ),
+		customer_email: input.billingDifferentThanShipping ? input?.shipping?.email : input?.billing?.email,
+		//line_items: getStripeLineItems( products ),
+		line_items:  [{
+			quantity: 1,
+			name: 'PTO',
+			images: [ 'https://pooltableoffers.com.au/wp-content/uploads/2023/10/product-test-100x100.webp' ],
+			amount: Math.round( ( totalPriceDis ) * 100 ),
+			currency: 'aud',
+		}],
 		metadata: getMetaData( input, orderId,orderPostID ),
 		payment_method_types: [ 'card' ],
 		mode: 'payment',
@@ -112,19 +119,20 @@ const createCheckoutSessionAndRedirect = async ( products, input, orderId,orderP
  * @param products
  * @return {*[]|*}
  */
-const getStripeLineItems = ( products ) => {
+ const getStripeLineItems = ( products ) => {
 	if ( isEmpty( products ) && ! isArray( products ) ) {
 		return [];
 	}
 	
-	
-		return [{
-			quantity: 1,
-			name: 'PTO',
-			images: [ 'https://pooltableoffers.com.au/wp-content/uploads/2023/10/product-test-100x100.webp' ],
-			amount: Math.round( ( 1 ) * 100 ),
+	return products.map( product => {
+		return {
+			quantity: product?.quantity ?? 0,
+			name: product?.data?.name ?? '',
+			images: [ product?.data?.images?.[ 0 ]?.src ?? '' ?? '' ],
+			amount: Math.round( ( parseFloat(product?.data?.price) ?? 0 ) * 100 ),
 			currency: 'aud',
-		}];
+		};
+	} );
 };
 
 /**
@@ -139,7 +147,7 @@ export const getMetaData = ( input, orderId,orderPostID ) => {
 	
 	return {
 		billing: JSON.stringify( input?.billing ),
-		shipping: JSON.stringify(input.billingDifferentThanShipping ? input?.billing?.email : input?.shipping?.email),
+		shipping: JSON.stringify(input.billingDifferentThanShipping ? input?.shipping?.email : input?.billing?.email),
 		orderPostID: orderPostID,
 		orderId,
 	};
