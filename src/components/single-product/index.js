@@ -260,8 +260,11 @@ import { isEmpty } from 'lodash';
 					</div>
 					<div key="Related-Products">
 					<b>Related Products</b>
-					{
-						product.related_ids.length ? 
+					
+					{(() => {
+						if(undefined != product.related_ids)
+						{
+							product.related_ids.length ? 
 							<>
 							<div className='grid grid-cols-4 gap-4'>
 							{
@@ -277,6 +280,10 @@ import { isEmpty } from 'lodash';
 						: 
 							null
 						}
+						
+					})()}
+						
+						
 				
 					</div>
 				 </div>{/* end product_info */ }
