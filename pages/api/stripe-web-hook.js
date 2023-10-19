@@ -78,7 +78,8 @@ const handler = async (req, res) => {
             console.log( '✅ session.metadata.orderId', session.metadata.orderPostID, session.id );
             // Payment Success.
             try {
-                await updateOrder( 'processing', session.metadata.orderPostID, session.id );
+                //await updateOrder( 'processing', session.metadata.orderPostID, session.id );
+                await updateOrder( 'snv', session.metadata.orderPostID, session.id );
             } catch (error) {
                 await updateOrder( 'failed', session.metadata.orderPostID );
                 console.error('Update order error', error);
