@@ -99,11 +99,12 @@ const CheckoutForm = ( { countriesData , paymentModes } ) => {
 		 * 2. We are passing theBillingStates?.length and theShippingStates?.length, so that
 		 * the respective states should only be mandatory, if a country has states.
 		 */
-		const billingValidationResult = input?.billingDifferentThanShipping ? validateAndSanitizeCheckoutForm( input?.billing, theBillingStates?.length ) : {
+		const billingValidationResult =  validateAndSanitizeCheckoutForm( input?.billing, theBillingStates?.length );
+		const shippingValidationResult = input?.billingDifferentThanShipping ? validateAndSanitizeCheckoutForm( input?.shipping, theShippingStates?.length ) : {
 			errors: null,
 			isValid: true,
 		};
-		const shippingValidationResult = validateAndSanitizeCheckoutForm( input?.shipping, theShippingStates?.length );
+
 
 		setInput( {
 			...input,

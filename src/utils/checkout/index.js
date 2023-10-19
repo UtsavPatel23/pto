@@ -89,6 +89,7 @@ const createCheckoutSessionAndRedirect = async ( products, input, orderId,orderP
 		mode: 'payment',
 	};
 	console.log( 'sessionData', sessionData );
+	
 	let session = {};
 	try {
 		session = await createCheckoutSession( sessionData );
@@ -116,15 +117,14 @@ const getStripeLineItems = ( products ) => {
 		return [];
 	}
 	
-	return products.map( product => {
-		return {
-			quantity: product?.quantity ?? 0,
-			name: product?.data?.name ?? '',
-			images: [ product?.data?.images?.[ 0 ]?.src ?? '' ?? '' ],
-			amount: Math.round( ( parseFloat(product?.data?.price) ?? 0 ) * 100 ),
+	
+		return [{
+			quantity: 1,
+			name: 'PTO',
+			images: [ 'https://pooltableoffers.com.au/wp-content/uploads/2023/10/product-test-100x100.webp' ],
+			amount: Math.round( ( 1 ) * 100 ),
 			currency: 'aud',
-		};
-	} );
+		}];
 };
 
 /**
