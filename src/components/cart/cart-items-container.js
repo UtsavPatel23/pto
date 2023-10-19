@@ -306,7 +306,7 @@ const CartItemsContainer = () => {
 					<div className="woo-next-cart-total-container lg:col-span-1 p-5 pt-0">
 						<h2>Cart Total</h2>
 						{(() => {
-							if(shippingCost != 0 && (undefined != shippingCost)) 
+							if(shippingCost >= 0 && (undefined != shippingCost)) 
 							{
 								return (
 										<div className="flex grid grid-cols-3 bg-gray-100 mb-4">

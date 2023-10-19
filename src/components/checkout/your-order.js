@@ -46,7 +46,7 @@ const YourOrder = ( { cart,shippingCost,discoutDis,totalPriceDis } ) => {
 						})()} 
 						{/* Shipping Cost */}
 						{(() => {
-							if(shippingCost != 0 && (undefined != shippingCost)) 
+							if(shippingCost >= 0 && (undefined != shippingCost)) 
 							{
 								return (
 									<tr className="">
@@ -61,7 +61,7 @@ const YourOrder = ( { cart,shippingCost,discoutDis,totalPriceDis } ) => {
 						<tr className="bg-gray-200">
 							<td className=""/>
 							<td className="woo-next-checkout-total font-normal text-xl">Total</td>
-							<td className="woo-next-checkout-total font-bold text-xl">{ cart?.cartItems?.[ 0 ]?.currency ?? '' }{ totalPriceDis ?? '' }</td>
+							<td className="woo-next-checkout-total font-bold text-xl">{ cart?.cartItems?.[ 0 ]?.currency ?? '' }{ parseFloat(totalPriceDis).toFixed(2) ?? '' }</td>
 						</tr>
 						</tbody>
 					</table>
