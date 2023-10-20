@@ -29,17 +29,34 @@ import { isEmpty } from 'lodash';
 			 const postcode = e.target.value;
 			 const sku = e.target.getAttribute('data-inputsku');
 			 const product_code = e.target.getAttribute('data-inputproduct_code');
-			 //console.log('postcode',postcode);
-			 //console.log('postcode le',postcode.length);
-			 //console.log('sku',sku);
-			 //console.log('product_code',product_code);
 			 if(postcode.length == 4)
 			 {
+				
 				 setInputshipdisabled(true);
-				 const payload = {postcode: postcode, sku: sku,product_code:product_code };
-				 const { data :ShippingData } = await axios.post( SHOP_SHIPPING_SINGLE,payload );
-				 console.log('ShippingData',ShippingData);
-				 var shippingCharge_res = ShippingData.ShippingData;
+
+				// Local storage get
+				var shippinLocalStorageKey = postcode+'_'+sku;
+				 var shippingCharge_res = -2;
+				 var shipping_single = localStorage.getItem('sbhaduaud');
+				 if(shipping_single != null && shipping_single != '')
+				 {
+					shipping_single = JSON.parse(shipping_single);
+					shippingCharge_res = shipping_single[shippinLocalStorageKey];
+				 }else{
+					shipping_single = {};
+				 }
+
+				 if(shippingCharge_res == undefined || shippingCharge_res == -2)
+				 { 
+					// API shipping get
+					const payload = {postcode: postcode, sku: sku,product_code:product_code };
+					const { data :ShippingData } = await axios.post( SHOP_SHIPPING_SINGLE,payload );
+					shippingCharge_res = ShippingData.ShippingData;
+				 }else{
+					shippingCharge_res = parseFloat(atob(shippingCharge_res));
+				 }
+				 
+				 // API shipping get
 				 var shippingMessage = '';
 				 if (shippingCharge_res < 0) {
 					 shippingMessage = '<span "failed">Delivery Not Available to '+postcode+'</span>';
@@ -49,6 +66,11 @@ import { isEmpty } from 'lodash';
 					 shippingMessage = '<span "success">$'+ shippingCharge_res + ' Shipping charge to '+postcode+'</span>';
 				 }
 				 setShippingCharge(shippingMessage);
+
+				 // Local storage set
+				 shipping_single[shippinLocalStorageKey] = btoa(shippingCharge_res);
+				localStorage.setItem('sbhaduaud',JSON.stringify(shipping_single));
+
 				 setInputshipdisabled(false);
 			 }
 		 }

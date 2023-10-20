@@ -3,7 +3,7 @@
 import { Fragment } from 'react';
 import CheckoutCartItem from "./checkout-cart-item";
 
-const YourOrder = ( { cart,shippingCost,discoutDis,totalPriceDis } ) => {
+const YourOrder = ( { cart,shippingCost,discoutDis,totalPriceDis,notice,postcodedis } ) => {
 	//console.log('totalPriceDis',totalPriceDis);
 	//console.log('shippingCost',shippingCost);
 	return (
@@ -22,7 +22,12 @@ const YourOrder = ( { cart,shippingCost,discoutDis,totalPriceDis } ) => {
 						<tbody>
 						{ cart?.cartItems?.length && (
 							cart.cartItems.map( ( item, index ) => (
-								<CheckoutCartItem key={ item?.productId ?? index } item={ item } />
+								<CheckoutCartItem 
+								key={ item?.productId ?? index } 
+								item={ item } 
+								notice={notice != ''?notice.find((element) => element == item?.data?.sku):null}
+								postcodedis={postcodedis}
+								/>
 							) )
 						) }
 						{/*Sub Total*/}

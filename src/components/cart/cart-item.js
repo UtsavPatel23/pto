@@ -116,7 +116,7 @@ const CartItem = ( {
 					<Link href={'/product/'+item?.data?.slug}>
 						<h5 className="cart-product-title text-brand-orange">{ item?.data?.name }</h5>
 					</Link>	
-					{notice?<>Sorry please remove this product Undeliverable at {postcodedis}.</>:null}
+					{notice?<span className='invalid-feedback d-block text-red-500'>Sorry please remove this product Undeliverable at {postcodedis}.</span>:null}
 						{ 
 						//item?.data?.description ? <p>{item?.data?.description}</p> : ''
 						}

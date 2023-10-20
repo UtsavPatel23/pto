@@ -14,7 +14,9 @@ import {
 } from '../../utils/checkout';
 import { useEffect } from 'react';
 import Cookies from 'js-cookie';
-import axios from 'axios';
+import { getShipping } from '../../utils/customjs/custome';
+import Loader from "./../../../public/loader.gif";
+//import axios from 'axios';
 
 // Use this for testing purposes, so you dont have to fill the checkout form over an over again.
 // const defaultCustomerInfo = {
@@ -81,6 +83,11 @@ const CheckoutForm = ( { countriesData , paymentModes } ) => {
 	const [discoutDis,setDiscoutDis] =useState('');
 	const [couponName,setCouponName] =useState('');
 
+	const [notice,setNotice] = useState('');
+	const [loading, SetLoading] = useState(false);
+	const [postcodedis,setPostcodedis] = useState('');
+	const [onloadShippingCal,setOnloadShippingCal] = useState(true);
+
 	/**
 	 * Handle form submit.
 	 *
@@ -118,7 +125,11 @@ const CheckoutForm = ( { countriesData , paymentModes } ) => {
 			return null;
 		}
 		
-		
+		if(notice.length > 0)
+		{
+			return null;
+		}
+
 		// For stripe payment mode, handle the strip payment and thank you.
 		if ( 'stripe' === input.paymentMethod ) {
 			const createdOrderData = await handleStripeCheckout( shippingCost,couponName,totalPriceDis,input, cart?.cartItems, setRequestError, setCart, setIsOrderProcessing, setCreatedOrderData );
@@ -226,7 +237,17 @@ const CheckoutForm = ( { countriesData , paymentModes } ) => {
 			setCoutData(JSON.parse(Cookies.get('coutData')));
 		}
 	}, []);
-
+	useEffect(() => {
+    			if(input?.billingDifferentThanShipping)
+				{
+					console.log('yes sipping post code',input.shipping.postcode);
+					getAuspost(input.shipping.postcode,true);
+				}else{
+					console.log('yes billing post code',input.billing.postcode);
+					getAuspost(input.billing.postcode,true);
+				}
+				setOnloadShippingCal(false);
+	}, [cart && onloadShippingCal]);
 	//hook useEffect Total Price change
     useEffect(() => {
 		var totalPriceSum = totalPrice;
@@ -261,35 +282,92 @@ const CheckoutForm = ( { countriesData , paymentModes } ) => {
 
 	/******     *******/
 	const getAuspost = async (postcode,onlyShippingCalculation)=>{
-		
+		//console.log('postcode',postcode)
 		if(undefined != postcode)
 		{
 			var postcodeLength = postcode.length;
 			if(postcodeLength >= 3 && postcodeLength <= 4)
 			{
-				console.log('postcode',postcode)
-				const config = {
+				await shippingCalculation(postcode);
+				//console.log('postcode',postcode)
+				/*const config = {
 					headers:{
 						'accept': 'application/json',
-					  'AUTH-KEY': '62b9613ddab3f8cdaf89c47c0234729e'
+					  'AUTH-KEY': '62b9613ddab3f8cdaf89c47c0234729e',
+					  "Access-Control-Allow-Origin": "*",
+					 // 'Access-Control-Allow-Credentials': 'true',
+						'Access-Control-Allow-Methods': 'GET,OPTIONS,PATCH,DELETE,POST,PUT',
+					  //'Access-Control-Allow-Headers': 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version',
 					}
 				  };
-				const dataPost = await axios.get('https://digitalapi.auspost.com.au/postcode/search?q='+postcode,config)
+				 await axios.get('https://digitalapi.auspost.com.au/postcode/search?q='+postcode,config)
 				.then(res=> console.log(res))
 				.catch(err=> console.log(err))
-				console.log('dataPost',dataPost);
+				//console.log('dataPost',dataPost);
+				if(onlyShippingCalculation)
+				{
+					console.log('onlyShippingCalculation');
+				}*/
+
+				/*const res = await fetch('https://digitalapi.auspost.com.au/postcode/search?q='+postcode, {
+						headers: {
+						'accept': 'application/json',
+						'AUTH-KEY': '62b9613ddab3f8cdaf89c47c0234729e',
+						"Access-Control-Allow-Origin": "*",
+					 	'Access-Control-Allow-Credentials': 'true',
+						'Access-Control-Allow-Methods': 'GET,OPTIONS,PATCH,DELETE,POST,PUT',
+					  	'Access-Control-Allow-Headers': 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version',
+					
+						},
+					}).then(res=> console.log(res))
+					.catch(err=> console.log(err))
+					//const data = await res.json()
+					//console.log('data',data);
+
+				/*
+				console.log('postcode',postcode)
+				var resDta = '';
+				await axios.post(SUBURB_API_URL,{postcode:postcode})
+				.then(res=> {
+					//console.log(res);
+					resDta = res.data;
+				})
+				.catch(err=> console.log(err))
+				console.log('dataPost',resDta);*/
+
+
 				if(onlyShippingCalculation)
 				{
 					console.log('onlyShippingCalculation');
 				}
+				
 			}
 			
 		}
 		
 	}
 
+	/** Shipping calculation  */
+	const shippingCalculation = async(postcode) => {
+		setPostcodedis(postcode);
+		if(postcode.length == 4 && (cart?.cartItems.length > 0))
+		{
+			SetLoading(true);
+			const  shippingData  = await getShipping(postcode,cart?.cartItems);
+			console.log('shippingData',shippingData);
+			setNotice(shippingData.notice)
+			if(shippingData.notice.length > 0)
+			{
+				setCart( { ...cart, shippingCost: -1} );
+			}else{
+				setCart( { ...cart, shippingCost: shippingData.shippingTotal} );
+			}
+			SetLoading(false);
+		}
+	}
 	return (
 		<>
+		{ loading && <img className="loader" src={Loader.src} alt="Loader" width={50}/> }
 			{ cart ? (
 				<form onSubmit={ handleFormSubmit } className="woo-next-checkout-form">
 					<div className="grid grid-cols-1 md:grid-cols-2 gap-20">
@@ -338,7 +416,7 @@ const CheckoutForm = ( { countriesData , paymentModes } ) => {
 						<div className="your-orders">
 							{/*	Order*/ }
 							<h2 className="text-xl font-medium mb-4">Your Order</h2>
-							<YourOrder cart={ cart } shippingCost={shippingCost} discoutDis={discoutDis} totalPriceDis={totalPriceDis}/>
+							<YourOrder cart={ cart } shippingCost={shippingCost} discoutDis={discoutDis} totalPriceDis={totalPriceDis} notice={notice} postcodedis={postcodedis}/>
 
 							{/*Payment*/ }
 							<PaymentModes input={input}  handleOnChange={handleOnChange} paymentModes={paymentModes } />

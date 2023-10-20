@@ -19,6 +19,9 @@ export const WOOCOMMERCE_STATES_ENDPOINT = `${ process.env.NEXT_PUBLIC_WORDPRESS
 export const SHOP_SHIPPING_SINGLE = `${ process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL }/wp-json/shop-nj/v1/shipping_single`;
 export const SHOP_SHIPPING_MULI = `${ process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL }/wp-json/shop-nj/v1/shipping_muli`;
 
+// AUS POST API
+export const SUBURB_API_URL = `${ process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL }/wp-json/shop-nj/v1/auspost`;
+
 //Shop product API
 export const SHOP_CATEGORIES = `${ process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL }/wp-json/shop-nj/v1/categories`;
 export const SHOP_CATEGORIES_CAT_SLUG = `${ process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL }/snv/api_json/categories/chield_cat_data.php`;

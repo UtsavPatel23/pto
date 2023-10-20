@@ -48,10 +48,14 @@ export function getCookie(cname) {
   export const getShipping = async(postcode,cartItems) => {
         var responce = {};
         var product_code_sku = {};
+        var tmp_notice = [];
+        var shippingTotal  = -2;
+
+        var shippinLocalStorageKey = 'mul_'+postcode;
         cartItems.map((item)=>{
-          //console.log('item',item.data);
+          //console.log('item',item.quantity);
           var sku = item.data.sku;
-          
+          shippinLocalStorageKey = shippinLocalStorageKey+'_'+sku+'_'+item.quantity;
           if(item.data.meta_data.length > 0)
           {
             var product_code = '';
@@ -72,20 +76,53 @@ export function getCookie(cname) {
           }
           
         });
-        const payload = {postcode: postcode, product_code_sku: product_code_sku};
-        const {data : ShippingData} = await axios.post( SHOP_SHIPPING_MULI,payload );
-        //console.log('ShippingData cusume',ShippingData);
-        var tmp_notice = [];
-        var shippingTotal  = 0;
-        cartItems.map((item)=>{
-          var sku = item.data.sku;
-          if(undefined == ShippingData[sku] || ShippingData[sku] < 0)
+       // console.log('shippinLocalStorageKey',shippinLocalStorageKey);
+
+        var shipping_single = localStorage.getItem('sbhaduaud');
+				 if(shipping_single != null && shipping_single != '')
+				 {
+					shipping_single = JSON.parse(shipping_single);
+					shippingTotal = shipping_single[shippinLocalStorageKey];
+				 }else{
+					shipping_single = {};
+				 }
+
+         if(shippingTotal == undefined || shippingTotal == -2)
+				 {
+            shippingTotal = 0;
+            const payload = {postcode: postcode, product_code_sku: product_code_sku};
+            const {data : ShippingData} = await axios.post( SHOP_SHIPPING_MULI,payload );
+            //console.log('ShippingData cusume',ShippingData);
+            
+            cartItems.map((item)=>{
+              var sku = item.data.sku;
+              if(undefined == ShippingData[sku] || ShippingData[sku] < 0)
+              {
+                tmp_notice.push(sku);
+              }else{
+                shippingTotal +=(parseFloat(ShippingData[sku])  * item.quantity);
+              }
+            });
+        }else{
+          if(Array.isArray(shippingTotal))
           {
-            tmp_notice.push(sku);
+            tmp_notice = shippingTotal;
+            shippingTotal = -1;
           }else{
-            shippingTotal +=(parseFloat(ShippingData[sku])  * item.quantity);
+            shippingTotal = parseFloat(atob(shippingTotal));
           }
-        });
+        }
+
+         // Local storage set
+         if(tmp_notice.length > 0)
+         {
+          shipping_single[shippinLocalStorageKey] = tmp_notice;
+         }else{
+          shipping_single[shippinLocalStorageKey] = btoa(shippingTotal);
+         }
+				 
+         localStorage.setItem('sbhaduaud',JSON.stringify(shipping_single));
+
        responce['notice'] = tmp_notice;
        responce['shippingTotal'] = parseFloat(shippingTotal.toFixed(2));
       return responce;

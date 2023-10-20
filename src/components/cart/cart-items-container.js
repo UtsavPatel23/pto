@@ -19,7 +19,6 @@ const CartItemsContainer = () => {
 	const [ isClearCartProcessing, setClearCartProcessing ] = useState( false );
 	const [inputshipdisabled,setInputshipdisabled] = useState(false);
 	const [notice,setNotice] = useState('');
-	const [validatorPostcode,setValidatorPostcode] = useState('');
 	const [postcodedis,setPostcodedis] = useState('');
 
 	// Coupon
@@ -43,7 +42,6 @@ const CartItemsContainer = () => {
 		//console.log('postcode',postcode);
 		setPostcodedis(postcode);
 		//console.log('cart',cartItems.length);
-		setValidatorPostcode('');
 		if(postcode.length == 4 && (cartItems.length > 0))
 		{
 			
@@ -55,7 +53,7 @@ const CartItemsContainer = () => {
 			setNotice(shippingData.notice)
 			if(shippingData.notice.length > 0)
 			{
-				setCart( { ...cart, shippingCost: 0} );
+				setCart( { ...cart, shippingCost: -1} );
 			}else{
 				setCart( { ...cart, shippingCost: shippingData.shippingTotal} );
 			}
@@ -285,7 +283,6 @@ const CartItemsContainer = () => {
 							<h5>Calculate Shipping Charge</h5>
 							<input type="number" onKeyUp={shippingCalculation}  size="4"  name="product_code" placeholder="POSTCODE"  disabled={inputshipdisabled} /> 
 							<button onClick={shippingCalculation}>Calculate</button>
-							<span>{validatorPostcode}</span>
 						</div>
 						<div key="coupon">
 							<h5 htmlFor="coupon_code" className="">Coupon:</h5> 

@@ -1,3 +1,4 @@
+import { isEmpty } from "lodash";
 import { buffer } from "micro";
 const Stripe = require('stripe');
 const WooCommerceRestApi = require("@woocommerce/woocommerce-rest-api").default;
@@ -51,6 +52,24 @@ const updateOrder = async ( newStatus, orderId, transactionId = '' ) => {
     }
 }
 
+
+// Add Notes
+const AddOrdernote = async ( orderId, noteMessage = '' ) => {
+
+    const noteData = {
+        note: noteMessage
+      };
+
+    
+    try {
+        const {data} = await api.post( `orders/${ orderId }/notes`, noteData );
+        console.log( '✅ Order updated data', data );
+    } catch (ex) {
+        console.error('Order creation error', ex);
+        throw ex;
+    }
+}
+
 const handler = async (req, res) => {
     
     console.log("req", req);
@@ -76,6 +95,52 @@ const handler = async (req, res) => {
             const session = stripeEvent.data.object;
             console.log( 'sessionsession', session );
             console.log( '✅ session.metadata.orderId', session.metadata.orderPostID, session.id );
+
+            // Get  pi_  key ( checkoutSession.payment_intent)
+            const checkoutSession =   await  stripe.checkout.sessions.retrieve(session.id);
+
+            //  Get ch_    (intent.latest_charge) 
+            const intent = await stripe.paymentIntents.retrieve(checkoutSession.payment_intent, {
+                apiVersion: '2022-11-15',
+                });
+
+            // All transaction details Run
+            const paymentIntents = await stripe.paymentIntents.list({
+                limit: 5,
+            });
+            
+            let chargesData = "";
+                //  get ch_ id (text.charges.data.id)
+            paymentIntents.data.forEach (function(value, key) {
+                if(value.id == checkoutSession.payment_intent)
+                {
+                chargesData = value;
+                }
+                
+                })
+            let payment_method_details = '';
+            if ( !isEmpty( intent.latest_charge ) ) {
+            chargesData.charges.data.forEach (function(value1, key) {
+                    if(value1.id == intent.latest_charge)
+                    {
+                        payment_method_details = value1.payment_method_details;
+                    }
+                    
+                    })
+            } 
+
+             // Add Order Note.
+             try {
+                if ( payment_method_details != '' ) {
+                await AddOrdernote( session.metadata.orderId, `Order charge successful in Stripe. Charge: ${intent.latest_charge}. Payment Method: ${payment_method_details.card.brand} ending in ${payment_method_details.card.last4}` );
+                }else{
+                    await AddOrdernote( session.metadata.orderId, `Order charge successful in Stripe. Charge: ${intent.latest_charge}. `  );
+                }
+            } catch (error) {
+                await AddOrdernote( session.metadata.orderId ,'Order Note failed');
+                console.error('Order note error', error);
+            }
+
             // Payment Success.
             try {
                 //await updateOrder( 'processing', session.metadata.orderPostID, session.id );
