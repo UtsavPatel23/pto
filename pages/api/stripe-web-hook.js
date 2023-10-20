@@ -1,6 +1,5 @@
 import { buffer } from "micro";
 const Stripe = require('stripe');
-import { isEmpty } from 'lodash';
 const WooCommerceRestApi = require("@woocommerce/woocommerce-rest-api").default;
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
@@ -52,26 +51,16 @@ const updateOrder = async ( newStatus, orderId, transactionId = '' ) => {
     }
 }
 
-const AddOrdernote = async ( orderId, noteMessage = '' ) => {
-
-    const noteData = {
-        note: noteMessage
-      };
-
-    
-    try {
-        const {data} = await api.post( `orders/${ orderId }/notes`, noteData );
-        console.log( '✅ Order updated data', data );
-    } catch (ex) {
-        console.error('Order creation error', ex);
-        throw ex;
-    }
-}
-
 const handler = async (req, res) => {
+    
+    console.log("req", req);
+    console.log("res", res);
+
     if (req.method === "POST") {
         const buf = await buffer(req);
         const sig = req.headers["stripe-signature"];
+
+       
 
         let stripeEvent;
 
@@ -84,66 +73,15 @@ const handler = async (req, res) => {
         }
 
         if ( 'checkout.session.completed' === stripeEvent.type ) {
-            // Get cs_test_ (session.id) 
             const session = stripeEvent.data.object;
-
-            // Get  pi_  key ( checkoutSession.payment_intent)
-            const checkoutSession =   await  stripe.checkout.sessions.retrieve(session.id);
-
-            //  Get ch_    (intent.latest_charge) 
-            const intent = await stripe.paymentIntents.retrieve(checkoutSession.payment_intent, {
-                apiVersion: '2022-11-15',
-              });
-
-            // All transaction details Run
-            const paymentIntents = await stripe.paymentIntents.list({
-                limit: 5,
-            });
-            
-            let chargesData = "";
-              //  get ch_ id (text.charges.data.id)
-             paymentIntents.data.forEach (function(value, key) {
-               if(value.id == checkoutSession.payment_intent)
-               {
-                chargesData = value;
-               }
-               
-               })
-           let payment_method_details = '';
-           if ( !isEmpty( intent.latest_charge ) ) {
-            chargesData.charges.data.forEach (function(value1, key) {
-                   if(value1.id == intent.latest_charge)
-                   {
-                       payment_method_details = value1.payment_method_details;
-                   }
-                   
-                   })
-           } 
-
-           
-            // Add Order Note.
-                try {
-                    if ( payment_method_details != '' ) {
-                    await AddOrdernote( session.metadata.orderId, `Order charge successful in Stripe. Charge: ${intent.latest_charge}. Payment Method: ${payment_method_details.card.brand} ending in ${payment_method_details.card.last4}` );
-                    }else{
-                        await AddOrdernote( session.metadata.orderId, `Order charge successful in Stripe. Charge: ${intent.latest_charge}. `  );
-                    }
-                } catch (error) {
-                    await AddOrdernote( session.metadata.orderId ,'Order Note failed');
-                    console.error('Order note error', error);
-                }
-
-            //console.log( 'sessionsession', session );
-            //console.log( '✅ session.metadata.orderId', session.metadata.orderId,  intent.latest_charge);
+            console.log( 'sessionsession', session );
+            console.log( '✅ session.metadata.orderId', session.metadata.orderPostID, session.id );
             // Payment Success.
             try {
-                if ( !isEmpty( intent.latest_charge ) ) {
-                await updateOrder( 'snv', session.metadata.orderId, intent.latest_charge );
-                }else{
-                    await updateOrder( 'snv', session.metadata.orderId, session.id );
-                }
+                //await updateOrder( 'processing', session.metadata.orderPostID, session.id );
+                await updateOrder( 'snv', session.metadata.orderPostID, session.id );
             } catch (error) {
-                await updateOrder( 'failed', session.metadata.orderId );
+                await updateOrder( 'failed', session.metadata.orderPostID );
                 console.error('Update order error', error);
             }
         }
