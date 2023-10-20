@@ -98,10 +98,10 @@ const handler = async (req, res) => {
                    // if ( payment_method_details != '' ) {
                    // await AddOrdernote( session.metadata.orderId, `Order charge successful in Stripe. Charge: ${intent.latest_charge}. Payment Method: ${payment_method_details.card.brand} ending in ${payment_method_details.card.last4}` );
                    // }else{
-                        await AddOrdernote( session.metadata.orderId, `Order charge successful in Stripe. Charge: ${session}. `  );
+                        await AddOrdernote( session.metadata.orderPostID, `Order charge successful in Stripe. Charge: ${session}. `  );
                    // }
                 } catch (error) {
-                    await AddOrdernote( session.metadata.orderId ,'Order Note failed');
+                    await AddOrdernote( session.metadata.orderPostID ,'Order Note failed');
                     console.error('Order note error', error);
                 }
 				
