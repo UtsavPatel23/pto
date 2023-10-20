@@ -51,6 +51,22 @@ const updateOrder = async ( newStatus, orderId, transactionId = '' ) => {
     }
 }
 
+const AddOrdernote = async ( orderId, noteMessage = '' ) => {
+
+    const noteData = {
+        note: noteMessage
+      };
+
+    
+    try {
+        const {data} = await api.post( `orders/${ orderId }/notes`, noteData );
+        console.log( '✅ Order updated data', data );
+    } catch (ex) {
+        console.error('Order creation error', ex);
+        throw ex;
+    }
+}
+
 const handler = async (req, res) => {
     
     console.log("req", req);
@@ -76,6 +92,19 @@ const handler = async (req, res) => {
             const session = stripeEvent.data.object;
             console.log( 'sessionsession', session );
             console.log( '✅ session.metadata.orderId', session.metadata.orderPostID, session.id );
+			
+			// Add Order Note.
+                try {
+                   // if ( payment_method_details != '' ) {
+                   // await AddOrdernote( session.metadata.orderId, `Order charge successful in Stripe. Charge: ${intent.latest_charge}. Payment Method: ${payment_method_details.card.brand} ending in ${payment_method_details.card.last4}` );
+                   // }else{
+                        await AddOrdernote( session.metadata.orderId, `Order charge successful in Stripe. Charge: ${session}. `  );
+                   // }
+                } catch (error) {
+                    await AddOrdernote( session.metadata.orderId ,'Order Note failed');
+                    console.error('Order note error', error);
+                }
+				
             // Payment Success.
             try {
                 //await updateOrder( 'processing', session.metadata.orderPostID, session.id );
