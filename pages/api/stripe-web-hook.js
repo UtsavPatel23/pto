@@ -129,6 +129,7 @@ const handler = async (req, res) => {
 			
 			// Add Order Note.
                 try {
+					await AddOrdernote( session.metadata.orderPostID, `Order charge successful in Stripe. session Charge: ${JSON.stringify(session)}. `   );
 					await AddOrdernote( session.metadata.orderPostID, `Order charge successful in Stripe. checkoutSession Charge: ${JSON.stringify(checkoutSession)}. `   );
                         await AddOrdernote( session.metadata.orderPostID, `Order charge successful in Stripe. intent Charge: ${JSON.stringify(intent)}. `   );
                         await AddOrdernote( session.metadata.orderPostID, `Order charge successful in Stripe. paymentIntents Charge: ${JSON.stringify(paymentIntents)}. `   );
