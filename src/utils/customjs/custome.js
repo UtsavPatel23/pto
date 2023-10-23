@@ -127,3 +127,59 @@ export function getCookie(cname) {
        responce['shippingTotal'] = parseFloat(shippingTotal.toFixed(2));
       return responce;
   }
+
+  export function get_countries()
+  {
+    return {
+      "billingCountries": [
+        {
+          "countryCode": "AU",
+          "countryName": "Australia"
+        }
+      ],
+      "shippingCountries": [
+        {
+          "countryCode": "AU",
+          "countryName": "Australia"
+        }
+      ]
+    };
+  }
+
+  export function get_stateList()
+  {
+    return [
+      {
+        "stateCode": "ACT",
+        "stateName": "Australian Capital Territory"
+      },
+      {
+        "stateCode": "NSW",
+        "stateName": "New South Wales"
+      },
+      {
+        "stateCode": "NT",
+        "stateName": "Northern Territory"
+      },
+      {
+        "stateCode": "QLD",
+        "stateName": "Queensland"
+      },
+      {
+        "stateCode": "SA",
+        "stateName": "South Australia"
+      },
+      {
+        "stateCode": "TAS",
+        "stateName": "Tasmania"
+      },
+      {
+        "stateCode": "VIC",
+        "stateName": "Victoria"
+      },
+      {
+        "stateCode": "WA",
+        "stateName": "Western Australia"
+      }
+    ];
+  }

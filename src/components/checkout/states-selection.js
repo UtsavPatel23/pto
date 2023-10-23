@@ -33,7 +33,8 @@ const StateSelection = ({handleOnChange, input, states, isFetchingStates, isShip
 			</div>
 		)
 	}
-	
+	//console.log('states',states);
+	//console.log('state',state);
 	if (!states.length) {
 		return null;
 	}
@@ -41,7 +42,7 @@ const StateSelection = ({handleOnChange, input, states, isFetchingStates, isShip
 	return (
 		<div className="mb-3">
 			<label className="leading-7 text-sm text-gray-600" htmlFor={inputId}>
-				State/County
+				State
 				<Abbr required/>
 			</label>
 			<div className="relative w-full border-none">
@@ -58,7 +59,7 @@ const StateSelection = ({handleOnChange, input, states, isFetchingStates, isShip
 				>
 					<option value="">Select a state...</option>
 					{states.map((state, index) => (
-						<option key={state?.stateCode ?? index} value={state?.stateName ?? ''}>
+						<option key={state?.stateCode ?? index} value={state?.stateCode ?? ''}>
 							{state?.stateName}
 						</option>
 					))}

@@ -14,9 +14,11 @@ import {
 } from '../../utils/checkout';
 import { useEffect } from 'react';
 import Cookies from 'js-cookie';
-import { getShipping } from '../../utils/customjs/custome';
+import { getShipping, get_stateList } from '../../utils/customjs/custome';
 import Loader from "./../../../public/loader.gif";
-//import axios from 'axios';
+import axios from 'axios';
+import { SUBURB_API_URL } from '../../utils/constants/endpoints';
+import { debounce } from 'lodash';
 
 // Use this for testing purposes, so you dont have to fill the checkout form over an over again.
 // const defaultCustomerInfo = {
@@ -40,7 +42,7 @@ const defaultCustomerInfo = {
 	address1: '',
 	address2: '',
 	city: '',
-	country: '',
+	country: 'AU',
 	state: '',
 	postcode: '',
 	email: '',
@@ -66,13 +68,13 @@ const CheckoutForm = ( { countriesData , paymentModes } ) => {
 		billingDifferentThanShipping: false,
 		paymentMethod: 'cod',
 	};
-
+	const stateList = get_stateList();
 	const [ cart, setCart ] = useContext( AppContext );
 	const [ input, setInput ] = useState( initialState );
 	const [ requestError, setRequestError ] = useState( null );
-	const [ theShippingStates, setTheShippingStates ] = useState( [] );
+	const [ theShippingStates, setTheShippingStates ] = useState( stateList );
 	const [ isFetchingShippingStates, setIsFetchingShippingStates ] = useState( false );
-	const [ theBillingStates, setTheBillingStates ] = useState( [] );
+	const [ theBillingStates, setTheBillingStates ] = useState( stateList );
 	const [ isFetchingBillingStates, setIsFetchingBillingStates ] = useState( false );
 	const [ isOrderProcessing, setIsOrderProcessing ] = useState( false );
 	const [ createdOrderData, setCreatedOrderData ] = useState( {} );
@@ -158,7 +160,7 @@ const CheckoutForm = ( { countriesData , paymentModes } ) => {
 	 */
 	const handleOnChange = async ( event, isShipping = false, isBillingOrShipping = false ) => {
 		const { target } = event || {};
-
+		SetLoading(true);
 		if ( 'createAccount' === target.name ) {
 			handleCreateAccount( input, setInput, target );
 		} else if ( 'billingDifferentThanShipping' === target.name ) {
@@ -166,12 +168,13 @@ const CheckoutForm = ( { countriesData , paymentModes } ) => {
 			if(input?.billingDifferentThanShipping)
 			{
 				//console.log('yes billing post code',input.billing.postcode);
-				await getAuspost(input.billing.postcode,true);
+				await shippingCalculation(input.billing.postcode);
 			}else{
 				//console.log('yes sipping post code',input.shipping.postcode);
-				await getAuspost(input.shipping.postcode,true);
+				await shippingCalculation(input.shipping.postcode);
 			}
 		} else if ( isBillingOrShipping ) {
+			//console.log('post 11');
 			if ( isShipping ) {
 				await handleShippingChange( target );
 			} else {
@@ -181,28 +184,46 @@ const CheckoutForm = ( { countriesData , paymentModes } ) => {
 			{
 				//console.log('Shipping name',target.name);
 				//console.log('Shipping value',target.value);
-				await getAuspost(target.value,false);
+				await shippingCalculation(target.value);
 			}else if(!input?.billingDifferentThanShipping){
 				//console.log('billing name',target.name);
 				//console.log('billing value',target.value);
-				await getAuspost(target.value,false);
+				await shippingCalculation(target.value);
 			}
 		} else {
 			const newState = { ...input, [ target.name ]: target.value };
 			setInput( newState );
 		}
+		SetLoading(false);
 	};
 
 	const handleShippingChange = async ( target ) => {
+		if(target.name == 'postcode' && target.value != '')
+		{
+			if(target.value.length > 4)
+			{
+				return '';
+			}
+				getAuspost(target.value);
+		}
+		
 		const newState = { ...input, shipping: { ...input?.shipping, [ target.name ]: target.value } };
 		setInput( newState );
-		await setStatesForCountry( target, setTheShippingStates, setIsFetchingShippingStates );
+		//await setStatesForCountry( target, setTheShippingStates, setIsFetchingShippingStates );
 	};
 
 	const handleBillingChange = async ( target ) => {
+		if(target.name == 'postcode' && target.value != '')
+		{
+			if(target.value.length > 4)
+			{
+				return '';
+			}
+				getAuspost(target.value);
+		}
 		const newState = { ...input, billing: { ...input?.billing, [ target.name ]: target.value } };
 		setInput( newState );
-		await setStatesForCountry( target, setTheBillingStates, setIsFetchingBillingStates );
+		//await setStatesForCountry( target, setTheBillingStates, setIsFetchingBillingStates );
 	};
 	//console.log('input',input);
 	useEffect(() => {
@@ -241,10 +262,10 @@ const CheckoutForm = ( { countriesData , paymentModes } ) => {
     			if(input?.billingDifferentThanShipping)
 				{
 					console.log('yes sipping post code',input.shipping.postcode);
-					getAuspost(input.shipping.postcode,true);
+					 shippingCalculation(input.shipping.postcode);
 				}else{
 					console.log('yes billing post code',input.billing.postcode);
-					getAuspost(input.billing.postcode,true);
+					 shippingCalculation(input.billing.postcode);
 				}
 				setOnloadShippingCal(false);
 	}, [cart && onloadShippingCal]);
@@ -281,50 +302,14 @@ const CheckoutForm = ( { countriesData , paymentModes } ) => {
     }, [totalPrice,shippingCost,coutData]);
 
 	/******     *******/
-	const getAuspost = async (postcode,onlyShippingCalculation)=>{
-		//console.log('postcode',postcode)
+	const getAuspost = debounce(async (postcode)=>{
+		//console.log('postcode W',postcode)
 		if(undefined != postcode)
 		{
 			var postcodeLength = postcode.length;
 			if(postcodeLength >= 3 && postcodeLength <= 4)
 			{
-				await shippingCalculation(postcode);
-				//console.log('postcode',postcode)
-				/*const config = {
-					headers:{
-						'accept': 'application/json',
-					  'AUTH-KEY': '62b9613ddab3f8cdaf89c47c0234729e',
-					  "Access-Control-Allow-Origin": "*",
-					 // 'Access-Control-Allow-Credentials': 'true',
-						'Access-Control-Allow-Methods': 'GET,OPTIONS,PATCH,DELETE,POST,PUT',
-					  //'Access-Control-Allow-Headers': 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version',
-					}
-				  };
-				 await axios.get('https://digitalapi.auspost.com.au/postcode/search?q='+postcode,config)
-				.then(res=> console.log(res))
-				.catch(err=> console.log(err))
-				//console.log('dataPost',dataPost);
-				if(onlyShippingCalculation)
-				{
-					console.log('onlyShippingCalculation');
-				}*/
-
-				/*const res = await fetch('https://digitalapi.auspost.com.au/postcode/search?q='+postcode, {
-						headers: {
-						'accept': 'application/json',
-						'AUTH-KEY': '62b9613ddab3f8cdaf89c47c0234729e',
-						"Access-Control-Allow-Origin": "*",
-					 	'Access-Control-Allow-Credentials': 'true',
-						'Access-Control-Allow-Methods': 'GET,OPTIONS,PATCH,DELETE,POST,PUT',
-					  	'Access-Control-Allow-Headers': 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version',
-					
-						},
-					}).then(res=> console.log(res))
-					.catch(err=> console.log(err))
-					//const data = await res.json()
-					//console.log('data',data);
-
-				/*
+	
 				console.log('postcode',postcode)
 				var resDta = '';
 				await axios.post(SUBURB_API_URL,{postcode:postcode})
@@ -333,26 +318,19 @@ const CheckoutForm = ( { countriesData , paymentModes } ) => {
 					resDta = res.data;
 				})
 				.catch(err=> console.log(err))
-				console.log('dataPost',resDta);*/
-
-
-				if(onlyShippingCalculation)
-				{
-					console.log('onlyShippingCalculation');
-				}
-				
+				console.log('dataPost',resDta);
 			}
 			
 		}
 		
-	}
+	},500);
 
 	/** Shipping calculation  */
 	const shippingCalculation = async(postcode) => {
 		setPostcodedis(postcode);
 		if(postcode.length == 4 && (cart?.cartItems.length > 0))
 		{
-			SetLoading(true);
+			
 			const  shippingData  = await getShipping(postcode,cart?.cartItems);
 			console.log('shippingData',shippingData);
 			setNotice(shippingData.notice)
@@ -362,7 +340,7 @@ const CheckoutForm = ( { countriesData , paymentModes } ) => {
 			}else{
 				setCart( { ...cart, shippingCost: shippingData.shippingTotal} );
 			}
-			SetLoading(false);
+			
 		}
 	}
 	return (

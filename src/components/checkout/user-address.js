@@ -69,11 +69,21 @@ const Address = ({input, countries, states, handleOnChange, isFetchingStates, is
 				containerClassNames="mb-4"
 			/>
 			<InputField
+					name="postcode"
+					inputValue={input?.postcode}
+					required
+					handleOnChange={handleOnChange}
+					label="Post code"
+					errors={errors}
+					isShipping={isShipping}
+					containerClassNames="mb-4"
+				/>
+			<InputField
 				name="city"
 				required
 				inputValue={input?.city}
 				handleOnChange={handleOnChange}
-				label="Town/City"
+				label="Suburb"
 				errors={errors}
 				isShipping={isShipping}
 				containerClassNames="mb-4"
@@ -86,28 +96,19 @@ const Address = ({input, countries, states, handleOnChange, isFetchingStates, is
 				isShipping={isShipping}
 				isFetchingStates={isFetchingStates}
 			/>
-			<div className="flex flex-wrap overflow-hidden sm:-mx-3">
-				<InputField
-					name="postcode"
-					inputValue={input?.postcode}
-					required
-					handleOnChange={handleOnChange}
-					label="Post code"
-					errors={errors}
-					isShipping={isShipping}
-					containerClassNames="w-full overflow-hidden sm:my-2 sm:px-2 md:w-1/2"
-				/>
-				<InputField
-					name="phone"
-					inputValue={input?.phone}
-					required
-					handleOnChange={handleOnChange}
-					label="Phone"
-					errors={errors}
-					isShipping={isShipping}
-					containerClassNames="w-full overflow-hidden sm:my-2 sm:px-2 md:w-1/2"
-				/>
-			</div>
+			
+				
+			<InputField
+				name="phone"
+				inputValue={input?.phone}
+				required
+				handleOnChange={handleOnChange}
+				label="Phone"
+				errors={errors}
+				isShipping={isShipping}
+				containerClassNames="mb-4"
+			/>
+			
 			<InputField
 				name="email"
 				type="email"

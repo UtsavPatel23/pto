@@ -1,4 +1,4 @@
-import { isArray, isEmpty } from 'lodash';
+import { debounce, isArray, isEmpty } from 'lodash';
 import Product from './product';
 import { useState,useEffect  } from 'react';
 import jQuery from "jquery";
@@ -277,10 +277,9 @@ const formEventChange = (event) => {
 		setItemOffset(0);
 	  };
 	
-const handleChangePriceRange = (event, newValue) => {
-    setPriceValue(newValue);
-  };	 
-
+const handleChangePriceRange = debounce((event, newValue) => {
+		setPriceValue(newValue);
+	  },500);
  	
 // ************* ********************************  ************************ 
 // ************* Side var li search ************************************* 
