@@ -77,7 +77,7 @@ const validateAndSanitizeCheckoutForm = ( data, hasStates = true ) => {
 	addErrorAndSanitizedData( 'country', 'Country name', 2, 55, 'string', true );
 	addErrorAndSanitizedData( 'address1', 'Street address line 1', 12, 100,'string',true );
 	addErrorAndSanitizedData( 'address2', '', 0, 254, 'string', false );
-	addErrorAndSanitizedData( 'city', 'City field', 3, 25, 'string', true );
+	addErrorAndSanitizedData( 'city', 'Suburb field', 3, 25, 'string', true );
 	addErrorAndSanitizedData( 'state', 'State/County', 0, 254, 'string', hasStates );
 	addErrorAndSanitizedData( 'postcode', 'Post code', 2, 10, 'postcode', true );
 	addErrorAndSanitizedData( 'phone', 'Phone number', 10, 15, 'phone', true );

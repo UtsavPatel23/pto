@@ -33,34 +33,34 @@ export const getCreateOrderLineItems = ( products ) => {
  */
 export const getCreateOrderData = ( shippingCost,couponName,order, products ) => {
 	// Set the billing Data to shipping, if applicable.
-	const billingData = order.billingDifferentThanShipping ? order.billing : order.shipping;
+	const shippingData = order.billingDifferentThanShipping ? order.shipping : order.billing;
 	
 	var tmpOrderData = {
-		shipping: {
-			first_name: order?.shipping?.firstName,
-			last_name: order?.shipping?.lastName,
-			address_1: order?.shipping?.address1,
-			address_2: order?.shipping?.address2,
-			city: order?.shipping?.city,
-			country: order?.shipping?.country,
-			state: order?.shipping?.state,
-			postcode: order?.shipping?.postcode,
-			email: order?.shipping?.email,
-			phone: order?.shipping?.phone,
-			company: order?.shipping?.company,
-		},
 		billing: {
-			first_name: billingData?.firstName,
-			last_name: billingData?.lastName,
-			address_1: billingData?.address1,
-			address_2: billingData?.address2,
-			city: billingData?.city,
-			country: billingData?.country,
-			state: billingData?.state,
-			postcode: billingData?.postcode,
-			email: billingData?.email,
-			phone: billingData?.phone,
-			company: billingData?.company,
+			first_name: order?.billing?.firstName,
+			last_name: order?.billing?.lastName,
+			address_1: order?.billing?.address1,
+			address_2: order?.billing?.address2,
+			city: order?.billing?.city,
+			country: order?.billing?.country,
+			state: order?.billing?.state,
+			postcode: order?.billing?.postcode,
+			email: order?.billing?.email,
+			phone: order?.billing?.phone,
+			company: order?.billing?.company,
+		},
+		shipping: {
+			first_name: shippingData?.firstName,
+			last_name: shippingData?.lastName,
+			address_1: shippingData?.address1,
+			address_2: shippingData?.address2,
+			city: shippingData?.city,
+			country: shippingData?.country,
+			state: shippingData?.state,
+			postcode: shippingData?.postcode,
+			email: shippingData?.email,
+			phone: shippingData?.phone,
+			company: shippingData?.company,
 		},
 		"fee_lines":[             
 			{    

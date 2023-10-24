@@ -2,11 +2,11 @@ import PropTypes from 'prop-types';
 import CountrySelection from "./country-selection";
 import StateSelection from "./states-selection";
 import InputField from "./form-elements/input-field";
+import SuburbSelection from './suburb-selection';
 
-const Address = ({input, countries, states, handleOnChange, isFetchingStates, isShipping}) => {
+const Address = ({suburbs,input, countries, states, handleOnChange, isFetchingStates, isShipping,isFetchingSuburb}) => {
 	
 	const {errors} = input || {};
-	
 	return (
 		<>
 			<div className="flex flex-wrap overflow-hidden sm:-mx-3">
@@ -74,11 +74,13 @@ const Address = ({input, countries, states, handleOnChange, isFetchingStates, is
 					required
 					handleOnChange={handleOnChange}
 					label="Post code"
-					errors={errors}
+					errors={!suburbs.length && input?.postcode ?{
+						"postcode": "Enter valide postcode ",
+					} : errors}
 					isShipping={isShipping}
 					containerClassNames="mb-4"
 				/>
-			<InputField
+			{/*<InputField
 				name="city"
 				required
 				inputValue={input?.city}
@@ -87,6 +89,14 @@ const Address = ({input, countries, states, handleOnChange, isFetchingStates, is
 				errors={errors}
 				isShipping={isShipping}
 				containerClassNames="mb-4"
+			/>*/}
+			{/* Suburb */}
+			<SuburbSelection
+				input={input}
+				handleOnChange={handleOnChange}
+				suburbs={suburbs}
+				isShipping={isShipping}
+				isFetchingSuburb={isFetchingSuburb}
 			/>
 			{/* State */}
 			<StateSelection

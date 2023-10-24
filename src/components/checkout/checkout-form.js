@@ -18,7 +18,7 @@ import { getShipping, get_stateList } from '../../utils/customjs/custome';
 import Loader from "./../../../public/loader.gif";
 import axios from 'axios';
 import { SUBURB_API_URL } from '../../utils/constants/endpoints';
-import { debounce } from 'lodash';
+import { debounce, isEmpty } from 'lodash';
 
 // Use this for testing purposes, so you dont have to fill the checkout form over an over again.
 // const defaultCustomerInfo = {
@@ -90,6 +90,11 @@ const CheckoutForm = ( { countriesData , paymentModes } ) => {
 	const [postcodedis,setPostcodedis] = useState('');
 	const [onloadShippingCal,setOnloadShippingCal] = useState(true);
 
+	const [theShippingsuburb, setTheShippingsuburb] = useState([]);
+	const [theBillingsuburb, setTheBillingsuburb] = useState([]);
+	const [isFetchingShippingSuburb, setIsFetchingShippingSuburb] = useState(false);
+	const [isFetchingBillingSuburb, setIsFetchingBillingSuburb] = useState(false);
+
 	/**
 	 * Handle form submit.
 	 *
@@ -115,7 +120,6 @@ const CheckoutForm = ( { countriesData , paymentModes } ) => {
 			isValid: true,
 		};
 
-
 		setInput( {
 			...input,
 			billing: { ...input.billing, errors: billingValidationResult.errors },
@@ -131,7 +135,7 @@ const CheckoutForm = ( { countriesData , paymentModes } ) => {
 		{
 			return null;
 		}
-
+		
 		// For stripe payment mode, handle the strip payment and thank you.
 		if ( 'stripe' === input.paymentMethod ) {
 			const createdOrderData = await handleStripeCheckout( shippingCost,couponName,totalPriceDis,input, cart?.cartItems, setRequestError, setCart, setIsOrderProcessing, setCreatedOrderData );
@@ -182,12 +186,8 @@ const CheckoutForm = ( { countriesData , paymentModes } ) => {
 			}
 			if(input?.billingDifferentThanShipping && isShipping)
 			{
-				//console.log('Shipping name',target.name);
-				//console.log('Shipping value',target.value);
 				await shippingCalculation(target.value);
 			}else if(!input?.billingDifferentThanShipping){
-				//console.log('billing name',target.name);
-				//console.log('billing value',target.value);
 				await shippingCalculation(target.value);
 			}
 		} else {
@@ -204,11 +204,30 @@ const CheckoutForm = ( { countriesData , paymentModes } ) => {
 			{
 				return '';
 			}
-				getAuspost(target.value);
 		}
 		
-		const newState = { ...input, shipping: { ...input?.shipping, [ target.name ]: target.value } };
-		setInput( newState );
+		
+		if(target.name == 'city' && target.value != '')
+		{
+			const selectSuburb = theShippingsuburb.find((element) => element.location == target.value);
+			if(selectSuburb.state != undefined)
+			{
+				const newState = { ...input, shipping: { ...input?.shipping, [ target.name ]: target.value ,state:selectSuburb.state } };
+				setInput( newState );
+			}else{
+				const newState = { ...input, shipping: { ...input?.shipping, [ target.name ]: target.value } };
+				setInput( newState );
+			}
+			
+		}else{
+			const newState = { ...input, shipping: { ...input?.shipping, [ target.name ]: target.value } };
+			setInput( newState );
+		}
+
+		if(target.name == 'postcode' && target.value != '')
+		{
+			getAuspost(target.value,false);
+		}
 		//await setStatesForCountry( target, setTheShippingStates, setIsFetchingShippingStates );
 	};
 
@@ -219,13 +238,31 @@ const CheckoutForm = ( { countriesData , paymentModes } ) => {
 			{
 				return '';
 			}
-				getAuspost(target.value);
+			
 		}
-		const newState = { ...input, billing: { ...input?.billing, [ target.name ]: target.value } };
-		setInput( newState );
+		if(target.name == 'city' && target.value != '')
+		{
+			const selectSuburb = theBillingsuburb.find((element) => element.location == target.value);
+			if(selectSuburb.state != undefined)
+			{
+				const newState = { ...input, billing: { ...input?.billing, [ target.name ]: target.value ,state:selectSuburb.state } };
+				setInput( newState );
+			}else{
+				const newState = { ...input, billing: { ...input?.billing, [ target.name ]: target.value } };
+				setInput( newState );
+			}
+			
+		}else{
+			const newState = { ...input, billing: { ...input?.billing, [ target.name ]: target.value } };
+			setInput( newState );
+		}
+		if(target.name == 'postcode' && target.value != '')
+		{
+			getAuspost(target.value,true);
+		}
 		//await setStatesForCountry( target, setTheBillingStates, setIsFetchingBillingStates );
 	};
-	//console.log('input',input);
+	console.log('input',input);
 	useEffect(() => {
         if(Cookies.get('customerData')) {
 			var customerDataTMP =  JSON.parse(Cookies.get('customerData'));
@@ -237,18 +274,28 @@ const CheckoutForm = ( { countriesData , paymentModes } ) => {
 				customerDataTMP.shipping.lastName = customerDataTMP.shipping.last_name;
 				customerDataTMP.shipping.address1 = customerDataTMP.shipping.address_1;
 				customerDataTMP.shipping.address2 = customerDataTMP.shipping.address_2;
+				setTheShippingsuburb([{
+					"location":customerDataTMP.shipping.city,
+					"state": customerDataTMP.shipping.state
+				  },]);
 
 				// Billing field
 				customerDataTMP.billing.firstName = customerDataTMP.billing.first_name;
 				customerDataTMP.billing.lastName = customerDataTMP.billing.last_name;
 				customerDataTMP.billing.address1 = customerDataTMP.billing.address_1;
 				customerDataTMP.billing.address2 = customerDataTMP.billing.address_2;
+				setTheBillingsuburb([{
+					"location":customerDataTMP.billing.city,
+					"state": customerDataTMP.billing.state
+				  },]);
 
 				setInput( {
 					...input,
 					billing: customerDataTMP.billing,
 					shipping: customerDataTMP.shipping,
 				} );
+
+				
 			}
 			
 		}
@@ -261,10 +308,12 @@ const CheckoutForm = ( { countriesData , paymentModes } ) => {
 	useEffect(() => {
     			if(input?.billingDifferentThanShipping)
 				{
-					console.log('yes sipping post code',input.shipping.postcode);
+					//console.log('yes sipping post code',input.shipping.postcode);
+					// getAuspost(input.shipping.postcode,false);
 					 shippingCalculation(input.shipping.postcode);
 				}else{
-					console.log('yes billing post code',input.billing.postcode);
+					//console.log('yes billing post code',input.billing.postcode);
+					//getAuspost(input.billing.postcode,true);
 					 shippingCalculation(input.billing.postcode);
 				}
 				setOnloadShippingCal(false);
@@ -302,15 +351,21 @@ const CheckoutForm = ( { countriesData , paymentModes } ) => {
     }, [totalPrice,shippingCost,coutData]);
 
 	/******     *******/
-	const getAuspost = debounce(async (postcode)=>{
+	const getAuspost = async (postcode,isBilling = true)=>{
 		//console.log('postcode W',postcode)
 		if(undefined != postcode)
 		{
 			var postcodeLength = postcode.length;
 			if(postcodeLength >= 3 && postcodeLength <= 4)
 			{
+				if(isBilling)
+				{
+					setIsFetchingBillingSuburb(true);
+				}else{
+					setIsFetchingShippingSuburb(true);
+				}
 	
-				console.log('postcode',postcode)
+				console.log('postcode suburb',postcode)
 				var resDta = '';
 				await axios.post(SUBURB_API_URL,{postcode:postcode})
 				.then(res=> {
@@ -319,15 +374,47 @@ const CheckoutForm = ( { countriesData , paymentModes } ) => {
 				})
 				.catch(err=> console.log(err))
 				console.log('dataPost',resDta);
+				var errorsuburbRes = false;
+				if(!isEmpty(resDta) && resDta != '' && resDta != undefined)
+				{
+					if(!isEmpty(resDta.localities) &&  resDta.localities != '' && resDta.localities != undefined)
+					{
+						if(isBilling)
+						{
+							setTheBillingsuburb(resDta.localities.locality);
+							
+						}else{
+							setTheShippingsuburb(resDta.localities.locality);
+							
+						}
+					}else{
+						 errorsuburbRes = true;
+					}
+				}else{
+					errorsuburbRes = true;
+				}
+				if(errorsuburbRes)
+				{
+					//errors[postcode] = 'In valid post code';
+					if(isBilling)
+					{
+						setTheBillingsuburb({});
+					}else{
+						setTheShippingsuburb({});
+					}
+				}
+				setIsFetchingBillingSuburb(false);
+				setIsFetchingShippingSuburb(false);
 			}
 			
 		}
 		
-	},500);
+	};
 
 	/** Shipping calculation  */
 	const shippingCalculation = async(postcode) => {
 		setPostcodedis(postcode);
+		console.log('postcode shipping',postcode);
 		if(postcode.length == 4 && (cart?.cartItems.length > 0))
 		{
 			
@@ -354,11 +441,13 @@ const CheckoutForm = ( { countriesData , paymentModes } ) => {
 								<div className="billing-details">
 									<h2 className="text-xl font-medium mb-4">Billing Details</h2>
 									<Address
+										suburbs={ theBillingsuburb }
 										states={ theBillingStates }
 										countries={ billingCountries.length ? billingCountries: shippingCountries }
 										input={ input?.billing }
 										handleOnChange={ ( event ) => handleOnChange( event, false, true ) }
 										isFetchingStates={ isFetchingBillingStates }
+										isFetchingSuburb={ isFetchingBillingSuburb }
 										isShipping={ false }
 										isBillingOrShipping
 									/>
@@ -378,11 +467,13 @@ const CheckoutForm = ( { countriesData , paymentModes } ) => {
 								<div className="billing-details">
 									<h2 className="text-xl font-medium mb-4">Shipping Details</h2>
 									<Address
+										suburbs={ theShippingsuburb}
 										states={ theShippingStates }
 										countries={ shippingCountries }
 										input={ input?.shipping }
 										handleOnChange={ ( event ) => handleOnChange( event, true, true ) }
 										isFetchingStates={ isFetchingShippingStates }
+										isFetchingSuburb={ isFetchingShippingSuburb }
 										isShipping
 										isBillingOrShipping
 									/>

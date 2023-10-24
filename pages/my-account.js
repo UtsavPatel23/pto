@@ -8,6 +8,7 @@ import Cookies from 'js-cookie';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
+import { get_customer } from '../src/utils/customer';
 
 
 
@@ -46,14 +47,14 @@ export default function Login ({headerFooter}){
 	const formState_l = action_Data.formState;
 	const  errorsLogin  = formState_l.errors;
 	//const { errorsLogin } = formState_l;
-	const onFormSubmitLogin = async( event ) => {
-			
 
+	// user login 
+	const onFormSubmitLogin = async( event ) => {
+	
 			const loginData = {
 				username: event.username,
 				password: event.password,
 			};
-
 			setLoginFields( { ...loginFields, loading: true } );
 
 			axios.post( USER_LOGIN, loginData )
@@ -99,38 +100,7 @@ export default function Login ({headerFooter}){
 		};
 		const { username, password, userNiceName, error, loading } = loginFields;
 
-		const get_customer = async(arg_user_email)=>
-		{
-			let responseCus = {
-                success: false,
-                customers: null,
-                error: '',
-            };
-			const customerData =  {
-                email: arg_user_email,
-              };
-			try {
-                const {data:resultCus} = await axios.get( '/api/get-customers?email='+arg_user_email);
-                
-                if ( resultCus.error ) {
-                    responseCus.error = resultCus.error;
-                }
-               
-				responseCus.success = true;
-				console.log('resultCus',resultCus);
-				if(resultCus.customers != undefined)
-				{
-					responseCus.customers = resultCus.customers[0];
-					Cookies.set('customerData',JSON.stringify(resultCus.customers[0]));
-				}
-            } catch ( error ) {
-                // @TODO to be handled later.
-                console.warn( 'Handle create order error', error?.message );
-            }
-			//console.log('responseCus',loginFields.userEmail);
-			console.log('responseCus',responseCus);
-			
-		}
+		
 
 	/*************** Regis ******************************/
 	const [ regisFields, setRegisFields ] = useState({
