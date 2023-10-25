@@ -80,16 +80,6 @@ const Address = ({suburbs,input, countries, states, handleOnChange, isFetchingSt
 					isShipping={isShipping}
 					containerClassNames="mb-4"
 				/>
-			{/*<InputField
-				name="city"
-				required
-				inputValue={input?.city}
-				handleOnChange={handleOnChange}
-				label="Suburb"
-				errors={errors}
-				isShipping={isShipping}
-				containerClassNames="mb-4"
-			/>*/}
 			{/* Suburb */}
 			<SuburbSelection
 				input={input}

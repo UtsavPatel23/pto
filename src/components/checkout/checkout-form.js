@@ -19,6 +19,7 @@ import Loader from "./../../../public/loader.gif";
 import axios from 'axios';
 import { SUBURB_API_URL } from '../../utils/constants/endpoints';
 import { debounce, isEmpty } from 'lodash';
+import TextArea from './form-elements/textarea-field';
 
 // Use this for testing purposes, so you dont have to fill the checkout form over an over again.
 // const defaultCustomerInfo = {
@@ -66,7 +67,7 @@ const CheckoutForm = ( { countriesData , paymentModes } ) => {
 		createAccount: false,
 		orderNotes: '',
 		billingDifferentThanShipping: false,
-		paymentMethod: 'cod',
+		paymentMethod: '',
 	};
 	const stateList = get_stateList();
 	const [ cart, setCart ] = useContext( AppContext );
@@ -119,15 +120,17 @@ const CheckoutForm = ( { countriesData , paymentModes } ) => {
 			errors: null,
 			isValid: true,
 		};
-
+		const ValidationResult =  validateAndSanitizeCheckoutForm( input);
+		console.log('ValidationResult',ValidationResult);
 		setInput( {
 			...input,
 			billing: { ...input.billing, errors: billingValidationResult.errors },
 			shipping: { ...input.shipping, errors: shippingValidationResult.errors },
+			errors: ValidationResult.errors
 		} );
 
 		// If there are any errors, return.
-		if ( ! shippingValidationResult.isValid || ! billingValidationResult.isValid ) {
+		if ( ! shippingValidationResult.isValid || ! billingValidationResult.isValid || !ValidationResult.isValid) {
 			return null;
 		}
 		
@@ -452,6 +455,27 @@ const CheckoutForm = ( { countriesData , paymentModes } ) => {
 										isBillingOrShipping
 									/>
 								</div>
+								
+								<CheckboxField
+									name="createAccount"
+									type="checkbox"
+									checked={ input?.createAccount }
+									handleOnChange={ handleOnChange }
+									label="Create an account?"
+									containerClassNames="mb-4 pt-4"
+								/>
+							<div>
+							<h2 className="mt-4 mb-4">Additional Information</h2>
+								<TextArea
+									name="orderNotes"
+									handleOnChange={ handleOnChange }
+									errors={input?.errors ? input.errors : null}
+									placeholder="Notes about your order, e.g. special notes for delivery."
+									label="Order notes (optional)"
+									containerClassNames="mb-4 pt-4"
+								/>
+							
+							</div>
 							<div>
 								<CheckboxField
 									name="billingDifferentThanShipping"
@@ -462,6 +486,7 @@ const CheckoutForm = ( { countriesData , paymentModes } ) => {
 									containerClassNames="mb-4 pt-4"
 								/>
 							</div>
+							
 							{/*Shipping Details*/ }
 							{ input?.billingDifferentThanShipping ? (
 								<div className="billing-details">

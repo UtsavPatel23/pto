@@ -13,6 +13,8 @@ const validateAndSanitizeCheckoutForm = ( data, hasStates = true ) => {
 	 * Validator.isEmpty() down below comes from validator library.
 	 * Similarly we do it for for the rest of the fields
 	 */
+	if(data.paymentMethod == undefined)
+	{
 	data.firstName = ( ! isEmpty( data.firstName ) ) ? data.firstName : '';
 	data.lastName = ( ! isEmpty( data.lastName ) ) ? data.lastName : '';
 	data.company = ( ! isEmpty( data.company ) ) ? data.company : '';
@@ -24,9 +26,11 @@ const validateAndSanitizeCheckoutForm = ( data, hasStates = true ) => {
 	data.postcode = ( ! isEmpty( data.postcode ) ) ? data.postcode : '';
 	data.phone = ( ! isEmpty( data.phone ) ) ? data.phone : '';
 	data.email = ( ! isEmpty( data.email ) ) ? data.email : '';
+	}else{
 	data.createAccount = ( ! isEmpty( data.createAccount ) ) ? data.createAccount : '';
 	data.orderNotes = ( ! isEmpty( data.orderNotes ) ) ? data.orderNotes : '';
-	// data.paymentMethod = ( ! isEmpty( data.paymentMethod ) ) ? data.paymentMethod : '';
+	data.paymentMethod = ( ! isEmpty( data.paymentMethod ) ) ? data.paymentMethod : '';
+	}
 	
 	/**
 	 * Checks for error if required is true
@@ -70,7 +74,8 @@ const validateAndSanitizeCheckoutForm = ( data, hasStates = true ) => {
 		}
 		
 	};
-	
+	if(data.paymentMethod == undefined)
+	{
 	addErrorAndSanitizedData( 'firstName', 'First name', 2, 35, 'string', true );
 	addErrorAndSanitizedData( 'lastName', 'Last name', 2, 35, 'string', true );
 	addErrorAndSanitizedData( 'company', 'Company Name', 0, 35, 'string', false );
@@ -82,13 +87,13 @@ const validateAndSanitizeCheckoutForm = ( data, hasStates = true ) => {
 	addErrorAndSanitizedData( 'postcode', 'Post code', 2, 10, 'postcode', true );
 	addErrorAndSanitizedData( 'phone', 'Phone number', 10, 15, 'phone', true );
 	addErrorAndSanitizedData( 'email', 'Email', 11, 254, 'email', true );
-	
+	}else{
 	// The data.createAccount is a boolean value.
 	sanitizedData.createAccount = data.createAccount;
-	addErrorAndSanitizedData( 'orderNotes', '', 0, 254, 'string', false );
+	addErrorAndSanitizedData( 'orderNotes', '', 0, 250, 'string', false );
 	// @TODO Payment mode error to be handled later.
-	// addErrorAndSanitizedData( 'paymentMethod', 'Payment mode field', 2, 50, 'string', false );
-
+	addErrorAndSanitizedData( 'paymentMethod', 'Payment mode field', 2, 50, 'string', true );
+	}
 	return {
 		sanitizedData,
 		errors,

@@ -12,6 +12,9 @@
 /.next/
 /out/
 
+# Demo
+/pages/demo/
+
 # production
 /build
 
