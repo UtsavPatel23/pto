@@ -28,6 +28,10 @@ const validateAndSanitizeCheckoutForm = ( data, hasStates = true ) => {
 	data.email = ( ! isEmpty( data.email ) ) ? data.email : '';
 	}else{
 	data.createAccount = ( ! isEmpty( data.createAccount ) ) ? data.createAccount : '';
+	if(data.createAccount)
+	{
+		data.createAccountPassword = ( ! isEmpty( data.createAccountPassword ) ) ? data.createAccountPassword : '';
+	}
 	data.orderNotes = ( ! isEmpty( data.orderNotes ) ) ? data.orderNotes : '';
 	data.paymentMethod = ( ! isEmpty( data.paymentMethod ) ) ? data.paymentMethod : '';
 	}
@@ -90,6 +94,10 @@ const validateAndSanitizeCheckoutForm = ( data, hasStates = true ) => {
 	}else{
 	// The data.createAccount is a boolean value.
 	sanitizedData.createAccount = data.createAccount;
+	if(data.createAccount)
+	{
+		addErrorAndSanitizedData( 'createAccountPassword', 'Password', 6, 10, 'string', true );
+	}
 	addErrorAndSanitizedData( 'orderNotes', '', 0, 250, 'string', false );
 	// @TODO Payment mode error to be handled later.
 	addErrorAndSanitizedData( 'paymentMethod', 'Payment mode field', 2, 50, 'string', true );

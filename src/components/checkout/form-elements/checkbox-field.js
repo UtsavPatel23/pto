@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
+import Error from "../error";
 
-const CheckboxField = ({ handleOnChange, checked, name, label, placeholder, containerClassNames }) => {
-	
+const CheckboxField = ({errors, handleOnChange, checked, name, label, placeholder, containerClassNames }) => {
 	return (
 		<div className={containerClassNames}>
 			<label className="leading-7 text-md text-gray-700 flex items-center cursor-pointer" htmlFor={name}>
@@ -15,6 +15,7 @@ const CheckboxField = ({ handleOnChange, checked, name, label, placeholder, cont
 				/>
 				<span className="ml-2">{ label || '' }</span>
 			</label>
+			<Error errors={ errors } fieldName={ name }/>
 		</div>
 	)
 }

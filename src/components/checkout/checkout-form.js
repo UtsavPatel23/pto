@@ -20,6 +20,8 @@ import axios from 'axios';
 import { SUBURB_API_URL } from '../../utils/constants/endpoints';
 import { debounce, isEmpty } from 'lodash';
 import TextArea from './form-elements/textarea-field';
+import { handleCreateCustomer } from '../../utils/customer';
+import InputField from './form-elements/input-field';
 
 // Use this for testing purposes, so you dont have to fill the checkout form over an over again.
 // const defaultCustomerInfo = {
@@ -65,6 +67,7 @@ const CheckoutForm = ( { countriesData , paymentModes } ) => {
 			...defaultCustomerInfo,
 		},
 		createAccount: false,
+		createAccountPassword: '',
 		orderNotes: '',
 		billingDifferentThanShipping: false,
 		paymentMethod: '',
@@ -96,6 +99,8 @@ const CheckoutForm = ( { countriesData , paymentModes } ) => {
 	const [isFetchingShippingSuburb, setIsFetchingShippingSuburb] = useState(false);
 	const [isFetchingBillingSuburb, setIsFetchingBillingSuburb] = useState(false);
 
+	const [tokenValid,setTokenValid]=useState(0);
+
 	/**
 	 * Handle form submit.
 	 *
@@ -115,13 +120,16 @@ const CheckoutForm = ( { countriesData , paymentModes } ) => {
 		 * 2. We are passing theBillingStates?.length and theShippingStates?.length, so that
 		 * the respective states should only be mandatory, if a country has states.
 		 */
+		// validation billing and shipping fileds
 		const billingValidationResult =  validateAndSanitizeCheckoutForm( input?.billing, theBillingStates?.length );
 		const shippingValidationResult = input?.billingDifferentThanShipping ? validateAndSanitizeCheckoutForm( input?.shipping, theShippingStates?.length ) : {
 			errors: null,
 			isValid: true,
 		};
+		// validation other fiield 
 		const ValidationResult =  validateAndSanitizeCheckoutForm( input);
 		console.log('ValidationResult',ValidationResult);
+		// update error message
 		setInput( {
 			...input,
 			billing: { ...input.billing, errors: billingValidationResult.errors },
@@ -133,10 +141,30 @@ const CheckoutForm = ( { countriesData , paymentModes } ) => {
 		if ( ! shippingValidationResult.isValid || ! billingValidationResult.isValid || !ValidationResult.isValid) {
 			return null;
 		}
-		
+		// cart shiiping cost error 
 		if(notice.length > 0)
 		{
 			return null;
+		}
+
+		// Create account 
+		if(input.createAccount)
+		{
+			const createAccountData = await handleCreateCustomer(input);
+			if(createAccountData.error?.code == 'registration-error-email-exists')
+			{
+				setInput( {
+					...input,
+					billing: { ...input.billing, errors: null },
+					shipping: { ...input.shipping, errors: null },
+					errors: {createAccount:'An account is already registered with your email address.'}
+				} );
+			}	
+			if(!createAccountData.success)
+			{
+				return null;
+			}
+			console.log('createAccountData',createAccountData);
 		}
 		
 		// For stripe payment mode, handle the strip payment and thank you.
@@ -199,7 +227,7 @@ const CheckoutForm = ( { countriesData , paymentModes } ) => {
 		}
 		SetLoading(false);
 	};
-
+	/* change event for shipping  */
 	const handleShippingChange = async ( target ) => {
 		if(target.name == 'postcode' && target.value != '')
 		{
@@ -233,7 +261,7 @@ const CheckoutForm = ( { countriesData , paymentModes } ) => {
 		}
 		//await setStatesForCountry( target, setTheShippingStates, setIsFetchingShippingStates );
 	};
-
+	/* change event for billng  */
 	const handleBillingChange = async ( target ) => {
 		if(target.name == 'postcode' && target.value != '')
 		{
@@ -307,6 +335,11 @@ const CheckoutForm = ( { countriesData , paymentModes } ) => {
 		if(Cookies.get('coutData')) {
 			setCoutData(JSON.parse(Cookies.get('coutData')));
 		}
+
+		//check token
+        if(Cookies.get('token')) {
+			setTokenValid(1)
+        }
 	}, []);
 	useEffect(() => {
     			if(input?.billingDifferentThanShipping)
@@ -353,7 +386,7 @@ const CheckoutForm = ( { countriesData , paymentModes } ) => {
 		
     }, [totalPrice,shippingCost,coutData]);
 
-	/******     *******/
+	/******   getAuspost  *******/
 	const getAuspost = async (postcode,isBilling = true)=>{
 		//console.log('postcode W',postcode)
 		if(undefined != postcode)
@@ -455,37 +488,52 @@ const CheckoutForm = ( { countriesData , paymentModes } ) => {
 										isBillingOrShipping
 									/>
 								</div>
+								{/* Create Account Details*/ }
+								{!tokenValid ? (
+									<CheckboxField
+										name="createAccount"
+										type="checkbox"
+										checked={ input?.createAccount }
+										handleOnChange={ handleOnChange }
+										label="Create an account?"
+										containerClassNames="mb-4 pt-4"
+										errors = {input?.errors ? input.errors : null}
+									/>
+								) : null}
+								{ input?.createAccount ? (
+									<InputField
+										name="createAccountPassword"
+										inputValue={input?.createAccountPassword}
+										required
+										handleOnChange={handleOnChange}
+										label="Create account password"
+										errors={input?.errors ? input.errors : null}
+										containerClassNames="mb-4"
+										type = 'password'
+									/>
+								) : null }
+								<div>
+									<h4 className="mt-4 mb-4">Additional Information</h4>
+										<TextArea
+											name="orderNotes"
+											handleOnChange={ handleOnChange }
+											errors={input?.errors ? input.errors : null}
+											placeholder="Notes about your order, e.g. special notes for delivery."
+											label="Order notes (optional)"
+											containerClassNames="mb-4 pt-4"
+										/>
 								
-								<CheckboxField
-									name="createAccount"
-									type="checkbox"
-									checked={ input?.createAccount }
-									handleOnChange={ handleOnChange }
-									label="Create an account?"
-									containerClassNames="mb-4 pt-4"
-								/>
-							<div>
-							<h2 className="mt-4 mb-4">Additional Information</h2>
-								<TextArea
-									name="orderNotes"
-									handleOnChange={ handleOnChange }
-									errors={input?.errors ? input.errors : null}
-									placeholder="Notes about your order, e.g. special notes for delivery."
-									label="Order notes (optional)"
-									containerClassNames="mb-4 pt-4"
-								/>
-							
-							</div>
-							<div>
-								<CheckboxField
-									name="billingDifferentThanShipping"
-									type="checkbox"
-									checked={ input?.billingDifferentThanShipping }
-									handleOnChange={ handleOnChange }
-									label="Shipping different than shipping"
-									containerClassNames="mb-4 pt-4"
-								/>
-							</div>
+								</div>
+								<div>
+									<CheckboxField
+										name="billingDifferentThanShipping"
+										type="checkbox"
+										checked={ input?.billingDifferentThanShipping }
+										handleOnChange={ handleOnChange }
+										label="Shipping different than shipping"
+										containerClassNames="mb-4 pt-4"
+									/>
+								</div>
 							
 							{/*Shipping Details*/ }
 							{ input?.billingDifferentThanShipping ? (

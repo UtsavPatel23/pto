@@ -31,3 +31,38 @@ export const get_customer = async(arg_user_email)=>
 			console.log('responseCus',responseCus);
 			
 		}
+
+export const handleCreateCustomer = async(input) => {
+			let responseCus = {
+				success: false,
+				customers: null,
+				error: '',
+			};
+			var randumNo = Math.random().toFixed(3)*1000;
+			var usernameCreate = input.billing.email.split("@", 3)[0]+randumNo;
+			const userData = {
+				email: input.billing.email,
+				first_name: input.billing.firstName,
+				last_name: input.billing.lastName,
+				username: usernameCreate,
+				password: input.createAccountPassword,
+				billing: input.billing,
+				shipping:input.shipping 
+			  };
+			  console.log('userData',userData);
+			await axios.post('/api/create-customers/',
+			userData
+			).then((response) => {
+				console.log(response.data);
+				responseCus.success = true;
+				responseCus.customers = response.data;
+				//res.json( responseCus );
+			})
+			.catch((error) => {
+				console.log('Err',error.response.data);
+				responseCus.error = error.response.data.error;
+				//res.status( 500 ).json( responseCus  );
+			});
+
+			return responseCus;
+}
