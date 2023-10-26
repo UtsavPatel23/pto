@@ -232,12 +232,12 @@ import { isEmpty } from 'lodash';
 							/> : null
 					}
 					</div>
-					{/*}<div key="product_info9"
+					<div key="product_info9"
 						dangerouslySetInnerHTML={ {
 							__html: product.description,
 						} }
 						className="product-description mb-5"
-					/>{*/}
+					/>
 					{(() => {
 						if(product.weight != '' && product.dimensions.length != '')
 						{
@@ -256,11 +256,10 @@ import { isEmpty } from 'lodash';
 					{product.meta_data.product_features ? <>{product.meta_data.product_features}</>:null}
 					{product.meta_data.dimensions_and_specification ? <>{product.meta_data.dimensions_and_specification}</>:null}
 					{product.meta_data.whats_included ? <>{product.meta_data.whats_included}</>:null}
-					{/*}
+					
 					<Warranty_tab />
 					<Shipping_guide_tab />
 					<Reward_points_tab />
-					{*/}
 					{reviews.length?
 					<div key="reviews_list">
 						<p>{reviews.length} {product.name}</p>
@@ -287,7 +286,7 @@ import { isEmpty } from 'lodash';
 						if(undefined != product.related_ids)
 						{
 							product.related_ids.length ? 
-							<>
+							
 							<div className='grid grid-cols-4 gap-4'>
 							{
 								product.related_ids.map( product => {
@@ -298,7 +297,6 @@ import { isEmpty } from 'lodash';
 								})
 							}
 							</div>
-							</>
 						: 
 							null
 						}

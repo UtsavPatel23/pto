@@ -68,6 +68,7 @@ export const getCreateOrderData = ( shippingCost,couponName,order, products ) =>
 				"total":shippingCost.toString()
 			}
 		],
+		"customer_note":order.orderNotes,
 		payment_method: order?.paymentMethod,
 		payment_method_title: order?.paymentMethod,
 		line_items: getCreateOrderLineItems( products ),

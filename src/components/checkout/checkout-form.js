@@ -8,6 +8,7 @@ import Address from './user-address';
 import { AppContext } from '../context';
 import CheckboxField from './form-elements/checkbox-field';
 import {
+	handleAgreeTerms,
 	handleBillingDifferentThanShipping,
 	handleCreateAccount, handleOtherPaymentMethodCheckout, handleStripeCheckout,
 	setStatesForCountry,
@@ -71,6 +72,7 @@ const CheckoutForm = ( { countriesData , paymentModes } ) => {
 		orderNotes: '',
 		billingDifferentThanShipping: false,
 		paymentMethod: '',
+		agreeTerms: false,
 	};
 	const stateList = get_stateList();
 	const [ cart, setCart ] = useContext( AppContext );
@@ -198,6 +200,9 @@ const CheckoutForm = ( { countriesData , paymentModes } ) => {
 		SetLoading(true);
 		if ( 'createAccount' === target.name ) {
 			handleCreateAccount( input, setInput, target );
+		} 
+		else if ( 'agreeTerms' === target.name ) {
+			handleAgreeTerms( input, setInput, target );
 		} else if ( 'billingDifferentThanShipping' === target.name ) {
 			await handleBillingDifferentThanShipping( input, setInput, target );
 			if(input?.billingDifferentThanShipping)
@@ -562,7 +567,17 @@ const CheckoutForm = ( { countriesData , paymentModes } ) => {
 
 							{/*Payment*/ }
 							<PaymentModes input={input}  handleOnChange={handleOnChange} paymentModes={paymentModes } />
-
+							
+							{/* terms and conditions */ }
+							<CheckboxField
+								name="agreeTerms"
+								type="checkbox"
+								checked={ input?.agreeTerms }
+								handleOnChange={ handleOnChange }
+								label="I have read and agree to the website terms and conditions *"
+								containerClassNames="mb-4 pt-4"
+								errors = {input?.errors ? input.errors : null}
+							/>
 							<div className="woo-next-place-order-btn-wrap mt-5">
 								<button
 									disabled={ isOrderProcessing }

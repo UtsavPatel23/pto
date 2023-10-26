@@ -34,7 +34,10 @@ const ThankYouContent = () => {
 		}
 		
 	}, [ session_id ] );
-	
+	console.log('cart',cart);
+	console.log('isSessionFetching',isSessionFetching);
+	console.log('sessionData',sessionData);
+	console.log('session_id',session_id);
 	return (
 		<div className="h-almost-screen">
 			<div className="w-600px mt-10 m-auto">

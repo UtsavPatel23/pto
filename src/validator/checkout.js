@@ -34,6 +34,7 @@ const validateAndSanitizeCheckoutForm = ( data, hasStates = true ) => {
 	}
 	data.orderNotes = ( ! isEmpty( data.orderNotes ) ) ? data.orderNotes : '';
 	data.paymentMethod = ( ! isEmpty( data.paymentMethod ) ) ? data.paymentMethod : '';
+	data.agreeTerms = ( ! isEmpty( data.agreeTerms ) ) ? data.agreeTerms : '';
 	}
 	
 	/**
@@ -101,6 +102,11 @@ const validateAndSanitizeCheckoutForm = ( data, hasStates = true ) => {
 	addErrorAndSanitizedData( 'orderNotes', '', 0, 250, 'string', false );
 	// @TODO Payment mode error to be handled later.
 	addErrorAndSanitizedData( 'paymentMethod', 'Payment mode field', 2, 50, 'string', true );
+	if(!data.agreeTerms)
+	{
+		errors[ 'agreeTerms' ] = `Terms and conditions is required`;
+	}
+	//addErrorAndSanitizedData( 'agreeTerms', ' Terms and conditions', 2, 50, 'agreeTerms', true );
 	}
 	return {
 		sanitizedData,

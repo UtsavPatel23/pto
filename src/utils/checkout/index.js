@@ -186,6 +186,18 @@ export const handleCreateAccount = ( input, setInput, target ) => {
 };
 
 /**
+ * Handle Create Account.
+ *
+ * @param input
+ * @param setInput
+ * @param target
+ */
+ export const handleAgreeTerms = ( input, setInput, target ) => {
+	const newState = { ...input, [ target.name ]: ! input.agreeTerms };
+	setInput( newState );
+};
+
+/**
  * Set states for the country.
  *
  * @param {Object} target Target.
