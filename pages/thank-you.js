@@ -39,7 +39,7 @@ const ThankYouContent = () => {
 		
 	}, [ session_id ] );
 	/*useEffect( () => {
-		getOrderData(586094);
+		getOrderData(586077);
 		
 	},[]);*/
 
@@ -129,7 +129,7 @@ const ThankYouContent = () => {
 								<td className="px-4 py-3">{orderData?.currency_symbol} { parseFloat(subtotal).toFixed(2) }</td>
 							</tr>
 							
-							{orderData?.discount_total ? <tr>
+							{orderData?.discount_total > 0? <tr>
 								<td className="px-4 py-3">Discount:</td>
 								<td className="px-4 py-3">{orderData?.currency_symbol} { orderData?.discount_total }</td>
 							</tr>: null}
