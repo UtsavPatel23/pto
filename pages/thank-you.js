@@ -7,12 +7,15 @@ import Loading from '../src/components/icons/Loading';
 import Bag from '../src/components/icons/Bag';
 import { AppContext } from '../src/components/context';
 import { HEADER_FOOTER_ENDPOINT } from '../src/utils/constants/endpoints';
+import { isEmpty } from 'lodash';
 
 const ThankYouContent = () => {
 	const [ cart, setCart ] = useContext( AppContext );
 	const [ isSessionFetching, setSessionFetching ] = useState( false );
 	const [ sessionData, setSessionData ] = useState( {} );
 	const session_id = process.browser ? Router.query.session_id : null;
+	const [ orderData, setOrderData ] = useState( {} );
+	const [subtotal,setSubtotal] = useState(0);
 	
 	useEffect( () => {
 		setSessionFetching( true );
@@ -24,6 +27,7 @@ const ThankYouContent = () => {
 				axios.get( `/api/get-stripe-session/?session_id=${ session_id }` )
 					.then( ( response ) => {
 						setSessionData( response?.data ?? {} );
+						getOrderData(response?.data?.metadata?.orderPostID);
 						setSessionFetching( false );
 					} )
 					.catch( ( error ) => {
@@ -34,10 +38,40 @@ const ThankYouContent = () => {
 		}
 		
 	}, [ session_id ] );
-	console.log('cart',cart);
-	console.log('isSessionFetching',isSessionFetching);
-	console.log('sessionData',sessionData);
-	console.log('session_id',session_id);
+	/*useEffect( () => {
+		getOrderData(586094);
+		
+	},[]);*/
+
+	const getOrderData = (id) => {
+		let data = '';
+		var tmpsubtotal = 0;
+		let config = {
+		method: 'post',
+		maxBodyLength: Infinity,
+		url: '/api/get-order?id='+id,
+		headers: { },
+		data : data
+		};
+		axios.request(config)
+		.then((response) => {
+			setOrderData(response.data.orderData);
+			if(response.data.orderData.line_items != undefined)
+			{
+				response.data.orderData?.line_items.map( ( item ) => {
+					tmpsubtotal =tmpsubtotal+parseFloat(item.subtotal);
+				}) 
+			}
+			setSubtotal(tmpsubtotal);
+			//console.log(JSON.stringify(response.data));
+		})
+		.catch((error) => {
+		console.log(error);
+		});
+	}
+	console.log('orderData',orderData);
+	 
+		
 	return (
 		<div className="h-almost-screen">
 			<div className="w-600px mt-10 m-auto">
@@ -56,17 +90,104 @@ const ThankYouContent = () => {
 							<tbody>
 							<tr>
 								<td className="px-4 py-3">Order#</td>
-								<td className="px-4 py-3">{ sessionData?.metadata?.orderId }</td>
+								<td className="px-4 py-3">{ orderData?.number }</td>
 							</tr>
 							<tr>
 								<td className="px-4 py-3">Email</td>
 								<td className="px-4 py-3">{ sessionData?.customer_email }</td>
 							</tr>
+							<tr>
+								<td className="px-4 py-3">Total</td>
+								<td className="px-4 py-3">{orderData?.currency_symbol} { orderData?.total }</td>
+							</tr>
+							<tr>
+								<td className="px-4 py-3">PAYMENT METHOD</td>
+								<td className="px-4 py-3">{ orderData?.payment_method_title }</td>
+							</tr>
 							</tbody>
 						</table>
+						{orderData != undefined?
+						<div key='Order-details'>Order details
+						<table className="table-auto w-full text-left whitespace-no-wrap mb-8">
+							<thead>
+							<tr>
+								<th className="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100 rounded-tl rounded-bl">Product</th>
+								<th className="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">Total</th>
+							</tr>
+							</thead>
+							<tbody>
+							{ orderData?.line_items &&
+								orderData?.line_items.map( ( item ) => (
+								<tr>
+									<td className="px-4 py-3">{item.name}</td>
+									<td className="px-4 py-3">{orderData?.currency_symbol} { item.subtotal }</td>
+								</tr>
+							) ) }
+							
+							<tr>
+								<td className="px-4 py-3">Subtotal</td>
+								<td className="px-4 py-3">{orderData?.currency_symbol} { parseFloat(subtotal).toFixed(2) }</td>
+							</tr>
+							
+							{orderData?.discount_total ? <tr>
+								<td className="px-4 py-3">Discount:</td>
+								<td className="px-4 py-3">{orderData?.currency_symbol} { orderData?.discount_total }</td>
+							</tr>: null}
+							{ orderData?.fee_lines &&
+								orderData?.fee_lines.map( ( item ) => (
+								<tr>
+									<td className="px-4 py-3">{item.name}</td>
+									<td className="px-4 py-3">{orderData?.currency_symbol} { item.total }</td>
+								</tr>
+							) ) }
+							<tr>
+								<td className="px-4 py-3">Total</td>
+								<td className="px-4 py-3">{orderData?.currency_symbol} { orderData?.total }</td>
+							</tr>
+							<tr>
+								<td className="px-4 py-3">PAYMENT METHOD</td>
+								<td className="px-4 py-3">{ orderData?.payment_method_title }</td>
+							</tr>
+							{orderData?.customer_note ? <tr>
+								<td className="px-4 py-3">Note:</td>
+								<td className="px-4 py-3">{ orderData?.customer_note }</td>
+							</tr>: null}
+							
+
+							</tbody>
+						</table>
+						</div>
+						:null}
 						<Link href="/">
 							<div className="bg-purple-600 text-white px-5 py-3 rounded-sm w-auto">Shop more</div>
 						</Link>
+						<div key='coustomer-details'>
+								<h4>Billing address</h4>
+								{orderData?.billing?.first_name ? <p>{orderData?.billing?.first_name} </p>:null}
+								{orderData?.billing?.last_name ? <p>{orderData?.billing?.last_name}</p>:null}
+								{orderData?.billing?.address_1 ? <p>{orderData?.billing?.address_1}</p>:null}
+								{orderData?.billing?.address_2 ? <p>{orderData?.billing?.address_2}</p>:null}
+								{orderData?.billing?.city ? <p>{orderData?.billing?.city} </p>:null}
+								{orderData?.billing?.company ? <p>{orderData?.billing?.company} </p>:null}
+								{orderData?.billing?.country ? <p>{orderData?.billing?.country} </p>:null}
+								{orderData?.billing?.email ? <p>{orderData?.billing?.email} </p>:null}
+								{orderData?.billing?.phone ? <p>{orderData?.billing?.phone} </p>:null}
+								{orderData?.billing?.postcode ? <p>{orderData?.billing?.postcode} </p>:null}
+								{orderData?.billing?.state ? <p>{orderData?.billing?.state} </p>:null}
+
+								<h4>Sipping address</h4>
+								{orderData?.shipping?.first_name ? <p>{orderData?.shipping?.first_name} </p>:null}
+								{orderData?.shipping?.last_name ? <p>{orderData?.shipping?.last_name}</p>:null}
+								{orderData?.shipping?.address_1 ? <p>{orderData?.shipping?.address_1}</p>:null}
+								{orderData?.shipping?.address_2 ? <p>{orderData?.shipping?.address_2}</p>:null}
+								{orderData?.shipping?.city ? <p>{orderData?.shipping?.city} </p>:null}
+								{orderData?.shipping?.company ? <p>{orderData?.shipping?.company} </p>:null}
+								{orderData?.shipping?.country ? <p>{orderData?.shipping?.country} </p>:null}
+								{orderData?.shipping?.email ? <p>{orderData?.shipping?.email} </p>:null}
+								{orderData?.shipping?.phone ? <p>{orderData?.shipping?.phone} </p>:null}
+								{orderData?.shipping?.postcode ? <p>{orderData?.shipping?.postcode} </p>:null}
+								{orderData?.shipping?.state ? <p>{orderData?.shipping?.state} </p>:null}
+						</div>
 					</>
 				) }
 			</div>
