@@ -183,3 +183,18 @@ export function getCookie(cname) {
       }
     ];
   }
+
+  export function getNewProductTag(productData)
+  {
+    const date1 = new Date(productData);
+		const date2 = new Date();
+		const diffTime = Math.abs(date2 - date1);
+		const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+		//console.log(diffTime + " milliseconds");
+		//console.log(diffDays + " days");
+    if(diffDays < 8)
+    {
+      return '1';
+    }
+    return '0';
+  }

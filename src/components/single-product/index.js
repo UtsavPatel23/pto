@@ -16,6 +16,7 @@ import Reward_points_tab from './Reward_points_tab';
 import Product from '../products/product';
 import Review from './../review/Review';
 import { isEmpty } from 'lodash';
+import { getNewProductTag } from '../../utils/customjs/custome';
 
  const SingleProduct = ( { product,reviews} ) => {
 		 //console.log('in product',product);
@@ -121,6 +122,7 @@ import { isEmpty } from 'lodash';
 		
 			}
 			
+			
 	 return Object.keys( product ).length ? (
 		 <div className="single-product container mx-auto my-32 px-4 xl:px-0">
 			 <div key="section1" className="grid md:grid-cols-2 gap-4">
@@ -128,6 +130,7 @@ import { isEmpty } from 'lodash';
 					 { product.images.length ? (
 						 <ProductGallery items={ product?.images }/>
 					 ) : null }
+					 {getNewProductTag(product.date_created) == 1 ? <>New</>:null}
 				 </div>
 				 <div  key="product_info" className="product-info">
 				 	<h4 className="products-main-title text-2xl uppercase">{ product.name }</h4>
@@ -279,33 +282,34 @@ import { isEmpty } from 'lodash';
 					{product.meta_data.custom_sku_code ? <div key="custom_sku_code"><b>SKU :</b>{product.meta_data.custom_sku_code}</div>:null}
 					{product.meta_data.bulky_iteam ? <div key="bulky_iteam"><b>Bulky Item :</b>{product.meta_data.bulky_iteam}</div>:null}
 					</div>
-					<div key="Related-Products">
-					<b>Related Products</b>
-					
 					{(() => {
 						if(undefined != product.related_ids)
 						{
-							product.related_ids.length ? 
+							return (<div key="Related-Products">
+								<b>Related Products</b>
+								{	product.related_ids.length ? 
 							
-							<div className='grid grid-cols-4 gap-4'>
-							{
-								product.related_ids.map( product => {
-									
-										return (
-											<Product key={ product?.id } product={product} />
-										)
-								})
-							}
-							</div>
-						: 
-							null
+									<div className='grid grid-cols-4 gap-4'>
+									{
+										product.related_ids.map( product => {
+											
+												return (
+													<Product key={ product?.id } product={product} />
+												)
+										})
+									}
+									</div>
+								: 
+									null
+								}
+							</div>)
+						
 						}
 						
 					})()}
 						
 						
 				
-					</div>
 				 </div>{/* end product_info */ }
 			</div>	
 		 </div>

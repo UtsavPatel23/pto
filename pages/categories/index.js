@@ -12,7 +12,7 @@ import axios from 'axios';
 import Layout from '../../src/components/layout';
 
 export default function categories({ headerFooter, categories }) {
-    //console.log('categories',categories);
+    console.log('categories',categories);
     if(isEmpty(categories))
     {
         return(

@@ -4,6 +4,7 @@ import { sanitize } from '../../utils/miscellaneous';
 import AddToCart from '../cart/add-to-cart';
 import { isEmpty } from 'lodash';
 import ExternalLink from './external-link';
+import { getNewProductTag } from '../../utils/customjs/custome';
 
 const Product = ( { product } ) => {
 	if ( isEmpty( product ) ) {
@@ -89,6 +90,7 @@ const Product = ( { product } ) => {
 				} 
 			})()} 
 			</div>
+			{getNewProductTag(product.date_created) == 1 ? <>New</>:null}
 			{/*}<div>menu order : {product.menu_order}</div>
 			<div>price : {product.price}</div>
 			<div>date_created : {product.date_created}</div>
