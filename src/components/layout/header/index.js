@@ -5,13 +5,14 @@ import { isEmpty } from 'lodash';
 import { BurgerIcon, TailwindIcon, Bag, User, Wishlist } from '../../icons';
 import { AppContext } from '../../context';
 import { getPathNameFromUrl } from '../../../utils/miscellaneous';
+import Search from '../../search';
 
 
 
 const Header = ( { header } ) => {
 	
 	const [ cart, setCart ] = useContext( AppContext );
-	const { headerMenuItems, siteDescription, siteLogoUrl, siteTitle } = header || {};
+	const { headerMenuItems, siteDescription, siteLogoUrl, siteTitle ,search} = header || {};
 	
 	const [ isMenuVisible, setMenuVisibility ] = useState( false );
 
@@ -61,6 +62,7 @@ const Header = ( { header } ) => {
 								</Link>
 							</div>
 							<Link href="/my-account"><p className="mb-0">My account</p></Link>
+							<Search search={search}/>
 							<div className="text-sm font-medium">
 								<div href="#responsive-header"
 								   className="flex mt-4 lg:inline-block lg:mt-0 text-black hover:text-black mr-10">

@@ -19,7 +19,7 @@ import  Breadcrumbs  from './../breadcrumbs';
 const Layout = ({children, headerFooter, seo, uri }) => {
 	const { header, footer } = headerFooter || {};
 	const yoastSchema = seo?.schema ? replaceBackendWithFrontendUrl( JSON.stringify( seo.schema ) ) : null;
-//console.log('headerFooter',headerFooter);
+console.log('headerFooter',headerFooter);
 	return (
 		<AppProvider>
 			<div>
