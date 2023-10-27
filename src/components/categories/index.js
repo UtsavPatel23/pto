@@ -15,8 +15,8 @@ const Categories = ({ categories }) => {
 					if(category.cat_count > 0)
 					{
 					return (
-							<div key="secondLevelCategories">
-							<Link href={ `/categories/${ category?.slug }`} legacyBehavior>
+							<div key={'secondLevelCategories'+category?.term_id}>
+							<Link href={ `/categories/${ category?.term_link }`} legacyBehavior>
 								<a>
 									<h6>{ category?.name ?? '' } ({category?.cat_count})</h6>
 								</a> 
@@ -29,8 +29,8 @@ const Categories = ({ categories }) => {
 										if(category_inn.cat_count > 0)
 										{
 										return (
-												<div key="thirdLevelCategories">
-												<Link href={ `/categories/${ category_inn?.slug }`} legacyBehavior>
+												<div key={'thirdLevelCategories'+category_inn?.term_id}>
+												<Link href={ `/categories/${ category_inn?.term_link }`} legacyBehavior>
 													<a>
 														<h6>-- { category_inn?.name ?? '' }</h6>
 													</a> 
@@ -43,12 +43,12 @@ const Categories = ({ categories }) => {
 														{ 
 															{
 																return (
-																	<div key="category_inn3">
+																	<div key={'category_inn3'+category_inn?.term_id}>
 																		{ thirdLevelCategories.length ? thirdLevelCategories.map( category_inn3 => {
 																			if(category_inn3.cat_count > 0)
 																			{
 																			return (<>
-																					<Link href={ `/categories/${ category_inn3?.slug }`} legacyBehavior>
+																					<Link href={ `/categories/${ category_inn3?.term_link }`} legacyBehavior>
 																						<a>
 																							<h6>---- { category_inn3?.name ?? '' }</h6>
 																						</a> 

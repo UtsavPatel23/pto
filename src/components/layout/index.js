@@ -12,6 +12,8 @@ import Header from './header';
 import Footer from './footer';
 import Seo from '../seo';
 import { replaceBackendWithFrontendUrl, sanitize } from '../../utils/miscellaneous';
+import  Breadcrumbs  from './../breadcrumbs';
+
 
 
 const Layout = ({children, headerFooter, seo, uri }) => {
@@ -36,7 +38,9 @@ const Layout = ({children, headerFooter, seo, uri }) => {
 					}
 				</Head>
 				<Header header={header}/>
+				
 				<main className="container mx-auto py-4 min-h-50vh">
+				<Breadcrumbs></Breadcrumbs>
 					{children}
 				</main>
 				<Footer footer={footer}/>
