@@ -35,16 +35,17 @@ export async function getStaticProps() {
 	
 	const { data: headerFooterData } = await axios.get( HEADER_FOOTER_ENDPOINT );
 	
-	//const res = await fetch('http://kpt.weareopen.com.au/snv/api_json/products_data.js');
-	//let products = await res.json();
-	const {data : res} = await axios.get(SHOP_PRODUCTLIST);
+	//const res = await fetch('https://pooltableoffers.com.au/snv/api_json/product/products_data.js');
+	const res = await fetch(SHOP_PRODUCTLIST);
+	let products = await res.json();
+	//const {data : res} = await axios.get(SHOP_PRODUCTLIST);
 
   
 	return {
 		props: {
 			headerFooter: headerFooterData?.data ?? {},
-			//products: products,
-			products: res,
+			products: products,
+			//products: res,
 		},
 		
 		/**
