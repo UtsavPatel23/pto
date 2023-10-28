@@ -6,7 +6,8 @@ export const paramsToObject = (params) => {
 		"tags":[],
 		"average_rating":[],
 		"shipping":[],
-		"availability":[]
+		"availability":[],
+		"productsearch":'',
 	};
     const para = new URLSearchParams(params);
  
@@ -102,6 +103,14 @@ export const paramsToObject = (params) => {
 				}
 			} else {
 				obj['availability'].push(value);
+			}
+		 }
+		 else if(pre_key == 'produ')
+		 {
+			if (obj['productsearch'].hasOwnProperty('productsearch')) {
+				obj['productsearch'] = value;
+			} else {
+				obj['productsearch'] = value;
 			}
 		 }
 		 

@@ -4,6 +4,27 @@ export const get_products_filtered_by_filter_option = (ProductsTmp,filter_option
     // ************* ********************************  ************************ 
 // ************* filter product object attributes  ************************ 
 // ************* ********************************  ************************ 
+        // Search data filter
+        if(!isEmpty(filter_option['productsearch']))
+        {
+            var key = filter_option['productsearch'];
+            var split_data = key.toLowerCase();
+            var split_data = split_data.split(" ");  
+            console.log('split_data',split_data);              
+            let tempArr = ProductsTmp;    
+
+            Object.keys(split_data).forEach(item => { 
+                const result = tempArr.filter(x => x.content_word.find(a => a.toLowerCase() === split_data[item]) || x.name.toLowerCase().match(split_data[item]));
+                if (result.length > 0) {
+                    tempArr = result;
+                } else { 
+                    tempArr = result;
+                }
+            });
+
+            ProductsTmp = tempArr;
+        }
+    
     if(!isEmpty(filter_option['attributes']))
     {
         const products_filtered_attr = ProductsTmp.filter(obj => {

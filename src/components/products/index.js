@@ -46,17 +46,26 @@ const Products = ({ products }) => {
 	const minPrice = Math.min(...ProductsTmp.map(item => item.price));
 	const maxPrice = Math.max(...ProductsTmp.map(item => item.price));
 	const [priceValue, setPriceValue] = React.useState([minPrice, maxPrice]);
+	const [priceValueTMP, setPriceValueTMP] = React.useState([minPrice, maxPrice]);
+	const [searchBoxText,setSearchBoxText] = useState('');
 
 	useEffect(() => {
+		if (router.query.productsearch) {
+			setSearchBoxText(router.query.productsearch);
+			setFilter_option( { ...filter_option, productsearch: router.query.productsearch } );
+		  }
 		if (router.query.minPrice && router.query.maxPrice) {
 		  var tmp_priceValue = [router.query.minPrice, router.query.maxPrice]
 			setPriceValue(tmp_priceValue);
+			setPriceValueTMP(tmp_priceValue);
 		}else if (router.query.minPrice) {
 			var tmp_priceValue = [router.query.minPrice, priceValue[1]]
 			  setPriceValue(tmp_priceValue);
+			  setPriceValueTMP(tmp_priceValue);
 		  }else	if (router.query.maxPrice) {
 			var tmp_priceValue = [priceValue[0], router.query.maxPrice]
 			  setPriceValue(tmp_priceValue);
+			  setPriceValueTMP(tmp_priceValue);
 		  }
 		  if (router.query.cat_name) {
 			setCat_name(router.query.cat_name);
@@ -83,40 +92,24 @@ const Products = ({ products }) => {
 	const remove_minprice_selected = (selected) => {
 			var tmp_priceValue = [minPrice, priceValue[1]]
 			setPriceValue(tmp_priceValue);
+			setPriceValueTMP(tmp_priceValue);
 			setItemOffset(0);
 	  };
 	const remove_maxprice_selected = (selected) => {
 				var tmp_priceValue = [priceValue[0], maxPrice]
 				setPriceValue(tmp_priceValue);
+				setPriceValueTMP(tmp_priceValue);
 				setItemOffset(0);
 		};
 	const remove_discount_selected = (selected) => {
 			const filtered_discount_select = filter_option['discount'].filter(e => e !== selected.target.value)
-			var tmp_filter_option = {
-				"attributes":filter_option['attributes'],
-				"categories":filter_option['categories'],
-				"discount":filtered_discount_select,
-				"tags":filter_option['tags'],
-				"average_rating":filter_option['average_rating'],
-				"shipping":filter_option['shipping'],
-				"availability":filter_option['availability'],
-			}
-			setFilter_option(tmp_filter_option);
+			setFilter_option( { ...filter_option, discount:filtered_discount_select} );
 			setItemOffset(0);
 	  };
 
 	const remove_tags_selected = (selected) => {
 			const filtered_tags_select = filter_option['tags'].filter(e => e !== selected.target.value)
-			var tmp_filter_option = {
-				"attributes":filter_option['attributes'],
-				"categories":filter_option['categories'],
-				"discount":filter_option['discount'],
-				"tags":filtered_tags_select,
-				"average_rating":filter_option['average_rating'],
-				"shipping":filter_option['shipping'],
-				"availability":filter_option['availability'],
-			}
-			setFilter_option(tmp_filter_option);
+			setFilter_option( { ...filter_option, tags:filtered_tags_select,} );
 			setItemOffset(0);
 	  };
 
@@ -132,59 +125,24 @@ const Products = ({ products }) => {
 		 {
 			delete remove_attr_arr[remove_attr_name];
 		 }
-		var tmp_filter_option = {
-				"attributes":remove_attr_arr,
-				"categories":filter_option['categories'],
-				"discount":filter_option['discount'],
-				"tags":filter_option['tags'],
-				"average_rating":filter_option['average_rating'],
-				"shipping":filter_option['shipping'],
-				"availability":filter_option['availability'],
-			}
-			setFilter_option(tmp_filter_option);
+		
+			setFilter_option( { ...filter_option, attributes:remove_attr_arr,} );
 			setItemOffset(0);
 	  };
 	const remove_average_rating_selected = (selected) => {
 			const filtered_average_rating_select = filter_option['average_rating'].filter(e => e !== selected.target.value)
-			var tmp_filter_option = {
-				"attributes":filter_option['attributes'],
-				"categories":filter_option['categories'],
-				"discount":filter_option['discount'],
-				"tags":filter_option['tags'],
-				"average_rating":filtered_average_rating_select,
-				"shipping":filter_option['shipping'],
-				"availability":filter_option['availability'],
-			}
-			setFilter_option(tmp_filter_option);
+			setFilter_option( { ...filter_option, average_rating:filtered_average_rating_select,} );
 			setItemOffset(0);
 	  };
 	  
 	  const remove_shipping_selected = (selected) => {
 		const filtered_shipping_select = filter_option['shipping'].filter(e => e !== selected.target.value)
-		var tmp_filter_option = {
-			"attributes":filter_option['attributes'],
-			"categories":filter_option['categories'],
-			"discount":filter_option['discount'],
-			"tags":filter_option['tags'],
-			"average_rating":filter_option['average_rating'],
-			"shipping":filtered_shipping_select,
-			"availability":filter_option['availability'],
-		}
-		setFilter_option(tmp_filter_option);
+		setFilter_option( { ...filter_option, shipping:filtered_shipping_select,} );
 		setItemOffset(0);
   };
 	  const remove_availability_selected = (selected) => {
 		const filtered_availability_select = filter_option['availability'].filter(e => e !== selected.target.value)
-		var tmp_filter_option = {
-			"attributes":filter_option['attributes'],
-			"categories":filter_option['categories'],
-			"discount":filter_option['discount'],
-			"tags":filter_option['tags'],
-			"average_rating":filter_option['average_rating'],
-			"shipping":filter_option['shipping'],
-			"availability":filtered_availability_select,
-		}
-		setFilter_option(tmp_filter_option);
+		setFilter_option( { ...filter_option, availability:filtered_availability_select,} );
 		setItemOffset(0);
   };
 	  
@@ -198,12 +156,15 @@ const clearallClick = (event) => {
 			"average_rating":[],
 			"shipping":[],
 			"availability":[],
+			"productsearch":'',
 		});
 		setOrderby('menu_order');
 		setItemsPerPage(24);
 		setCat_name('');
 		setItemOffset(0);
-		setPriceValue([minPrice, maxPrice])
+		setPriceValue([minPrice, maxPrice]);
+		setPriceValueTMP([minPrice, maxPrice]);
+		setSearchBoxText('');
 };
 
 // ********************** Pagination event *******************************
@@ -277,10 +238,24 @@ const formEventChange = (event) => {
 		setItemOffset(0);
 	  };
 	
-const handleChangePriceRange = debounce((event, newValue) => {
-		setPriceValue(newValue);
-	  },500);
- 	
+const handleChangePriceRange = (event, newValue) => {
+			setPriceValueTMP(newValue);
+	  };
+	  
+const handleFilterPrice = () => {
+		setPriceValue(priceValueTMP);
+	  };
+	
+	  // Search event  	
+const handleSearchBoxBtn = () => {
+	const productsearch = jQuery('#productsearch').val();
+	setFilter_option( { ...filter_option, productsearch: productsearch } );
+}
+
+const handleSearchBox = (event) => {
+	setSearchBoxText(event.target.value);
+}
+
 // ************* ********************************  ************************ 
 // ************* Side var li search ************************************* 
 // ************* ********************************  ************************ 
@@ -355,16 +330,7 @@ const max_num_pages = Math.ceil(ProductsTmp.length / itemsPerPage);
 								<li key={cat_data[key].term_id}>
 									<label htmlFor={cat_data[key].name} className="" onClick={(e) => {
 										setCat_name(e.target.htmlFor);
-										var tmp_filter_option = {
-												"attributes":filter_option['attributes'],
-												"categories":[e.target.htmlFor],
-												"discount":filter_option['discount'],
-												"tags":filter_option['tags'],
-												"average_rating":filter_option['average_rating'],
-												"shipping":filter_option['shipping'],
-												"availability":filter_option['availability'],
-												}
-											setFilter_option(tmp_filter_option);
+											setFilter_option( { ...filter_option, categories:[e.target.htmlFor] } );
 											setItemOffset(0);
 									
 										}}
@@ -412,6 +378,11 @@ const encodeDataToURL = (data) => {
 			{
 				newQuery = newQuery.replaceAll("cat_name=&", "");
 				newQuery = newQuery.replaceAll("cat_name=", "");
+			}
+			if(searchBoxText == '')
+			{
+				newQuery = newQuery.replaceAll("productsearch=&", "");
+				newQuery = newQuery.replaceAll("productsearch=", "");
 			}
 			if(newQuery != '')
 			{
@@ -520,16 +491,7 @@ const encodeDataToURL = (data) => {
 				<div>
 					Category :  <button className='mx-1 my-1 bg-blue-500 hover:bg-blue-700 text-white py-1 px-2 rounded' onClick={(e) => {
 						setCat_name('');
-						var tmp_filter_option = {
-							"attributes":filter_option['attributes'],
-							"categories":[],
-							"discount":filter_option['discount'],
-							"tags":filter_option['tags'],
-							"average_rating":filter_option['average_rating'],
-							"shipping":filter_option['shipping'],
-							"availability":filter_option['availability'],
-						}
-						setFilter_option(tmp_filter_option);
+						setFilter_option( { ...filter_option, categories:[] } );
 						}}>{cat_name} &#10060;</button> 
 				</div> : null
 				}
@@ -647,17 +609,21 @@ const encodeDataToURL = (data) => {
 				<form method='' name='form_sidebar_filter' id='form_sidebar_filter'>
 				<input type="hidden" seturl="yes" name="cat_name" value={cat_name} default_cat_id="" id="cat_name"></input>
 				{ /* *************** Price range  ************** */}
+				<input type='text' onChange={handleSearchBox} name="productsearch" id='productsearch' value={searchBoxText} placeholder="Search..."></input>
+				<div onClick={handleSearchBoxBtn}>Search</div>
+				{ /* *************** Price range  ************** */}
 				{products.length > 20?
 				<div key={'price-'+priceValue}><b>Price Range</b>
 				<Slider
 					getAriaLabel={() => 'Temperature range'}
-					value={priceValue}
+					value={priceValueTMP}
 					onChange={handleChangePriceRange}
 					valueLabelDisplay="auto"
 					max={maxPrice}
 					min={minPrice}
 					step={10}
 				/>
+				<div onClick={handleFilterPrice}>Filter</div>
 				</div>: null}
 				{ /* *************** Category ************** */}
 				<div><b>Categories</b></div>	
