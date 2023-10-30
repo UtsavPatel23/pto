@@ -23,6 +23,7 @@ import { debounce, isEmpty } from 'lodash';
 import TextArea from './form-elements/textarea-field';
 import { handleCreateCustomer } from '../../utils/customer';
 import InputField from './form-elements/input-field';
+import LoginForm from '../my-account/login';
 
 // Use this for testing purposes, so you dont have to fill the checkout form over an over again.
 // const defaultCustomerInfo = {
@@ -345,7 +346,7 @@ const CheckoutForm = ( { countriesData , paymentModes } ) => {
         if(Cookies.get('token')) {
 			setTokenValid(1)
         }
-	}, []);
+	}, [tokenValid]);
 	useEffect(() => {
     			if(input?.billingDifferentThanShipping)
 				{
@@ -475,6 +476,7 @@ const CheckoutForm = ( { countriesData , paymentModes } ) => {
 		<>
 		{ loading && <img className="loader" src={Loader.src} alt="Loader" width={50}/> }
 			{ cart ? (
+				<div key="check-outform">
 				<form onSubmit={ handleFormSubmit } className="woo-next-checkout-form">
 					<div className="grid grid-cols-1 md:grid-cols-2 gap-20">
 						<div>
@@ -557,7 +559,6 @@ const CheckoutForm = ( { countriesData , paymentModes } ) => {
 									/>
 								</div>
 							) : null }
-
 						</div>
 						{/* Order & Payments*/ }
 						<div className="your-orders">
@@ -597,6 +598,8 @@ const CheckoutForm = ( { countriesData , paymentModes } ) => {
 						</div>
 					</div>
 				</form>
+				{!tokenValid?<LoginForm setTokenValid={setTokenValid}></LoginForm>:null}
+				</div>
 			) : null }
 		</>
 	);
