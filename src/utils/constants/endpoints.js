@@ -33,5 +33,8 @@ export const USER_LOGIN = `${ process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL }/wp-js
 export const USER_REGIS = `${ process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL }/wp-json/shop-nj/v1/registration`;
 export const USER_FORGOT = `${ process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL }/wp-json/shop-nj/v1/forgotpassword`;
 export const USER_KEYVERI = `${ process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL }/wp-json/shop-nj/v1/keyverification`;
-export const USER_CHANGEPASS = `${ process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL }/wp-json/shop-nj/v1/changepassword`;
+export const USER_CHANGEPASS = `${process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL}/wp-json/shop-nj/v1/changepassword`;
+
+//Order Tracking
+export const USER_ORDER_TRACKING = `${ process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL }/wp-json/shop-nj/v1/track-order`;
 
