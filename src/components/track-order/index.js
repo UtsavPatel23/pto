@@ -25,7 +25,7 @@ const TrackOrder = ({orderTrack,trckorderid}) => {
                                     {
                                         orderTrack.result.products.map((items, i) => {
                                             return (
-                                                <p>({i}) - {items.product_name}</p>
+                                                <p>({i+1}) - {items.product_name}</p>
                                             );
                                         })
                                     }
