@@ -290,7 +290,9 @@ const side_bar_li_search = (e) => {
 	if(cat_name != '')
 	{
 		cat_data =  get_categories_hierarchical(attr_count_data_final_list['categories']);
+		//console.log('cat_data 1 ',cat_data);
 		cat_data = [get_inner_category(cat_data,cat_name)];
+		//console.log('cat_data 2 ',cat_data);
 	}else{
 		cat_data =  get_categories_hierarchical(attr_count_data_final_list['categories']);
 		
@@ -306,6 +308,8 @@ var filter_shipping =  attr_count_data_final_list['shipping'];
 var filter_availability =  attr_count_data_final_list['availability'];
 
 console.log('ProductsTmp',ProductsTmp);
+//console.log('categories',attr_count_data_final_list['categories']);
+//console.log('cat_data',cat_data);
 
 const max_num_pages = Math.ceil(ProductsTmp.length / itemsPerPage);	
 	
@@ -328,9 +332,11 @@ const max_num_pages = Math.ceil(ProductsTmp.length / itemsPerPage);
 								{cat_data[key].cat_count != 0 ?  
 								<>
 								<li key={cat_data[key].term_id}>
-									<label htmlFor={cat_data[key].name} className="" onClick={(e) => {
-										setCat_name(e.target.htmlFor);
-											setFilter_option( { ...filter_option, categories:[e.target.htmlFor] } );
+									<label htmlFor={cat_data[key].name} data-cat_slug={cat_data[key].slug} className="" onClick={(e) => {
+										var catarr = [];
+										 catarr[e.target.getAttribute("data-cat_slug")] = e.target.htmlFor;
+										setCat_name(e.target.getAttribute("data-cat_slug"));
+											setFilter_option( { ...filter_option, categories:[catarr] } );
 											setItemOffset(0);
 									
 										}}

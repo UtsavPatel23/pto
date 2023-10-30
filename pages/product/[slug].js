@@ -27,6 +27,7 @@ export default function Product( { headerFooter, product,reviews } ) {
 			headerFooter={ headerFooter || {} }
 			seo={ product?.yoast_head_json ?? {} }
 			uri={ `/product/${ product?.slug ?? '' }` }
+			pageData = {product}
 		>
 			<SingleProduct product={ product } reviews={reviews}/>
 		</Layout>

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
+import { getSingleProductBreadcrumbs } from '../utils/customjs/custome';
 
 const convertBreadcrumb = string => {
   return string
@@ -11,10 +12,22 @@ const convertBreadcrumb = string => {
     .toUpperCase();
 };
 
-const Breadcrumbs = () => {
+const Breadcrumbs = ({pageData = ''}) => {
   const router = useRouter();
   const [breadcrumbs, setBreadcrumbs] = useState(null);
-
+  console.log('breadcrumbs',breadcrumbs);
+if(pageData != '')
+{
+  const {categories} =  pageData;
+  if(categories != undefined)
+  {
+     const carBreadcrumbs = getSingleProductBreadcrumbs(categories);
+     //setBreadcrumbs(carBreadcrumbs);
+  }
+ /* categories.map((category)=>{
+    console.log('category',category);
+  });*/
+}
   useEffect(() => {
     if (router) {
       const linkPath = router.asPath.split('/');

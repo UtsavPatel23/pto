@@ -108,11 +108,16 @@ export const get_products_filtered_by_filter_option = (ProductsTmp,filter_option
             //console.log('filter_option',filter_option['categories']);
             var cat_flg_arr = [];
             Object.keys(filter_option['categories']).some(key => {
-                //console.log('key',filter_option['categories'][key]);
+                //console.log('key',key);
+               // console.log('key',filter_option['categories'][key]);
+                var comper_slug = '';
+                Object.keys(filter_option['categories'][key]).some(key_cat => {
+                    comper_slug = key_cat;
+                });
                 
                     var found_cat = obj['categories'].find(function (element) {
-                        //console.log('element',element.name);
-                        if(filter_option['categories'][key] == element.name)
+                       // console.log('element',element.slug);
+                        if(comper_slug == element.slug)
                         {
                             return true;
                         }

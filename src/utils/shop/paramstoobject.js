@@ -57,14 +57,17 @@ export const paramsToObject = (params) => {
 		 {
 			if(value != '')
 			{
+				var catarr = [];
+				catarr[value] = '';
+
 				if (obj['categories'].hasOwnProperty('categories')) {
 					if (Array.isArray(obj['categories'])) {
-						obj['categories'].push(value);
+						obj['categories'].push(catarr);
 					} else {
-						obj['categories'] = [obj['categories'], value];
+						obj['categories'] = [obj['categories'], catarr];
 					}
 				} else {
-					obj['categories'].push(value);
+					obj['categories'].push(catarr);
 				}
 			}
 			

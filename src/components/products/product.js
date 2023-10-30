@@ -80,13 +80,17 @@ const Product = ( { product } ) => {
 			{(() => {
 				if ((product.type == 'simple') && (product.price > 0)) 
 				{
-					return (
+					var offpride =  Math.round(((product.regular_price-product.price)*100)/product.regular_price) ;
+					if(offpride > 0)
+					{
+						return (
 							<>
 							{
-							Math.round(((product.regular_price-product.price)*100)/product.regular_price)
+							offpride
 							}%Off
 							</>
-						)	
+						)
+					}
 				} 
 			})()} 
 			</div>

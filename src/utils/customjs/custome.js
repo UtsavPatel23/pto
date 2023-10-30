@@ -198,3 +198,23 @@ export function getCookie(cname) {
     }
     return '0';
   }
+
+
+  export function getSingleProductBreadcrumbs(categories)
+  {
+    var breadcrumbs = [];
+    var carRes = get_chield_by_parent_id(categories,0);
+    
+    while(carRes != undefined)
+    {
+        breadcrumbs.push({'breadcrumb':carRes.name,'href':'/'+carRes.term_link });
+        carRes = get_chield_by_parent_id(categories,carRes.id);
+    }
+      console.log('breadcrumbs cat',breadcrumbs);
+      return breadcrumbs;
+  }
+
+  function get_chield_by_parent_id(categories,parent)
+  {
+    return  categories.find((element)=> element['parent'] == parent );
+  }

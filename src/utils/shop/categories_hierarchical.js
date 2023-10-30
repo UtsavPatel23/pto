@@ -65,7 +65,7 @@ export const get_categories_hierarchical  = ( categories = '') =>
   function find_chield(categories,select_cat)
   {
     Object.keys(categories).map(key => {
-      if(categories[key].name != select_cat)
+      if(categories[key].slug != select_cat)
       {
           find_chield(categories[key]['children'],select_cat)
       }else{

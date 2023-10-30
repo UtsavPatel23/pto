@@ -16,7 +16,7 @@ import  Breadcrumbs  from './../breadcrumbs';
 
 
 
-const Layout = ({children, headerFooter, seo, uri }) => {
+const Layout = ({children, headerFooter, seo, uri ,pageData = ''}) => {
 	const { header, footer } = headerFooter || {};
 	const yoastSchema = seo?.schema ? replaceBackendWithFrontendUrl( JSON.stringify( seo.schema ) ) : null;
 console.log('headerFooter',headerFooter);
@@ -40,7 +40,7 @@ console.log('headerFooter',headerFooter);
 				<Header header={header}/>
 				
 				<main className="container mx-auto py-4 min-h-50vh">
-				<Breadcrumbs></Breadcrumbs>
+				<Breadcrumbs pageData={pageData}></Breadcrumbs>
 					{children}
 				</main>
 				<Footer footer={footer}/>
