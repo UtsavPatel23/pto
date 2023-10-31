@@ -2,7 +2,7 @@ import validator from 'validator';
 import isEmpty from './is-empty';
 
 
-const validateAndSanitizeCheckoutForm = ( data, hasStates = true ) => {
+const validateAndSanitizeCheckoutForm = ( data, hasStates = true,isShipping ) => {
 	
 	let errors = {};
 	let sanitizedData = {};
@@ -91,13 +91,16 @@ const validateAndSanitizeCheckoutForm = ( data, hasStates = true ) => {
 	addErrorAndSanitizedData( 'state', 'State/County', 0, 254, 'string', hasStates );
 	addErrorAndSanitizedData( 'postcode', 'Post code', 2, 10, 'postcode', true );
 	addErrorAndSanitizedData( 'phone', 'Phone number', 10, 15, 'phone', true );
-	addErrorAndSanitizedData( 'email', 'Email', 11, 254, 'email', true );
+	if(!isShipping)
+	{
+		addErrorAndSanitizedData( 'email', 'Email', 11, 254, 'email', true );
+	}
 	}else{
 	// The data.createAccount is a boolean value.
 	sanitizedData.createAccount = data.createAccount;
 	if(data.createAccount)
 	{
-		addErrorAndSanitizedData( 'createAccountPassword', 'Password', 6, 10, 'string', true );
+		addErrorAndSanitizedData( 'createAccountPassword', 'Password', 6, 30, 'string', true );
 	}
 	addErrorAndSanitizedData( 'orderNotes', '', 0, 250, 'string', false );
 	// @TODO Payment mode error to be handled later.

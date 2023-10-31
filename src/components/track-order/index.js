@@ -1,6 +1,7 @@
 import React from 'react'
 
 const TrackOrder = ({orderTrack,trckorderid}) => {
+    console.log('orderTrack',orderTrack);
     return (
             <div className="entry-content container">
              <div className="woocommerce">
@@ -23,18 +24,18 @@ const TrackOrder = ({orderTrack,trckorderid}) => {
                                 <td>{trckorderid}</td>
                                     <td>
                                     {
-                                        orderTrack.result.products.map((items, i) => {
+                                        orderTrack.result.products ? orderTrack.result.products.map((items, i) => {
                                             return (
-                                                <p>({i+1}) - {items.product_name}</p>
+                                                <p>({i+1}) - {items?.product_name}</p>
                                             );
-                                        })
-                                    }
+                                        }): null
+                                    } 
                                     </td>
                                     <td>{orderTrack.result.order_status}</td>
                                     <td colspan="3">
                                         <table>
                                         {
-                                            orderTrack.result.tracking.map((tracks, t) => {
+                                            orderTrack.result.tracking?orderTrack.result.tracking.map((tracks, t) => {
                                                 return (
                                                 <tr>
                                                     <td>{tracks.carrier_company}</td>
@@ -42,7 +43,7 @@ const TrackOrder = ({orderTrack,trckorderid}) => {
                                                     <td dangerouslySetInnerHTML={ {__html: tracks.link,} }></td>
                                                 </tr>
                                                 );
-                                            })
+                                            }):null
                                         }
                                         </table>
                                     </td>
@@ -56,14 +57,14 @@ const TrackOrder = ({orderTrack,trckorderid}) => {
                                     <th>Total</th>            
                                 </tr>            
                                     {
-                                        orderTrack.result.products.map((items, i) => {
+                                        orderTrack.result.products.length?orderTrack.result.products.map((items, i) => {
                                         return (
                                             <tr>
                                                     <td>{items.product_name}</td>
                                                     <td>{items.subtotal}</td>
                                             </tr>    
                                         );
-                                        })
+                                        }):null
                                     }
                                      <tr><td>Subtotal:</td> <td>{ orderTrack.result.subtotal }</td></tr>
                                      <tr><td>Shipping:</td> <td>{ orderTrack.result.shipping_method }</td></tr>

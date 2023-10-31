@@ -108,7 +108,7 @@ const Address = ({suburbs,input, countries, states, handleOnChange, isFetchingSt
 				isShipping={isShipping}
 				containerClassNames="mb-4"
 			/>
-			
+			{!isShipping?
 			<InputField
 				name="email"
 				type="email"
@@ -119,7 +119,7 @@ const Address = ({suburbs,input, countries, states, handleOnChange, isFetchingSt
 				errors={errors}
 				isShipping={isShipping}
 				containerClassNames="mb-4"
-			/>
+			/>:null}
 			{/*	@TODO Create an Account */}
 			{/*<div className="form-check">*/}
 			{/*	<label className="leading-7 text-sm text-gray-600" className="form-check-label">*/}

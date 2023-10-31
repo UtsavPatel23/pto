@@ -13,29 +13,17 @@ const convertBreadcrumb = string => {
 };
 
 const Breadcrumbs = ({pageData = ''}) => {
-  const router = useRouter();
-  const [breadcrumbs, setBreadcrumbs] = useState(null);
-  console.log('breadcrumbs',breadcrumbs);
-if(pageData != '')
-{
   const {categories} =  pageData;
-  if(categories != undefined)
-  {
-     const carBreadcrumbs = getSingleProductBreadcrumbs(categories);
-     //setBreadcrumbs(carBreadcrumbs);
-  }
- /* categories.map((category)=>{
-    console.log('category',category);
-  });*/
-}
+  const router = useRouter();
+  const [breadcrumbs, setBreadcrumbs] = useState(getSingleProductBreadcrumbs(categories));
+  
   useEffect(() => {
-    if (router) {
+    if (router && (pageData == '')) {
       const linkPath = router.asPath.split('/');
       linkPath.shift();
       const pathArray = linkPath.map((path, i) => {
         return { breadcrumb: path, href: '/' + linkPath.slice(0, i + 1).join('/') };
       });
-
       setBreadcrumbs(pathArray);
     }
   }, [router]);
@@ -46,7 +34,10 @@ if(pageData != '')
   
 if(breadcrumbs[0]?.breadcrumb != '')
 {
-  breadcrumbs.splice(-1,1)
+  if(pageData == '')
+  {
+    breadcrumbs.splice(-1,1)
+  }
   return (
     <nav aria-label="breadcrumbs">
       <ol className="breadcrumb">

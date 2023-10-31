@@ -202,15 +202,17 @@ export function getCookie(cname) {
 
   export function getSingleProductBreadcrumbs(categories)
   {
+    if(categories == undefined){
+      return null;
+    }
     var breadcrumbs = [];
     var carRes = get_chield_by_parent_id(categories,0);
     
     while(carRes != undefined)
     {
-        breadcrumbs.push({'breadcrumb':carRes.name,'href':'/'+carRes.term_link });
+        breadcrumbs.push({'breadcrumb':carRes.name,'href':'/categories/'+carRes.term_link });
         carRes = get_chield_by_parent_id(categories,carRes.id);
     }
-      console.log('breadcrumbs cat',breadcrumbs);
       return breadcrumbs;
   }
 

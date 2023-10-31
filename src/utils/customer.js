@@ -50,7 +50,7 @@ export const handleCreateCustomer = async(input) => {
 				shipping:input.shipping 
 			  };
 			  console.log('userData',userData);
-			await axios.post('/api/create-customers/',
+			await axios.post('/api/customer/create-customers/',
 			userData
 			).then((response) => {
 				console.log(response.data);
