@@ -36,6 +36,7 @@
     "react-hook-form": "^7.47.0",
     "react-image-gallery": "^1.2.11",
     "react-paginate": "^8.2.0",
+	"react-tailwindcss-datepicker": "^1.6.6",
     "sass": "^1.54.9",
     "stripe": "^10.8.0",
     "validator": "^13.7.0",
