@@ -13,6 +13,7 @@ import { isEmpty } from 'lodash';
 import Loader from "./../../public/loader.gif";
 import validateAndSanitizeCheckoutForm from '../../src/validator/checkout';
 import cx from 'classnames';
+import Router from "next/router";
 
 const defaultCustomerInfo = {
 	firstName: '',
@@ -341,7 +342,9 @@ export default function editAddress ({headerFooter,countriesData}){
 		//check token
         if(Cookies.get('token')) {
 			setTokenValid(1)
-        }
+        }else{
+			Router.push("/my-account/");
+		}
 	}, [tokenValid]);
 
         //console.log('input',input);
@@ -403,7 +406,7 @@ export default function editAddress ({headerFooter,countriesData}){
                 </>
             )
         }else{
-            return(
+           /* return(
                 <Layout headerFooter={ headerFooter || {} } seo={ seo }>
                     
                     <div className="col-span-12 ">
@@ -414,7 +417,7 @@ export default function editAddress ({headerFooter,countriesData}){
                     
                 </Layout>
                 
-            )
+            )*/
         }
 		
 };

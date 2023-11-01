@@ -12,10 +12,12 @@ import validateAndSanitizeCheckoutFormCustomers from '../../src/validator/custom
 import cx from 'classnames';
 import InputField from '../../src/components/checkout/form-elements/input-field';
 import Datepicker from "react-tailwindcss-datepicker"; 
+import Router from "next/router";
 
 
 
 export default function editAccount ({headerFooter,countriesData}){
+
         const seo = {
             title: 'Next JS WooCommerce REST API',
             description: 'Next JS WooCommerce Theme',
@@ -46,7 +48,7 @@ export default function editAccount ({headerFooter,countriesData}){
         //  On change Input event 
          const handleOnChange = async ( event) => {
             const { target } = event || {};
-            SetLoading(true);
+			SetLoading(true);
 			if(target != undefined)
 			{
 				const newState = { ...input, [ target.name ]: target.value  };
@@ -99,7 +101,7 @@ export default function editAccount ({headerFooter,countriesData}){
 			meta_data:[             
 				{    
 					"key":"customer_birthday",
-					"value":'1987-06-29'
+					"value":input.customer_birthday?.startDate
 				}
 			]};
 			if(input.password != '')
@@ -145,7 +147,7 @@ export default function editAccount ({headerFooter,countriesData}){
     useEffect(() => {
         if(Cookies.get('customerData')) {
 			var customerDataTMP =  JSON.parse(Cookies.get('customerData'));
-			//console.log('customerDataTMP',customerDataTMP);
+			console.log('customerDataTMP',customerDataTMP);
 			if(customerDataTMP != undefined && customerDataTMP != '')
 			{
 				
@@ -155,6 +157,10 @@ export default function editAccount ({headerFooter,countriesData}){
 					lastName:customerDataTMP.last_name,
 					email:customerDataTMP.email,
 					id:customerDataTMP.id,
+					customer_birthday:{
+						startDate:customerDataTMP?.meta_data?.customer_birthday,
+						endDate:customerDataTMP?.meta_data?.customer_birthday,
+					},
 				} );
 
 				
@@ -165,7 +171,9 @@ export default function editAccount ({headerFooter,countriesData}){
 		//check token
         if(Cookies.get('token')) {
 			setTokenValid(1)
-        }
+        }else{
+			Router.push("/my-account/");
+		}
 	
 	}, [tokenValid]);
 
@@ -256,7 +264,7 @@ export default function editAccount ({headerFooter,countriesData}){
                 </>
             )
         }else{
-            return(
+			/*return(
                 <Layout headerFooter={ headerFooter || {} } seo={ seo }>
                     
                     <div className="col-span-12 ">
@@ -267,7 +275,7 @@ export default function editAccount ({headerFooter,countriesData}){
                     
                 </Layout>
                 
-            )
+            )*/
         }
 		
 };

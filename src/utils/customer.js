@@ -10,7 +10,7 @@ export const get_customer = async(arg_user_email)=>
                 error: '',
             };
 			try {
-                const {data:resultCus} = await axios.get( '/api/get-customers?email='+arg_user_email);
+                const {data:resultCus} = await axios.get( '/api/customer/get-customers?email='+arg_user_email);
                 
                 if ( resultCus.error ) {
                     responseCus.error = resultCus.error;
