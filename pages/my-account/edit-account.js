@@ -1,33 +1,19 @@
 
 import React from 'react';
 import axios from 'axios';
-import { HEADER_FOOTER_ENDPOINT, SUBURB_API_URL } from '../../src/utils/constants/endpoints';
+import { HEADER_FOOTER_ENDPOINT } from '../../src/utils/constants/endpoints';
 import Layout from '../../src/components/layout';
 import { useEffect } from 'react';
 import Cookies from 'js-cookie';
 import { useState } from 'react';
 import Link from 'next/link';
-import Address from '../../src/components/checkout/user-address';
-import { get_countries, get_stateList } from '../../src/utils/customjs/custome';
-import { isEmpty } from 'lodash';
 import Loader from "./../../public/loader.gif";
-import validateAndSanitizeCheckoutForm from '../../src/validator/checkout';
+import validateAndSanitizeCheckoutFormCustomers from '../../src/validator/customers';
 import cx from 'classnames';
+import InputField from '../../src/components/checkout/form-elements/input-field';
+import Datepicker from "react-tailwindcss-datepicker"; 
 
-const defaultCustomerInfo = {
-	firstName: '',
-	lastName: '',
-	address1: '',
-	address2: '',
-	city: '',
-	country: 'AU',
-	state: '',
-	postcode: '',
-	email: '',
-	phone: '',
-	company: '',
-	errors: null
-}
+
 
 export default function editAccount ({headerFooter,countriesData}){
         const seo = {
@@ -42,180 +28,38 @@ export default function editAccount ({headerFooter,countriesData}){
         }
         const [tokenValid,setTokenValid]=useState(0);
 
-         const stateList = get_stateList();
-         const countries = get_countries();
-
          const initialState = {
-            billing: {
-                ...defaultCustomerInfo,
-            },
-            shipping: {
-                ...defaultCustomerInfo,
-            },
+		   firstName:'',
+           lastName:'',
+           email:'',
+           oldpassword:'',
+           password:'',
+           confirmPassword:'',
+           customer_birthday:'',
         }; 
-
-        const [theBillingsuburb, setTheBillingsuburb] = useState([]);
-         const [theShippingsuburb, setTheShippingsuburb] = useState([]);
-
-         const [isFetchingBillingSuburb, setIsFetchingBillingSuburb] = useState(false);
-         const [isFetchingShippingSuburb, setIsFetchingShippingSuburb] = useState(false);
-
-         const [ theBillingStates, setTheBillingStates ] = useState( stateList );
-         const [ theShippingStates, setTheShippingStates ] = useState( stateList );
-
-         const { billingCountries, shippingCountries } = countries || {};
-
-         const [ isFetchingBillingStates, setIsFetchingBillingStates ] = useState( false );
-         const [ isFetchingShippingStates, setIsFetchingShippingStates ] = useState( false );
+       
         
          const [ input, setInput ] = useState( initialState );
          const [loading, SetLoading] = useState(false);
 		 const [message ,setMessage] = useState('');
 
         //  On change Input event 
-         const handleOnChange = async ( event, isShipping = false, isBillingOrShipping = false ) => {
+         const handleOnChange = async ( event) => {
             const { target } = event || {};
             SetLoading(true);
-            if ( isBillingOrShipping ) {
-                //console.log('post 11');
-                if ( isShipping ) {
-                    await handleShippingChange( target );
-                } else {
-                    await handleBillingChange( target );
-                }
-            } 
+			if(target != undefined)
+			{
+				const newState = { ...input, [ target.name ]: target.value  };
+				setInput( newState );
+			}else{
+				const newState = { ...input, [ 'customer_birthday' ]: event  };
+				setInput( newState );
+			}
+			
             SetLoading(false);
         };
         
-        /* change event for shipping  */
-	const handleShippingChange = async ( target ) => {
-		if(target.name == 'postcode' && target.value != '')
-		{
-			if(target.value.length > 4)
-			{
-				return '';
-			}
-		}
-		
-		
-		if(target.name == 'city' && target.value != '')
-		{
-			const selectSuburb = theShippingsuburb.find((element) => element.location == target.value);
-			if(selectSuburb.state != undefined)
-			{
-				const newState = { ...input, shipping: { ...input?.shipping, [ target.name ]: target.value ,state:selectSuburb.state } };
-				setInput( newState );
-			}else{
-				const newState = { ...input, shipping: { ...input?.shipping, [ target.name ]: target.value } };
-				setInput( newState );
-			}
-			
-		}else{
-			const newState = { ...input, shipping: { ...input?.shipping, [ target.name ]: target.value } };
-			setInput( newState );
-		}
-
-		if(target.name == 'postcode' && target.value != '')
-		{
-			getAuspost(target.value,false);
-		}
-		//await setStatesForCountry( target, setTheShippingStates, setIsFetchingShippingStates );
-	};
-	/* change event for billng  */
-	const handleBillingChange = async ( target ) => {
-		if(target.name == 'postcode' && target.value != '')
-		{
-			if(target.value.length > 4)
-			{
-				return '';
-			}
-			
-		}
-		if(target.name == 'city' && target.value != '')
-		{
-			const selectSuburb = theBillingsuburb.find((element) => element.location == target.value);
-			if(selectSuburb.state != undefined)
-			{
-				const newState = { ...input, billing: { ...input?.billing, [ target.name ]: target.value ,state:selectSuburb.state } };
-				setInput( newState );
-			}else{
-				const newState = { ...input, billing: { ...input?.billing, [ target.name ]: target.value } };
-				setInput( newState );
-			}
-			
-		}else{
-			const newState = { ...input, billing: { ...input?.billing, [ target.name ]: target.value } };
-			setInput( newState );
-		}
-		if(target.name == 'postcode' && target.value != '')
-		{
-			getAuspost(target.value,true);
-		}
-		//await setStatesForCountry( target, setTheBillingStates, setIsFetchingBillingStates );
-	};
-
-
-    /******   getAuspost  *******/
-	const getAuspost = async (postcode,isBilling = true)=>{
-		//console.log('postcode W',postcode)
-		if(undefined != postcode)
-		{
-			var postcodeLength = postcode.length;
-			if(postcodeLength >= 3 && postcodeLength <= 4)
-			{
-				if(isBilling)
-				{
-					setIsFetchingBillingSuburb(true);
-				}else{
-					setIsFetchingShippingSuburb(true);
-				}
-	
-				//.log('postcode suburb',postcode)
-				var resDta = '';
-				await axios.post(SUBURB_API_URL,{postcode:postcode})
-				.then(res=> {
-					//console.log(res);
-					resDta = res.data;
-				})
-				.catch(err=> console.log(err))
-				//console.log('dataPost',resDta);
-				var errorsuburbRes = false;
-				if(!isEmpty(resDta) && resDta != '' && resDta != undefined)
-				{
-					if(!isEmpty(resDta.localities) &&  resDta.localities != '' && resDta.localities != undefined)
-					{
-						if(isBilling)
-						{
-							setTheBillingsuburb(resDta.localities.locality);
-							
-						}else{
-							setTheShippingsuburb(resDta.localities.locality);
-							
-						}
-					}else{
-						 errorsuburbRes = true;
-					}
-				}else{
-					errorsuburbRes = true;
-				}
-				if(errorsuburbRes)
-				{
-					//errors[postcode] = 'In valid post code';
-					if(isBilling)
-					{
-						setTheBillingsuburb({});
-					}else{
-						setTheShippingsuburb({});
-					}
-				}
-				setIsFetchingBillingSuburb(false);
-				setIsFetchingShippingSuburb(false);
-			}
-			
-		}
-		
-	};
-
+       
     /**
 	 * Handle form submit.
 	 *
@@ -225,8 +69,6 @@ export default function editAccount ({headerFooter,countriesData}){
 	 */
 	const handleFormSubmit = async ( event ) => {
 		event.preventDefault();
-
-		
 		/**
 		 * Validate Billing and Shipping Details
 		 *
@@ -235,41 +77,37 @@ export default function editAccount ({headerFooter,countriesData}){
 		 * 2. We are passing theBillingStates?.length and theShippingStates?.length, so that
 		 * the respective states should only be mandatory, if a country has states.
 		 */
-		// validation billing and shipping fileds
-		const billingValidationResult =  validateAndSanitizeCheckoutForm( input?.billing, theBillingStates?.length ,false);
-		const shippingValidationResult = validateAndSanitizeCheckoutForm( input?.shipping, theShippingStates?.length ,true);
+		// validation other fiield 
+		const ValidationResult =  validateAndSanitizeCheckoutFormCustomers( input);
+		console.log('ValidationResult',ValidationResult);
 		// update error message
 		setInput( {
 			...input,
-			billing: { ...input.billing, errors: billingValidationResult.errors },
-			shipping: { ...input.shipping, errors: shippingValidationResult.errors },
+			errors: ValidationResult.errors
 		} );
 
 		// If there are any errors, return.
-		if ( ! shippingValidationResult.isValid || ! billingValidationResult.isValid) {
+		if (!ValidationResult.isValid) {
 			return null;
 		}
-
-		//customerDataTMP.shipping.firstName = customerDataTMP.shipping.first_name;
-		//		customerDataTMP.shipping.lastName = customerDataTMP.shipping.last_name;
-		//		customerDataTMP.shipping.address1 = customerDataTMP.shipping.address_1;
-		//		customerDataTMP.shipping.address2 = customerDataTMP.shipping.address_2;
-
-        const userData = {...input,
-			billing: { ...input.billing, 
-				first_name:input.billing.firstName, 
-				last_name:input.billing.lastName, 
-				address_1:input.billing.address1,  
-				address_2:input.billing.address2,  
-			},
-			shipping: { ...input.shipping, 
-				first_name:input.shipping.firstName, 
-				last_name:input.shipping.lastName, 
-				address_1:input.shipping.address1,  
-				address_2:input.shipping.address2,  
-			},
-			};
-		  //console.log('userData 1',userData);
+		
+		//password
+        var userData = {
+			first_name:input.firstName,
+			last_name:input.lastName,
+			id:input.id,
+			meta_data:[             
+				{    
+					"key":"customer_birthday",
+					"value":'1987-06-29'
+				}
+			]};
+			if(input.password != '')
+			{
+				userData = {...userData,password:input.password}
+			}
+		  console.log('userData 1',userData);
+		
 		let responseCus = {
 			success: false,
 			customers: null,
@@ -279,14 +117,14 @@ export default function editAccount ({headerFooter,countriesData}){
 		await axios.post('/api/customer/update-customers/',
 		userData
 		).then((response) => {
-			//console.log(response.data);
+			console.log(response.data);
 			responseCus.success = true;
 			responseCus.customers = response.data.customers;
 			responseCus.message = "User update successfully";
 			//res.json( responseCus );
 		})
 		.catch((error) => {
-			//console.log('Err',error.response.data);
+			console.log('Err',error.response.data);
 			responseCus.error = error.response.data.error;
 			responseCus.message = "Invalid data";
 			//res.status( 500 ).json( responseCus  );
@@ -294,9 +132,13 @@ export default function editAccount ({headerFooter,countriesData}){
 		if(responseCus.success)
 		{
 			Cookies.set('customerData',JSON.stringify(responseCus.customers));
+			if(input.password != '')
+			{
+				Cookies.set('u8po1d',btoa(input.password));
+			}
 			setMessage(responseCus);
 		}
-		//console.log('responseCus',responseCus);
+		console.log('responseCus',responseCus);
 	};
 
     // set defaulte user login data 
@@ -306,30 +148,12 @@ export default function editAccount ({headerFooter,countriesData}){
 			//console.log('customerDataTMP',customerDataTMP);
 			if(customerDataTMP != undefined && customerDataTMP != '')
 			{
-				// Shipping field
-				customerDataTMP.shipping.firstName = customerDataTMP.shipping.first_name;
-				customerDataTMP.shipping.lastName = customerDataTMP.shipping.last_name;
-				customerDataTMP.shipping.address1 = customerDataTMP.shipping.address_1;
-				customerDataTMP.shipping.address2 = customerDataTMP.shipping.address_2;
-				setTheShippingsuburb([{
-					"location":customerDataTMP.shipping.city,
-					"state": customerDataTMP.shipping.state
-				  },]);
-
-				// Billing field
-				customerDataTMP.billing.firstName = customerDataTMP.billing.first_name;
-				customerDataTMP.billing.lastName = customerDataTMP.billing.last_name;
-				customerDataTMP.billing.address1 = customerDataTMP.billing.address_1;
-				customerDataTMP.billing.address2 = customerDataTMP.billing.address_2;
-				setTheBillingsuburb([{
-					"location":customerDataTMP.billing.city,
-					"state": customerDataTMP.billing.state
-				  },]);
-
+				
 				setInput( {
 					...input,
-					billing: customerDataTMP.billing,
-					shipping: customerDataTMP.shipping,
+					firstName:customerDataTMP.first_name,
+					lastName:customerDataTMP.last_name,
+					email:customerDataTMP.email,
 					id:customerDataTMP.id,
 				} );
 
@@ -342,12 +166,14 @@ export default function editAccount ({headerFooter,countriesData}){
         if(Cookies.get('token')) {
 			setTokenValid(1)
         }
+	
 	}, [tokenValid]);
 
-        //console.log('input',input);
-       
+        console.log('input',input);
+        
         if(tokenValid)
         {
+			const {errors} = input || {};
             return(
                 <>
                 { loading && <img className="loader" src={Loader.src} alt="Loader" width={50}/> }
@@ -355,37 +181,64 @@ export default function editAccount ({headerFooter,countriesData}){
                     <div className="col-span-12 ">
 						<p>{message.success?<>{message.message}</>:null}</p>
                         <form onSubmit={ handleFormSubmit } className="woo-next-checkout-form">
-                        {/*Billing Details*/ }
-						<div className="billing-details">
-							<h2 className="text-xl font-medium mb-4">Billing Details</h2>
-							<Address
-								suburbs={ theBillingsuburb }
-								states={ theBillingStates }
-								countries={ billingCountries.length ? billingCountries: shippingCountries }
-								input={ input?.billing }
-								handleOnChange={ ( event ) => handleOnChange( event, false, true ) }
-								isFetchingStates={ isFetchingBillingStates }
-								isFetchingSuburb={ isFetchingBillingSuburb }
-								isShipping={ false }
-								isBillingOrShipping
+							<InputField
+								name="firstName"
+								inputValue={input?.firstName}
+								required
+								handleOnChange={handleOnChange}
+								label="First name"
+								errors={errors}
+								containerClassNames="w-full overflow-hidden sm:my-2 sm:px-2 md:w-1/2"
 							/>
-						</div>
-                        {/*Shipping Details*/ }
-                        <div className="billing-details">
-									<h2 className="text-xl font-medium mb-4">Shipping Details</h2>
-									<Address
-										suburbs={ theShippingsuburb}
-										states={ theShippingStates }
-										countries={ shippingCountries }
-										input={ input?.shipping }
-										handleOnChange={ ( event ) => handleOnChange( event, true, true ) }
-										isFetchingStates={ isFetchingShippingStates }
-										isFetchingSuburb={ isFetchingShippingSuburb }
-										isShipping
-										isBillingOrShipping
-									/>
-						</div>
-                        <div className="woo-next-place-order-btn-wrap mt-5">
+							<InputField
+								name="lastName"
+								inputValue={input?.lastName}
+								required
+								handleOnChange={handleOnChange}
+								label="Last name"
+								errors={errors}
+								containerClassNames="w-full overflow-hidden sm:my-2 sm:px-2 md:w-1/2"
+							/>
+							<InputField
+								name="email"
+								inputValue={input?.email}
+								required
+								handleOnChange={handleOnChange}
+								label="Email"
+								errors={errors}
+								containerClassNames="w-full overflow-hidden sm:my-2 sm:px-2 md:w-1/2"
+							/>
+							<InputField
+								name="oldpassword"
+								inputValue={input?.oldpassword}
+								handleOnChange={handleOnChange}
+								label="Old password"
+								errors={errors}
+								containerClassNames="w-full overflow-hidden sm:my-2 sm:px-2 md:w-1/2"
+							/>
+							<InputField
+								name="password"
+								inputValue={input?.password}
+								handleOnChange={handleOnChange}
+								label="Password"
+								errors={errors}
+								containerClassNames="w-full overflow-hidden sm:my-2 sm:px-2 md:w-1/2"
+							/>
+							<InputField
+								name="confirmPassword"
+								inputValue={input?.confirmPassword}
+								handleOnChange={handleOnChange}
+								label="Confirm Password"
+								errors={errors}
+								containerClassNames="w-full overflow-hidden sm:my-2 sm:px-2 md:w-1/2"
+							/>
+							<Datepicker 
+							useRange={false} 
+							asSingle={true} 
+							value={input?.customer_birthday} 
+							onChange={handleOnChange} 
+							/> 
+                        	<div className="woo-next-place-order-btn-wrap mt-5">
 								<button
 									disabled={ loading }
 									className={ cx(

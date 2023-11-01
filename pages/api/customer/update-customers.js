@@ -8,9 +8,9 @@ const api = new WooCommerceRestApi({
 });
 
 /**
- * Get Products.
+ * update customers.
  *
- * Endpoint /api/get-products or '/api/get-products?perPage=2'
+ * Endpoint /api/post-customers or '/api/post-customers?perPage=2'
  *
  * @param req
  * @param res

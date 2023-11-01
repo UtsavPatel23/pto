@@ -73,6 +73,7 @@ function LoginForm({setTokenValid,tokenValid}) {
             
             //set token on localStorage
             Cookies.set('token',token);
+            Cookies.set('u8po1d',btoa(event.password));
             Cookies.set('user_lgdt',JSON.stringify(loligRes));
             //redirect to dashboard
             await get_customer(user_email);
