@@ -24,6 +24,7 @@ const Breadcrumbs = ({pageData = ''}) => {
       const pathArray = linkPath.map((path, i) => {
         return { breadcrumb: path, href: '/' + linkPath.slice(0, i + 1).join('/') };
       });
+      pathArray.splice(-1,1)
       setBreadcrumbs(pathArray);
     }
   }, [router]);
@@ -34,10 +35,6 @@ const Breadcrumbs = ({pageData = ''}) => {
   
 if(breadcrumbs[0]?.breadcrumb != '')
 {
-  if(pageData == '')
-  {
-    breadcrumbs.splice(-1,1)
-  }
   return (
     <nav aria-label="breadcrumbs">
       <ol className="breadcrumb">

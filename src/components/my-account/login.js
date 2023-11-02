@@ -8,6 +8,7 @@ import { get_customer } from '../../utils/customer';
 import axios from 'axios';
 import { USER_LOGIN } from '../../utils/constants/endpoints';
 import Cookies from 'js-cookie';
+import { Link } from '@mui/material';
 
 function LoginForm({setTokenValid,tokenValid}) {
 
@@ -126,6 +127,7 @@ function LoginForm({setTokenValid,tokenValid}) {
 								<button className=" mb-3 border bg-green-500" type="submit">Login</button>
 								{ loading && <img className="loader" src={Loader.src} alt="Loader"/> }
 							</form>
+                            <Link href="/my-account/lost-password/">Lost your password?</Link>
 						</div>
 					</React.Fragment>
     )
