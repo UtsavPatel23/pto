@@ -132,6 +132,7 @@ const CheckoutForm = ( { countriesData , paymentModes } ) => {
 		// validation other fiield 
 		const ValidationResult =  validateAndSanitizeCheckoutForm( input);
 		console.log('ValidationResult',ValidationResult);
+		
 		// update error message
 		setInput( {
 			...input,
@@ -144,9 +145,21 @@ const CheckoutForm = ( { countriesData , paymentModes } ) => {
 		if ( ! shippingValidationResult.isValid || ! billingValidationResult.isValid || !ValidationResult.isValid) {
 			return null;
 		}
+
+		
 		// cart shiiping cost error 
 		if(notice.length > 0)
 		{
+			return null;
+		}
+
+		// shipping validation 
+		if(shippingCost == undefined || shippingCost < 0)
+		{
+			setInput( {
+				...input,
+				errors: {shippingCost:'Please add post code properly and reshipping calculation.'}
+			} );
 			return null;
 		}
 
@@ -303,7 +316,7 @@ const CheckoutForm = ( { countriesData , paymentModes } ) => {
 	useEffect(() => {
         if(Cookies.get('customerData')) {
 			var customerDataTMP =  JSON.parse(Cookies.get('customerData'));
-			//console.log('customerDataTMP',customerDataTMP);
+			console.log('customerDataTMP',customerDataTMP);
 			if(customerDataTMP != undefined && customerDataTMP != '')
 			{
 				// Shipping field
@@ -331,6 +344,15 @@ const CheckoutForm = ( { countriesData , paymentModes } ) => {
 					billing: customerDataTMP.billing,
 					shipping: customerDataTMP.shipping,
 				} );
+
+				if(input?.billingDifferentThanShipping)
+				{
+					console.log('s ',customerDataTMP.billing.postcode);
+					 shippingCalculation(customerDataTMP.shipping.postcode);
+				}else{
+					console.log('b ',customerDataTMP.billing.postcode);
+					 shippingCalculation(customerDataTMP.billing.postcode);
+				}
 
 				
 			}
@@ -579,6 +601,8 @@ const CheckoutForm = ( { countriesData , paymentModes } ) => {
 								containerClassNames="mb-4 pt-4"
 								errors = {input?.errors ? input.errors : null}
 							/>
+							{input?.errors ?
+							<div className="invalid-feedback d-block text-red-500">{ input?.errors['shippingCost'] }</div>:null}
 							<div className="woo-next-place-order-btn-wrap mt-5">
 								<button
 									disabled={ isOrderProcessing }
