@@ -2,7 +2,7 @@
  * Internal Dependencies.
  */
  //import Products from '../../src/components/products';
- import { HEADER_FOOTER_ENDPOINT,SHOP_CATEGORIES_CAT_SLUG,SHOP_PRODUCTLIST_BY_PARAMETER} from '../../src/utils/constants/endpoints';
+ import { HEADER_FOOTER_ENDPOINT,SHOP_CATEGORIES_CAT_SLUG,SHOP_CATEGORIES_CAT_SLUG_CACHE,SHOP_PRODUCTLIST_BY_PARAMETER} from '../../src/utils/constants/endpoints';
  import isEmpty from 'is-empty';
  /**
   * External Dependencies.
@@ -13,11 +13,12 @@ import Products from '../../src/components/products';
 import Category from '../../src/components/categories/category';
 
 
- export default function cat_slug({ headerFooter, categories}) {
+ export default function cat_slug({ headerFooter, categories,cacheValid}) {
     //console.log('params',params);
     //console.log('products',products);
     const {products} = categories;
     console.log('categories',categories);
+    console.log('cacheValid',cacheValid);
     const {cat_list} = categories;
     
     if(isEmpty(products))
@@ -48,14 +49,30 @@ import Category from '../../src/components/categories/category';
 export async function getServerSideProps(context){
     const { data: headerFooterData } = await axios.get( HEADER_FOOTER_ENDPOINT );
    // const {data : res} = await axios.get(SHOP_PRODUCTLIST_BY_PARAMETER,context);
-    const {data : res_cat} = await axios.get(SHOP_CATEGORIES_CAT_SLUG,context);
+   const {params}  = context;
+   const { cat_slug } = params || {};
+   var lastSlug = cat_slug[Object.keys(cat_slug)[Object.keys(cat_slug).length - 1]];
+   let rsCat = null;
+   let cacheValid = 0; 
+    const {data : res_cat_cache} = await axios.get(SHOP_CATEGORIES_CAT_SLUG_CACHE+'product_cat_'+lastSlug+'.js');
+  if(res_cat_cache?.products != undefined)
+  {
+        rsCat = res_cat_cache;
+        cacheValid = 1; 
+  }else{
+      const {data : res_cat} = await axios.get(SHOP_CATEGORIES_CAT_SLUG,context);
+      rsCat = res_cat;
+      cacheValid = 0;
+  }
+
 	
     // Return the ID to the component
     return {
         props: {
             headerFooter: headerFooterData?.data ?? {},
             //products: res,
-            categories: res_cat,
+            categories: rsCat,
+            cacheValid: cacheValid,
         },
     };
   };
