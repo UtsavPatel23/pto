@@ -13,6 +13,8 @@ import Footer from './footer';
 import Seo from '../seo';
 import { replaceBackendWithFrontendUrl, sanitize } from '../../utils/miscellaneous';
 import  Breadcrumbs  from './../breadcrumbs';
+import { localstorage_cookiesClear } from '../../utils/customjs/custome';
+import { useEffect } from 'react';
 
 
 
@@ -20,6 +22,9 @@ const Layout = ({children, headerFooter, seo, uri ,pageData = ''}) => {
 	const { header, footer } = headerFooter || {};
 	const yoastSchema = seo?.schema ? replaceBackendWithFrontendUrl( JSON.stringify( seo.schema ) ) : null;
 console.log('headerFooter',headerFooter);
+	useEffect(()=>{
+		localstorage_cookiesClear();
+	}, [] )
 	return (
 		<AppProvider>
 			<div>

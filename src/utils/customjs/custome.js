@@ -23,27 +23,6 @@ export function get_count_total_discount(filter_discount)
     return total; 
 }
 
-export function setCookie(cname, cvalue, exdays) {
-    const d = new Date();
-    d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
-    let expires = "expires="+d.toUTCString();
-    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
-  }
-  
-export function getCookie(cname) {
-    let name = cname + "=";
-    let ca = document.cookie.split(';');
-    for(let i = 0; i < ca.length; i++) {
-      let c = ca[i];
-      while (c.charAt(0) == ' ') {
-        c = c.substring(1);
-      }
-      if (c.indexOf(name) == 0) {
-        return c.substring(name.length, c.length);
-      }
-    }
-    return "";
-  }
 
   export const getShipping = async(postcode,cartItems) => {
         var responce = {};
@@ -219,4 +198,27 @@ export function getCookie(cname) {
   function get_chield_by_parent_id(categories,parent)
   {
     return  categories.find((element)=> element['parent'] == parent );
+  }
+
+
+export  function localstorage_cookiesClear(){
+      var hours = 20; // to clear the localStorage after 1 hour
+                // (if someone want to clear after 8hrs simply change hours=8)
+    var now = new Date().getTime();
+    var setupTime = localStorage.getItem('setupTime');
+    if (setupTime == null) {
+      localStorage.setItem('setupTime', now)
+    } else {
+      if(now-setupTime > hours*60*60*1000) {
+
+        //remove token from cookies
+        Cookies.remove("token");
+        Cookies.remove("user_lgdt");
+        Cookies.remove('customerData');
+        Cookies.remove('coutData');
+
+        localStorage.clear()
+        localStorage.setItem('setupTime', now);
+      }
+    }
   }
