@@ -89,7 +89,7 @@ const createCheckoutSessionAndRedirect = async ( totalPriceDis,products, input, 
 		line_items:  [{
 			quantity: 1,
 			name: 'PTO',
-			images: [ 'https://pooltableoffers.com.au/wp-content/uploads/2023/10/product-test-100x100.webp' ],
+			images: [ 'https://pooltableoffers.com.au/wp-content/uploads/2023/09/logo.png' ],
 			amount: Math.round( ( totalPriceDis ) * 100 ),
 			currency: 'aud',
 		}],
