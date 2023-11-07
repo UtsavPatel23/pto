@@ -51,16 +51,3 @@ export const getProductBySlug = async ( productSlug = '' ) => {
 	);
 };
 
-/**
- * Get Products.
- *
- * @return {Promise<void>}
- */
- export const getCategoryData = async ( perPage = 50 ) => {
-	return await api.get(
-		'products/categories',
-		{
-			per_page: perPage || 50,
-		},
-	);
-};
