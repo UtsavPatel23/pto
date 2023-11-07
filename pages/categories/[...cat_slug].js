@@ -81,12 +81,15 @@ export async function getStaticProps(context){
   // Get static paths
   export async function getStaticPaths() {
 	const { data: catData } = await getCategoryData();
+	
 	const pathsData = [];
+	
 	catData.length && catData.map( ( cat ) => {
 		if ( cat.slug ) {
-			pathsData.push( { params: { cat_slug: [cat.slug ?? ''] } } );
+			pathsData.push( { params: { cat_slug: [cat.term_link ?? ''] } } );
 		}
 	} );
+	
 	return {
 		paths: pathsData,
 		fallback: true,
