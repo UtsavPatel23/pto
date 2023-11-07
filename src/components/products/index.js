@@ -10,7 +10,7 @@ import { paramsToObject } from '../../utils/shop/paramstoobject';
 import * as React from 'react';
 import Slider from '@mui/material/Slider';
 import { useRouter } from 'next/router';
-import {get_count_total_discount, go_to_main_filter} from '../../utils/customjs/custome';
+import {get_count_total_discount, go_to_main_filter, selectattributdefault} from '../../utils/customjs/custome';
 
 
 const Products = ({ products }) => {
@@ -299,7 +299,7 @@ const side_bar_li_search = (e) => {
 	}
 	
 console.log('filter sidebar',attr_count_data_final_list);
-var filter_attributes =  attr_count_data_final_list['attributes'];
+var filter_attributestmp =  attr_count_data_final_list['attributes'];
 var filter_discount =  attr_count_data_final_list['discount'];
 var count_total_discount = get_count_total_discount(filter_discount);
 var filter_tags =  attr_count_data_final_list['tags'];
@@ -307,7 +307,9 @@ var filter_average_rating =  attr_count_data_final_list['average_rating'];
 var filter_shipping =  attr_count_data_final_list['shipping'];
 var filter_availability =  attr_count_data_final_list['availability'];
 
-console.log('ProductsTmp',ProductsTmp);
+const filter_attributes = selectattributdefault(filter_attributestmp,filter_option);
+
+
 //console.log('categories',attr_count_data_final_list['categories']);
 //console.log('cat_data',cat_data);
 

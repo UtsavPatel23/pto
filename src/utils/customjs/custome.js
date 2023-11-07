@@ -1,5 +1,7 @@
 import { SHOP_SHIPPING_MULI } from "../constants/endpoints";
 import axios from 'axios';
+import Cookies from 'js-cookie';
+import { isEmpty } from "lodash";
 
 export function go_to_main_filter()
 {
@@ -201,7 +203,7 @@ export function get_count_total_discount(filter_discount)
   }
 
 
-export  function localstorage_cookiesClear(){
+export   function localstorage_cookiesClear(){
       var hours = 20; // to clear the localStorage after 1 hour
                 // (if someone want to clear after 8hrs simply change hours=8)
     var now = new Date().getTime();
@@ -210,15 +212,57 @@ export  function localstorage_cookiesClear(){
       localStorage.setItem('setupTime', now)
     } else {
       if(now-setupTime > hours*60*60*1000) {
+        if(Cookies.get('token')) {
+          //remove token from cookies
+          Cookies.remove("token");
+          Cookies.remove("user_lgdt");
+          Cookies.remove('customerData');
+          Cookies.remove('coutData');
 
-        //remove token from cookies
-        Cookies.remove("token");
-        Cookies.remove("user_lgdt");
-        Cookies.remove('customerData');
-        Cookies.remove('coutData');
-
-        localStorage.clear()
-        localStorage.setItem('setupTime', now);
+          localStorage.clear()
+          localStorage.setItem('setupTime', now);
+        }
       }
     }
   }
+
+export  function selectattributdefault(filter_attributes,filter_option)
+{
+  if(!isEmpty(filter_attributes) && (typeof window !== 'undefined'))
+  {
+    var sidebardata = localStorage.getItem('sidebardata');
+    if(sidebardata == undefined)
+    {
+      localStorage.setItem('sidebardata',JSON.stringify(filter_attributes));
+      //console.log('if ',sidebardata);
+    }else{
+      //console.log('else ',JSON.parse(sidebardata));
+      const tmpsidebar =  JSON.parse(sidebardata);
+      //console.log('filter_option select',filter_option['attributes']);
+      if(isEmpty(filter_option['attributes']))
+      {
+        localStorage.setItem('sidebardata',JSON.stringify(filter_attributes));
+      }else{
+
+        if(Object.keys(filter_attributes).length > 0) 
+        {
+          Object.keys(filter_attributes).map(function(key) {
+              filter_attributes[key] = tmpsidebar[key];
+          });
+        }
+        
+        
+      }
+    }
+    //console.log('not empty ',filter_attributes);
+    
+   /* filter_attributes  = Object.keys(filter_attributes)
+        .sort()
+        .reduce((accumulator, key) => {
+          accumulator[key] = filter_attributes[key];
+
+          return accumulator;
+        }, {});*/
+  }
+  return filter_attributes;
+}

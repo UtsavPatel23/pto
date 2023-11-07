@@ -15,7 +15,7 @@ export const get_attr_count_data_final_list = (ProductsTmp)=>{
         "tags":[],
         "average_rating":[],
         "shipping":[],
-        "availability":['Exclude out of stock']
+        "availability":['Include out of stock']
         };
     
     // ************* Create attribut filter object create ************************ 

@@ -261,21 +261,23 @@ if(!isEmpty(filter_option['shipping']))
 // ************* ********************************  ************************ 	
 // ************* filter product object availability  ************************ 
 // ************* ********************************  ************************ 
-if(!isEmpty(filter_option['availability']))
-{
+//if(!isEmpty(filter_option['availability']))
+//{
     const products_filtered_availability = ProductsTmp.filter(obj => {
         var tag_flg_arr = [];
-        Object.keys(filter_option['availability']).some(key => {
+        //Object.keys(filter_option['availability']).some(key => {
             //console.log('key',filter_option['average_rating'][key]);
-            if('Exclude out of stock' == filter_option['availability'][key])
+            if(isEmpty(filter_option['availability']))
             {
-                if(obj['stock_quantity'] >= 1)
-                {
-                    tag_flg_arr.push(true);
-                }
+                    if(obj['stock_quantity'] >= 1)
+                        {
+                            tag_flg_arr.push(true);
+                        } 
+            }else if('Include out of stock' == filter_option['availability'][0]){
+                tag_flg_arr.push(true);
             }
                 
-            });
+        //});
             return tag_flg_arr.find(function (element) {
                 if(true == element)
                 {
@@ -285,7 +287,7 @@ if(!isEmpty(filter_option['availability']))
     });
     ProductsTmp = products_filtered_availability;
     //console.log('ProductsTmp av a ',products_filtered_availability);
-}
+//}
 // ************* ********************************  ************************ 	
 // ************* filter product object priceValue  ************************ 
 // ************* ********************************  ************************ 
