@@ -85,7 +85,7 @@ export async function getStaticProps(context){
 	const pathsData = [];
 	
 	categories.length && categories.map( ( category ) => {
-		if ( category.slug ) {
+		if (!isEmpty(category.term_link)) {
 			pathsData.push( { params: { cat_slug: category.term_link ?? ''} } );
 		}
 	} );
