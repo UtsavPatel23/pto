@@ -1,6 +1,6 @@
 import { isEmpty } from "lodash";
 
-export const get_products_filtered_by_filter_option = (ProductsTmp,filter_option,priceValue) => {
+export const get_products_filtered_by_filter_option = (ProductsTmp,filter_option,setFilter_option,priceValue) => {
     // ************* ********************************  ************************ 
 // ************* filter product object attributes  ************************ 
 // ************* ********************************  ************************ 
@@ -258,6 +258,22 @@ if(!isEmpty(filter_option['shipping']))
     //console.log('ProductsTmp av a ',products_filtered_average_rating);
 }
 
+
+// ************* ********************************  ************************ 	
+// ************* filter product object priceValue  ************************ 
+// ************* ********************************  ************************ 
+if(!isEmpty(priceValue))
+{
+    const products_filtered_price_range = ProductsTmp.filter(obj => {
+        if((parseFloat(priceValue[0]) <= parseFloat(obj['price'])) && (parseFloat(obj['price']) <= parseFloat(priceValue[1])) )
+        {
+            return true;
+        }
+    });
+    ProductsTmp = products_filtered_price_range;
+    //console.log('ProductsTmp price range ',products_filtered_price_range);
+}
+
 // ************* ********************************  ************************ 	
 // ************* filter product object availability  ************************ 
 // ************* ********************************  ************************ 
@@ -285,22 +301,12 @@ if(!isEmpty(filter_option['shipping']))
                 }
             });
     });
-    ProductsTmp = products_filtered_availability;
+    if(!isEmpty(products_filtered_availability))
+    {
+        ProductsTmp = products_filtered_availability;
+    }
     //console.log('ProductsTmp av a ',products_filtered_availability);
 //}
-// ************* ********************************  ************************ 	
-// ************* filter product object priceValue  ************************ 
-// ************* ********************************  ************************ 
-if(!isEmpty(priceValue))
-{
-    const products_filtered_price_range = ProductsTmp.filter(obj => {
-        if((parseFloat(priceValue[0]) <= parseFloat(obj['price'])) && (parseFloat(obj['price']) <= parseFloat(priceValue[1])) )
-        {
-            return true;
-        }
-    });
-    ProductsTmp = products_filtered_price_range;
-    //console.log('ProductsTmp price range ',products_filtered_price_range);
-}
+
 return ProductsTmp;
 }

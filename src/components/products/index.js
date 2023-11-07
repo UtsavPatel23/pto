@@ -275,7 +275,7 @@ const side_bar_li_search = (e) => {
 // ************* ********************************  ************************ 
 // ************* filter product object ************************************* 
 // ************* ********************************  ************************ 
-	ProductsTmp = get_products_filtered_by_filter_option(ProductsTmp,filter_option,priceValue);
+	ProductsTmp = get_products_filtered_by_filter_option(ProductsTmp,filter_option,setFilter_option,priceValue);
 
 // ************* *******************************************  ************************ 
 // ************* Create filter object sidebar count(*) list  ************************ 
