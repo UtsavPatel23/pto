@@ -86,7 +86,7 @@ export async function getStaticProps(context){
 	
 	categories.length && categories.map( ( category ) => {
 		if (!isEmpty(category.term_link)) {
-			pathsData.push( { params: { cat_slug: category.term_link ?? ''} } );
+			pathsData.push( { params: { cat_slug: category.term_link ?? []} } );
 		}
 	} );
 	
