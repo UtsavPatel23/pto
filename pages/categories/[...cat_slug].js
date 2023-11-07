@@ -11,6 +11,7 @@
  import Layout from '../../src/components/layout';
 import Products from '../../src/components/products';
 import Category from '../../src/components/categories/category';
+import { getCategoryData } from '../../src/utils/products';
 
 
  export default function cat_slug({ headerFooter, categories,cacheValid}) {
@@ -46,7 +47,7 @@ import Category from '../../src/components/categories/category';
  }
 
 
-export async function getServerSideProps(context){
+export async function getStaticProps(context){
     const { data: headerFooterData } = await axios.get( HEADER_FOOTER_ENDPOINT );
    // const {data : res} = await axios.get(SHOP_PRODUCTLIST_BY_PARAMETER,context);
    const {params}  = context;
@@ -77,5 +78,19 @@ export async function getServerSideProps(context){
     };
   };
   
- 
+  // Get static paths
+  export async function getStaticPaths() {
+	const { data: catData } = await getCategoryData();
+	const pathsData = [];
+	catData.length && catData.map( ( cat ) => {
+		if ( cat.slug ) {
+			pathsData.push( { params: { cat_slug: [cat.slug ?? ''] } } );
+		}
+	} );
+	return {
+		paths: pathsData,
+		fallback: true,
+	};
+}
+
 
