@@ -11,7 +11,8 @@
  import Layout from '../../src/components/layout';
 import Products from '../../src/components/products';
 import Category from '../../src/components/categories/category';
-//import { getCategoryData } from '../../src/utils/products';
+import { getCategoryData } from '../../src/utils/products';
+import { FALLBACK} from '../../src/utils/slug';
 
 
  export default function cat_slug({ headerFooter, categories,cacheValid}) {
@@ -46,8 +47,8 @@ import Category from '../../src/components/categories/category';
     
  }
 
-
-export async function getServerSideProps(context){
+// getStaticProps
+export async function getStaticProps(context){
     const { data: headerFooterData } = await axios.get( HEADER_FOOTER_ENDPOINT );
    // const {data : res} = await axios.get(SHOP_PRODUCTLIST_BY_PARAMETER,context);
    const {params}  = context;
@@ -77,7 +78,7 @@ export async function getServerSideProps(context){
     };
   };
   
- /* export async function getStaticPaths() {
+ export async function getStaticPaths() {
 	const { data: categories } = await getCategoryData();
 	
 	// Expected Data Shape: [{ params: { slug: 'pendant' } }, { params: { slug: 'shirt' } }],
@@ -91,8 +92,8 @@ export async function getServerSideProps(context){
 	
 	return {
 		paths: pathsData,
-		fallback: true,
+		fallback: FALLBACK,
 	};
-}*/
+}
  
 
