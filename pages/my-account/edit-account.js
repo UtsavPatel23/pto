@@ -13,6 +13,7 @@ import cx from 'classnames';
 import InputField from '../../src/components/checkout/form-elements/input-field';
 import Datepicker from "react-tailwindcss-datepicker"; 
 import Router from "next/router";
+import Sidebar from '../../src/components/my-account/sidebar';
 
 
 
@@ -184,9 +185,14 @@ export default function editAccount ({headerFooter,countriesData}){
 			const {errors} = input || {};
             return(
                 <>
-                { loading && <img className="loader" src={Loader.src} alt="Loader" width={50}/> }
-                <Layout headerFooter={ headerFooter || {} } seo={ seo }>
-                    <div className="col-span-12 ">
+				<Layout headerFooter={ headerFooter || {} } seo={ seo }>
+					<div className='grid grid-cols-12 gap-4'>
+					<div className="col-span-4">
+					<Sidebar setTokenValid={setTokenValid}></Sidebar>
+					</div>
+					
+					<div className="col-span-8 ">
+						{ loading && <img className="loader" src={Loader.src} alt="Loader" width={50}/> }
 						<p>{message.success?<>{message.message}</>:null}</p>
                         <form onSubmit={ handleFormSubmit } className="woo-next-checkout-form">
 							<InputField
@@ -259,23 +265,11 @@ export default function editAccount ({headerFooter,countriesData}){
 								</button>
 							</div>
                         </form>
-                    </div>
-                </Layout>
+					</div>
+					</div>
+				</Layout>
                 </>
             )
-        }else{
-			/*return(
-                <Layout headerFooter={ headerFooter || {} } seo={ seo }>
-                    
-                    <div className="col-span-12 ">
-                        <Link href='/my-account/'>
-                            Please login  Go To my account
-                        </Link>
-                    </div>
-                    
-                </Layout>
-                
-            )*/
         }
 		
 };

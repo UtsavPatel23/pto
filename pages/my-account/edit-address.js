@@ -14,6 +14,7 @@ import Loader from "./../../public/loader.gif";
 import validateAndSanitizeCheckoutForm from '../../src/validator/checkout';
 import cx from 'classnames';
 import Router from "next/router";
+import Sidebar from '../../src/components/my-account/sidebar';
 
 const defaultCustomerInfo = {
 	firstName: '',
@@ -353,9 +354,15 @@ export default function editAddress ({headerFooter,countriesData}){
         {
             return(
                 <>
-                { loading && <img className="loader" src={Loader.src} alt="Loader" width={50}/> }
+                
                 <Layout headerFooter={ headerFooter || {} } seo={ seo }>
-                    <div className="col-span-12 ">
+				<div className='grid grid-cols-12 gap-4'>
+					<div className="col-span-4">
+					<Sidebar setTokenValid={setTokenValid}></Sidebar>
+					</div>
+					
+					<div className="col-span-8 ">
+						{ loading && <img className="loader" src={Loader.src} alt="Loader" width={50}/> }
 						<p>{message.success?<>{message.message}</>:null}</p>
                         <form onSubmit={ handleFormSubmit } className="woo-next-checkout-form">
                         {/*Billing Details*/ }
@@ -402,22 +409,10 @@ export default function editAddress ({headerFooter,countriesData}){
 							</div>
                         </form>
                     </div>
+                    </div>
                 </Layout>
                 </>
             )
-        }else{
-           /* return(
-                <Layout headerFooter={ headerFooter || {} } seo={ seo }>
-                    
-                    <div className="col-span-12 ">
-                        <Link href='/my-account/'>
-                            Please login  Go To my account
-                        </Link>
-                    </div>
-                    
-                </Layout>
-                
-            )*/
         }
 		
 };

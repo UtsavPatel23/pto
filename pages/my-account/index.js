@@ -7,6 +7,7 @@ import Cookies from 'js-cookie';
 
 import LoginForm from '../../src/components/my-account/login';
 import RegisterForm from '../../src/components/my-account/register';
+import Sidebar from '../../src/components/my-account/sidebar';
 
 
 
@@ -14,6 +15,7 @@ export default function Login ({headerFooter}){
 	
 	//get token
 	const [tokenValid,setTokenValid] = useState(0);
+	const [customerData,setCustomerData] = useState(0);
 
 	const seo = {
 		title: 'Next JS WooCommerce REST API',
@@ -33,43 +35,37 @@ export default function Login ({headerFooter}){
         if(Cookies.get('token')) {
 			setTokenValid(1)
         }
+		if(Cookies.get('customerData')) {
+			setCustomerData(JSON.parse(Cookies.get('customerData')));
+		}
     }, []);
 
-	//function logout
-	const logoutHanlder = async () => {
-		//remove token from cookies
-		Cookies.remove("token");
-		Cookies.remove("user_lgdt");
-		Cookies.remove('customerData');
-		Cookies.remove('coutData');
-		
-		setTokenValid(0);
-	};
-
+console.log('customerData',customerData);
 	
 	if(tokenValid)
 	{
 		return(
 			<Layout headerFooter={ headerFooter || {} } seo={ seo }>
-				
-				<div className="col-span-3 ">
-					<button onClick={logoutHanlder}>logout</button>
-				</div>
-				<div className="col-span-9 ">
-					User
+				<div className='grid grid-cols-12 gap-4'>
+				<div className="col-span-4">
+				<Sidebar setTokenValid={setTokenValid}></Sidebar>
 				</div>
 				
+				<div className="col-span-8 ">
+					User name : {customerData?.first_name}
+				</div>
+				</div>
 			</Layout>
 			)
 	}else{
 		return (
 			<Layout headerFooter={ headerFooter || {} } seo={ seo }>
-				<div className="col-span-3 ">side</div>
-				<div className="col-span-9 ">
+				<div className='grid grid-cols-12 gap-4'>
+				<div className="col-span-12 ">
 					<LoginForm setTokenValid={setTokenValid} tokenValid={tokenValid}></LoginForm>
 					<RegisterForm ></RegisterForm>
 				</div>
-			
+				</div>
 			</Layout>
 			
 		)
