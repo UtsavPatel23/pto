@@ -42,7 +42,7 @@ const ThankYouContent = () => {
 		getOrderData(586077);
 		
 	},[]);*/
-
+console.log('sessionData',sessionData);
 	const getOrderData = (id) => {
 		let data = '';
 		var tmpsubtotal = 0;

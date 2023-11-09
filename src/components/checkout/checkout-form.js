@@ -185,12 +185,12 @@ const CheckoutForm = ( { countriesData , paymentModes } ) => {
 		
 		// For stripe payment mode, handle the strip payment and thank you.
 		if ( 'stripe' === input.paymentMethod ) {
-			const createdOrderData = await handleStripeCheckout( shippingCost,couponName,totalPriceDis,input, cart?.cartItems, setRequestError, setCart, setIsOrderProcessing, setCreatedOrderData );
+			const createdOrderData = await handleStripeCheckout( shippingCost,couponName,totalPriceDis,input, cart?.cartItems, setRequestError, setCart, setIsOrderProcessing, setCreatedOrderData ,coutData,setCoutData);
 			return null;
 		}
 		
 		// For Any other payment mode, create the order and redirect the user to payment url.
-		const createdOrderData = await handleOtherPaymentMethodCheckout(shippingCost,couponName,input, cart?.cartItems, setRequestError, setCart, setIsOrderProcessing, setCreatedOrderData );
+		const createdOrderData = await handleOtherPaymentMethodCheckout(shippingCost,couponName,input, cart?.cartItems, setRequestError, setCart, setIsOrderProcessing, setCreatedOrderData ,coutData,setCoutData);
 		
 		if ( createdOrderData.paymentUrl ) {
 			window.location.href = createdOrderData.paymentUrl;
@@ -408,6 +408,14 @@ const CheckoutForm = ( { countriesData , paymentModes } ) => {
 				totalPriceSum = totalPriceSum - discount_cal;
 			}
 		}
+
+		if(coutData.redeemPrice != undefined)
+		{
+			if(coutData?.redeemPrice > 0)
+			{
+				totalPriceSum = totalPriceSum - coutData.redeemPrice;
+			}
+		}
 		
 		setDiscoutDis(discount_cal);
 		setTotalPriceDis(totalPriceSum);
@@ -586,7 +594,7 @@ const CheckoutForm = ( { countriesData , paymentModes } ) => {
 						<div className="your-orders">
 							{/*	Order*/ }
 							<h2 className="text-xl font-medium mb-4">Your Order</h2>
-							<YourOrder cart={ cart } shippingCost={shippingCost} discoutDis={discoutDis} totalPriceDis={totalPriceDis} notice={notice} postcodedis={postcodedis}/>
+							<YourOrder cart={ cart } shippingCost={shippingCost} discoutDis={discoutDis} totalPriceDis={totalPriceDis} notice={notice} postcodedis={postcodedis} coutData={coutData}/>
 
 							{/*Payment*/ }
 							<PaymentModes input={input}  handleOnChange={handleOnChange} paymentModes={paymentModes } />

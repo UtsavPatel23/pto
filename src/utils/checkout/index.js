@@ -51,12 +51,13 @@ export const handleOtherPaymentMethodCheckout = async (shippingCost,couponName, 
  *
  * @param setCreatedOrderData
  */
-export const handleStripeCheckout = async (shippingCost,couponName,totalPriceDis, input, products, setRequestError, setCart, setIsProcessing, setCreatedOrderData ) => {
+export const handleStripeCheckout = async (shippingCost,couponName,totalPriceDis, input, products, setRequestError, setCart, setIsProcessing, setCreatedOrderData ,coutData,setCoutData) => {
 	//console.log('input order ',input);
 	setIsProcessing( true );
-	const orderData = getCreateOrderData(shippingCost,couponName, input, products );
+	const orderData = getCreateOrderData(shippingCost,couponName, input, products ,coutData);
 	//console.log('input orderData',orderData);return '';
 	const customerOrderData = await createTheOrder( orderData, setRequestError, '' );
+	setCoutData('');
 	const cartCleared = await clearCart( setCart, () => {
 	} );
 	setIsProcessing( false );

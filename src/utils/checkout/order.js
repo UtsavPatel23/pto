@@ -31,7 +31,7 @@ export const getCreateOrderLineItems = ( products ) => {
  * @param products
  * @return {{shipping: {country: *, city: *, phone: *, address_1: (string|*), address_2: (string|*), postcode: (string|*), last_name: (string|*), company: *, state: *, first_name: (string|*), email: *}, payment_method_title: string, line_items: (*[]|*), payment_method: string, billing: {country: *, city: *, phone: *, address_1: (string|*), address_2: (string|*), postcode: (string|*), last_name: (string|*), company: *, state: *, first_name: (string|*), email: *}}}
  */
-export const getCreateOrderData = ( shippingCost,couponName,order, products ) => {
+export const getCreateOrderData = ( shippingCost,couponName,order, products ,coutData) => {
 	// Set the billing Data to shipping, if applicable.
 	const shippingData = order.billingDifferentThanShipping ? order.shipping : order.billing;
 	
@@ -83,7 +83,23 @@ export const getCreateOrderData = ( shippingCost,couponName,order, products ) =>
 			]
 			}};
 	}
-	
+	// Add redeem pride
+	if(coutData.redeemPrice != undefined)
+		{
+			if(coutData?.redeemPrice > 0)
+			{
+				tmpOrderData = { ...tmpOrderData, ...{
+					"fee_lines":[             
+						...tmpOrderData.fee_lines,
+						{    
+							"name":"Redeem Price:",
+							"total": '-'+coutData?.redeemPrice.toString()
+						}
+					]
+					}};
+			}
+		}
+
 	// Checkout data.
 	return tmpOrderData;
 };

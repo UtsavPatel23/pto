@@ -9,6 +9,7 @@ import { getShipping } from '../../utils/customjs/custome';
 import Loader from "./../../../public/loader.gif";
 import Cookies from 'js-cookie';
 import { isEmpty } from 'lodash';
+import RedeemPoints from './redeem-points';
 
 
 const CartItemsContainer = () => {
@@ -26,6 +27,15 @@ const CartItemsContainer = () => {
     const [couponCodeResTmp, setCouponCodeResTmp] = useState('');
 	const [loading, SetLoading] = useState(false);
 	const [coutData,setCoutData]  = useState('');
+	const [tokenValid,setTokenValid]=useState(0);
+	const [customerData,setCustomerData] = useState(0);
+
+	// Redeem point
+	const [redeem_your_pointsText, setRedeem_your_pointsText] =useState('');
+    const [messageRyp,setMessageRyp] =  useState({
+        success: false,
+		error: '',
+    });
 	
 	// Clear the entire cart.
 	const handleClearCart = async ( event ) => {
@@ -192,12 +202,32 @@ const CartItemsContainer = () => {
 			...coutData,
 			"CouponApply":''}
 			);
+		setCouponCodeText('');
+	}
+
+	/* Remove coupon  */
+	const removeRedeemPrice = ()=>{
+		setCoutData( {
+			...coutData,
+			"redeemPrice":''}
+			);
+		setMessageRyp({
+				success: false,
+				error: '',
+			})
+		setRedeem_your_pointsText('');
 	}
 
 	//hook useEffect variable data set
     useEffect(() => {
         if(Cookies.get('coutData')) {
 			setCoutData(JSON.parse(Cookies.get('coutData')));
+		}
+		if(Cookies.get('token')) {
+			setTokenValid(1);
+        }
+		if(Cookies.get('customerData')) {
+			setCustomerData(JSON.parse(Cookies.get('customerData')));
 		}
     }, []);
 
@@ -251,6 +281,14 @@ const CartItemsContainer = () => {
 			totalPriceSum = totalPriceSum - discount_cal;
 			}
 		}
+		if(coutData.redeemPrice != undefined)
+		{
+			if(coutData?.redeemPrice > 0)
+			{
+				totalPriceSum = totalPriceSum - coutData.redeemPrice;
+			}
+		}
+		
 		setDiscoutDis(discount_cal);
 		setTotalPriceDis(totalPriceSum);
 		
@@ -296,6 +334,17 @@ const CartItemsContainer = () => {
         						<input type='text' name="coupon" id="coupon_code" onChange={handleCouponCodeVariable} value={couponCodeText} className=" border border-sky-500"></input>
         						<button onClick={validCoupon}>Apply coupon</button>
 						</div>
+						{tokenValid?<RedeemPoints 
+							customerData={customerData} 
+							setCoutData={setCoutData} 
+							totalPrice={totalPrice} 
+							coutData={coutData}
+							redeem_your_pointsText ={redeem_your_pointsText}
+							setRedeem_your_pointsText = {setRedeem_your_pointsText}
+							messageRyp = {messageRyp}
+							setMessageRyp = {setMessageRyp}
+						></RedeemPoints>:null}
+						
 					</div>
 					
 					
@@ -330,6 +379,20 @@ const CartItemsContainer = () => {
 										)
 								}
 									
+							} 
+						})()}
+						{(() => {
+							if(coutData.redeemPrice != undefined) 
+							{
+								if(coutData.redeemPrice != '')
+								{
+									return (
+										<div className="flex grid grid-cols-3 bg-gray-100 mb-4">
+											<p className="col-span-2 p-2 mb-0">Redeem Points <button onClick={removeRedeemPrice}>Remove</button></p>
+											<p className="col-span-1 p-2 mb-0">-{cartItems?.[0]?.currency ?? ''}{ coutData.redeemPrice }</p>
+										</div>
+										)
+								}
 							} 
 						})()} 
 						<div className="flex grid grid-cols-3 bg-gray-100 mb-4">
