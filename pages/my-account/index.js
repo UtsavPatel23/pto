@@ -8,6 +8,7 @@ import Cookies from 'js-cookie';
 import LoginForm from '../../src/components/my-account/login';
 import RegisterForm from '../../src/components/my-account/register';
 import Sidebar from '../../src/components/my-account/sidebar';
+import { get_points } from '../../src/utils/customjs/custome';
 
 
 
@@ -41,7 +42,10 @@ export default function Login ({headerFooter}){
     }, []);
 
 console.log('customerData',customerData);
-	
+	 // redeem point  
+	 var rewardPoints = get_points(customerData);
+	 
+
 	if(tokenValid)
 	{
 		return(
@@ -53,6 +57,7 @@ console.log('customerData',customerData);
 				
 				<div className="col-span-8 ">
 					User name : {customerData?.first_name}
+					Points : {rewardPoints}
 				</div>
 				</div>
 			</Layout>

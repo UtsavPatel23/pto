@@ -5,15 +5,8 @@ const RedeemPoints = ({customerData,setCoutData,totalPrice,coutData,redeem_your_
 	
     
 
-    var rewardPointsString = customerData?.meta_data?._customer_after_reedem_reward_points;
-    var rewardPoints = 0;
+    var rewardPoints = get_points(customerData);
     
-    rewardPointsString = rewardPointsString.replaceAll("mulrp", "");
-    if(rewardPointsString != '')
-    {
-        rewardPoints = parseInt(rewardPointsString);
-    }
-    console.log('rewardPoints',rewardPoints);
     if(rewardPoints < 1)
     {
         return '';

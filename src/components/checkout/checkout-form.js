@@ -340,16 +340,8 @@ const CheckoutForm = ( { countriesData , paymentModes } ) => {
 				  },]);
 
 				 // redeem point  
-				var rewardPointsString = customerDataTMP?.meta_data?._customer_after_reedem_reward_points;
-				var rewardPoints = 0;
-				  
-				  rewardPointsString = rewardPointsString.replaceAll("mulrp", "");
-				  if(rewardPointsString != '')
-				  {
-					  rewardPoints = parseInt(rewardPointsString);
-				  }
-				 
-
+				var rewardPoints = get_points(customerDataTMP);
+				
 				setInput( {
 					...input,
 					billing: customerDataTMP.billing,

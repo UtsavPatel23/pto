@@ -8,6 +8,7 @@ import Bag from '../src/components/icons/Bag';
 import { AppContext } from '../src/components/context';
 import { HEADER_FOOTER_ENDPOINT, USER_LOGIN } from '../src/utils/constants/endpoints';
 import { isEmpty } from 'lodash';
+import Cookies from 'js-cookie';
 
 const ThankYouContent = () => {
 	const [ cart, setCart ] = useContext( AppContext );
@@ -118,6 +119,7 @@ console.log('sessionData',sessionData);
 					responseCus.success = true;
 					responseCus.customers = response.data.customers;
 					responseCus.message = "User update successfully";
+					Cookies.set('customerData',JSON.stringify(responseCus.customers));
 					//res.json( responseCus );
 				})
 				.catch((error) => {

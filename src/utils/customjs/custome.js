@@ -266,3 +266,17 @@ export  function selectattributdefault(filter_attributes,filter_option)
   }
   return filter_attributes;
 }
+
+export function get_points(customerData)
+{
+  // redeem point  
+  var rewardPointsString = customerData?.meta_data?._customer_after_reedem_reward_points;
+  var rewardPoints = 0;
+    
+    if(rewardPointsString != undefined)
+    {
+      rewardPointsString = rewardPointsString.replaceAll("mulrp", "");
+      rewardPoints = parseInt(rewardPointsString);
+    }
+    return rewardPoints;
+}
