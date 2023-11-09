@@ -15,7 +15,7 @@ import {
 } from '../../utils/checkout';
 import { useEffect } from 'react';
 import Cookies from 'js-cookie';
-import { getShipping, get_stateList } from '../../utils/customjs/custome';
+import { getShipping, get_points, get_stateList } from '../../utils/customjs/custome';
 import Loader from "./../../../public/loader.gif";
 import axios from 'axios';
 import { SUBURB_API_URL } from '../../utils/constants/endpoints';

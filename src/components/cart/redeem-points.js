@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { get_points } from "../../utils/customjs/custome";
 
 
 const RedeemPoints = ({customerData,setCoutData,totalPrice,coutData,redeem_your_pointsText,setRedeem_your_pointsText,messageRyp,setMessageRyp}) => {
