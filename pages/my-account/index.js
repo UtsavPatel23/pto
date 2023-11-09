@@ -54,10 +54,9 @@ console.log('customerData',customerData);
 				<div className="col-span-4">
 				<Sidebar setTokenValid={setTokenValid}></Sidebar>
 				</div>
-				
 				<div className="col-span-8 ">
-					User name : {customerData?.first_name}
-					Points : {rewardPoints}
+					{customerData?.first_name?<p>User name: {customerData?.first_name}</p>:null }
+					{rewardPoints>0?<p>Points: {rewardPoints}</p>:null }
 				</div>
 				</div>
 			</Layout>

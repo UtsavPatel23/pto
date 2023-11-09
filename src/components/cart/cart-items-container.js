@@ -10,6 +10,7 @@ import Loader from "./../../../public/loader.gif";
 import Cookies from 'js-cookie';
 import { isEmpty } from 'lodash';
 import RedeemPoints from './redeem-points';
+//import LoginForm from '../my-account/login';
 
 
 const CartItemsContainer = () => {
@@ -344,6 +345,7 @@ const CartItemsContainer = () => {
 							messageRyp = {messageRyp}
 							setMessageRyp = {setMessageRyp}
 						></RedeemPoints>:null}
+						{/*!tokenValid?<LoginForm setTokenValid={setTokenValid} setCustomerData={setCustomerData}></LoginForm>:null*/}
 						
 					</div>
 					
