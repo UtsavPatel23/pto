@@ -10,7 +10,7 @@ import { USER_LOGIN } from '../../utils/constants/endpoints';
 import Cookies from 'js-cookie';
 import { Link } from '@mui/material';
 
-function LoginForm({setTokenValid,tokenValid}) {
+function LoginForm({setTokenValid,tokenValid,setCustomerData}) {
 
     const createMarkup = ( data ) => ({
 		__html: data
@@ -77,7 +77,7 @@ function LoginForm({setTokenValid,tokenValid}) {
             Cookies.set('u8po1d',btoa(event.password));
             Cookies.set('user_lgdt',JSON.stringify(loligRes));
             //redirect to dashboard
-            await get_customer(user_email);
+            await get_customer(user_email,setCustomerData);
             setLoginFields( {
                 ...loginFields,
                 loading: false,

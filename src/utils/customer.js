@@ -2,7 +2,7 @@ import axios from "axios";
 import Cookies from "js-cookie";
 
 /* Get customer data */
-export const get_customer = async(arg_user_email)=>
+export const get_customer = async(arg_user_email,setCustomerData)=>
 		{
 			let responseCus = {
                 success: false,
@@ -21,6 +21,7 @@ export const get_customer = async(arg_user_email)=>
 				if(resultCus.customers != undefined)
 				{
 					responseCus.customers = resultCus.customers[0];
+					setCustomerData(resultCus.customers[0]);
 					Cookies.set('customerData',JSON.stringify(resultCus.customers[0]));
 				}
             } catch ( error ) {

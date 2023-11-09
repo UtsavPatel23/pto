@@ -67,8 +67,8 @@ console.log('customerData',customerData);
 			<Layout headerFooter={ headerFooter || {} } seo={ seo }>
 				<div className='grid grid-cols-12 gap-4'>
 				<div className="col-span-12 ">
-					<LoginForm setTokenValid={setTokenValid} tokenValid={tokenValid}></LoginForm>
-					<RegisterForm ></RegisterForm>
+					<LoginForm setTokenValid={setTokenValid} setCustomerData={setCustomerData} tokenValid={tokenValid}></LoginForm>
+					<RegisterForm></RegisterForm>
 				</div>
 				</div>
 			</Layout>
