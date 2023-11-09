@@ -339,10 +339,22 @@ const CheckoutForm = ( { countriesData , paymentModes } ) => {
 					"state": customerDataTMP.billing.state
 				  },]);
 
+				 // redeem point  
+				var rewardPointsString = customerDataTMP?.meta_data?._customer_after_reedem_reward_points;
+				var rewardPoints = 0;
+				  
+				  rewardPointsString = rewardPointsString.replaceAll("mulrp", "");
+				  if(rewardPointsString != '')
+				  {
+					  rewardPoints = parseInt(rewardPointsString);
+				  }
+				 
+
 				setInput( {
 					...input,
 					billing: customerDataTMP.billing,
 					shipping: customerDataTMP.shipping,
+					_customer_after_reedem_reward_points: rewardPoints,
 				} );
 
 				if(input?.billingDifferentThanShipping)

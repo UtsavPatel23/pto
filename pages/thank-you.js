@@ -6,7 +6,7 @@ import Layout from '../src/components/layout';
 import Loading from '../src/components/icons/Loading';
 import Bag from '../src/components/icons/Bag';
 import { AppContext } from '../src/components/context';
-import { HEADER_FOOTER_ENDPOINT } from '../src/utils/constants/endpoints';
+import { HEADER_FOOTER_ENDPOINT, USER_LOGIN } from '../src/utils/constants/endpoints';
 import { isEmpty } from 'lodash';
 
 const ThankYouContent = () => {
@@ -39,7 +39,7 @@ const ThankYouContent = () => {
 		
 	}, [ session_id ] );
 	/*useEffect( () => {
-		getOrderData(586077);
+		getOrderData(586167);
 		
 	},[]);*/
 console.log('sessionData',sessionData);
@@ -71,6 +71,70 @@ console.log('sessionData',sessionData);
 	}
 	console.log('orderData',orderData);
 	 
+	useEffect(()=>{
+		if(orderData?.id != undefined && orderData.fee_lines != undefined)
+		{
+			const findfee_linesData = orderData.fee_lines.find((element) => element.name == 'Redeem Price:');
+			const findmeta_dataData = orderData.meta_data.find((element) => element.key == '_reward_points_used');
+			const findMeta_dataUserReedemData = orderData.meta_data.find((element) => element.key == '_customer_after_reedem_reward_points');
+			console.log('findmeta_dataData',findmeta_dataData);
+			if(findfee_linesData.total < 0 && (findmeta_dataData == undefined) && (findMeta_dataUserReedemData.value > 0))
+			{
+
+				const newOrderData = {
+					_redeemed_reward_points: findfee_linesData.total*100,
+					orderId: orderData?.id,
+					redeem: 1,
+				};
+				axios.post( '/api/update-order', newOrderData )
+					.then( res => {
+		
+						console.log('res UPDATE DATA ORDER',res);
+					} )
+					.catch( err => {
+						console.log('err UPDATE DATA ORDER',err);
+					} )
+				//password
+				var userRedeemPoint = parseInt(findMeta_dataUserReedemData.value) + parseInt(newOrderData._redeemed_reward_points) ;
+				var userData = {
+					id:orderData?.customer_id,
+					meta_data:[             
+						{    
+							"key":"_customer_after_reedem_reward_points",
+							"value":userRedeemPoint
+						}
+					]};
+				
+				let responseCus = {
+					success: false,
+					customers: null,
+					message: '',
+					error: '',
+				};
+				axios.post('/api/customer/update-customers/',
+				userData
+				).then((response) => {
+					console.log(response.data);
+					responseCus.success = true;
+					responseCus.customers = response.data.customers;
+					responseCus.message = "User update successfully";
+					//res.json( responseCus );
+				})
+				.catch((error) => {
+					console.log('Err',error.response.data);
+					responseCus.error = error.response.data.error;
+					responseCus.message = "Invalid data";
+					//res.status( 500 ).json( responseCus  );
+				});
+			}else{
+				console.log('already user update redeem point');
+			}
+		}
+		
+		
+
+		
+	},[orderData]);
 		
 	return (
 		<div className="h-almost-screen">
