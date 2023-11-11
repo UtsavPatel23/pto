@@ -19,9 +19,10 @@ import Category from '../../src/components/categories/category';
     //console.log('params',params);
     //console.log('products',products);
     const {products} = categories;
+    const {cat_list} = categories;
+    const {cat_data} = categories;
     console.log('categories',categories);
     console.log('cacheValid',cacheValid);
-    const {cat_list} = categories;
     
     if(isEmpty(products))
     {
@@ -32,7 +33,11 @@ import Category from '../../src/components/categories/category';
         )
     }else{
         return (
-            <Layout headerFooter={headerFooter || {}}>
+            <Layout 
+            headerFooter={headerFooter || {}}
+            seo={ cat_data?.yoast_head_json ?? {} }
+            uri={ `/categories/${ cat_data?.term_link?? '' }` }
+            >
                 <div key={'cat_'+cat_list.length} className=" flex flex-wrap -mx-3 overflow-hidden product-filter-right ">
                 { cat_list.length ? cat_list.map( category => {
 					return (
