@@ -103,6 +103,7 @@ const CheckoutForm = ( { countriesData , paymentModes } ) => {
 	const [isFetchingBillingSuburb, setIsFetchingBillingSuburb] = useState(false);
 
 	const [tokenValid,setTokenValid]=useState(0);
+	const [customerData,setCustomerData] = useState(0);
 
 	/**
 	 * Handle form submit.
@@ -634,7 +635,7 @@ const CheckoutForm = ( { countriesData , paymentModes } ) => {
 						</div>
 					</div>
 				</form>
-				{!tokenValid?<LoginForm setTokenValid={setTokenValid}></LoginForm>:null}
+				{!tokenValid?<LoginForm setTokenValid={setTokenValid} setCustomerData={setCustomerData}></LoginForm>:null}
 				</div>
 			) : null }
 		</>

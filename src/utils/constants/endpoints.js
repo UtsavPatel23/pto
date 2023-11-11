@@ -39,3 +39,5 @@ export const USER_CHANGEPASS = `${process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL}/wp
 //Order Tracking
 export const USER_ORDER_TRACKING = `${ process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL }/wp-json/shop-nj/v1/track-order`;
 
+// Re captach 
+export const CAPTCHA_SITE_KEY = '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI';

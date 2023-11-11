@@ -5,7 +5,8 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
 import axios from 'axios';
-import { USER_REGIS } from '../../utils/constants/endpoints';
+import { CAPTCHA_SITE_KEY, USER_REGIS } from '../../utils/constants/endpoints';
+import ReCAPTCHA from "react-google-recaptcha"
 
 
 function RegisterForm() {
@@ -19,7 +20,8 @@ function RegisterForm() {
 		user_pass: '',
 		regis_loading: false,
 		regis_error: '',
-		regis_success: ''
+		regis_success: '',
+		captcha: '',
 	});
 	 // form validation rules 
 	 const validationSchema = Yup.object().shape({
@@ -78,6 +80,14 @@ function RegisterForm() {
 	};
 	
 	const { user_email, user_pass, regis_error,regis_success, regis_loading } = regisFields;
+	// ReCaptcha 
+	const onReCAPTCHAChange = async (captchaCode) => {
+		if (!captchaCode) {
+		  return;
+		}
+		setRegisFields({ ...regisFields, captcha: captchaCode });
+	  };
+	console.log('regisFields',regisFields);
     return (
         <React.Fragment>
 						<div className='shadow-md'>
@@ -104,7 +114,13 @@ function RegisterForm() {
 									</div>
 								</div>
 								<br/>
-								<button className="btn btn-primary mb-3 border bg-green-500" type="submit">Register</button>
+								<ReCAPTCHA
+								sitekey={CAPTCHA_SITE_KEY}
+								onChange={onReCAPTCHAChange}
+								theme="dark"
+								/>
+								<br/>
+								<button className="btn btn-primary mb-3 border bg-green-500" type="submit" disabled={regisFields.captcha === ""}>Register</button>
 								{ regis_loading && <img className="loader" src={Loader.src} alt="Loader"/> }
 							</form>
 						</div>

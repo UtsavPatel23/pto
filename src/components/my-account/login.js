@@ -9,6 +9,9 @@ import axios from 'axios';
 import { USER_LOGIN } from '../../utils/constants/endpoints';
 import Cookies from 'js-cookie';
 import { Link } from '@mui/material';
+import { CAPTCHA_SITE_KEY, USER_REGIS } from '../../utils/constants/endpoints';
+import ReCAPTCHA from "react-google-recaptcha"
+
 
 function LoginForm({setTokenValid,tokenValid,setCustomerData}) {
 
@@ -22,6 +25,7 @@ function LoginForm({setTokenValid,tokenValid,setCustomerData}) {
 		password: '',
 		userNiceName: '',
 		userEmail: '',
+		captcha: '',
 		loading: false,
 		error: ''
 	});
@@ -101,7 +105,15 @@ function LoginForm({setTokenValid,tokenValid,setCustomerData}) {
 
  
     
-    console.log('loginFields',loginFields);
+    // ReCaptcha 
+	const onReCAPTCHAChange = async (captchaCode) => {
+		if (!captchaCode) {
+		  return;
+		}
+		setLoginFields({ ...loginFields, captcha: captchaCode });
+	  };
+	console.log('loginFields',loginFields);
+
     return (
         <React.Fragment>
 						<div className='shadow-md p-4'>
@@ -124,7 +136,13 @@ function LoginForm({setTokenValid,tokenValid,setCustomerData}) {
 									</div>
 								</label>
 								<br/>
-								<button className=" mb-3 border bg-green-500" type="submit">Login</button>
+                                <ReCAPTCHA
+								sitekey={CAPTCHA_SITE_KEY}
+								onChange={onReCAPTCHAChange}
+								theme="dark"
+								/>
+								<br/>
+								<button className=" mb-3 border bg-green-500" type="submit" disabled={loginFields.captcha === ""}>Login</button>
 								{ loading && <img className="loader" src={Loader.src} alt="Loader"/> }
 							</form>
                             <Link href="/my-account/lost-password/">Lost your password?</Link>
