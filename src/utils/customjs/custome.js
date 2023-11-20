@@ -219,9 +219,10 @@ export   function localstorage_cookiesClear(){
           Cookies.remove('customerData');
           Cookies.remove('coutData');
 
-          localStorage.clear()
-          localStorage.setItem('setupTime', now);
+          
         }
+		localStorage.clear()
+        localStorage.setItem('setupTime', now);
       }
     }
   }
@@ -279,4 +280,12 @@ export function get_points(customerData)
       rewardPoints = parseInt(rewardPointsString);
     }
     return rewardPoints;
+}
+
+// Change Images size
+export function get_images_resize(url,size)
+{
+  var tmpImgUrl = url.split('.');
+	tmpImgUrl.splice(2, 1, tmpImgUrl.slice(-2, -1)[0]+size);
+	return tmpImgUrl.join('.');
 }
