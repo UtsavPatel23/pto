@@ -46,7 +46,7 @@ function RegisterForm() {
 			user_email: event.user_email,
 			user_pass: event.password,
 		};
-		setRegisFields( { ...regisFields, regis_loading: true } );
+		setRegisFields( { ...regisFields, regis_loading: true ,regis_error:'',regis_success:''} );
 
 		axios.post( USER_REGIS, regisData )
 			.then( res => {

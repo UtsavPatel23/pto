@@ -48,15 +48,15 @@ export default function editAddress ({headerFooter,countriesData}){
          const countries = get_countries();
 
          const initialState = {
-            billing: {
-                ...defaultCustomerInfo,
-            },
-            shipping: {
-                ...defaultCustomerInfo,
-            },
-        }; 
+				billing: {
+					...defaultCustomerInfo,
+				},
+				shipping: {
+					...defaultCustomerInfo,
+				},
+        	}; 
 
-        const [theBillingsuburb, setTheBillingsuburb] = useState([]);
+         const [theBillingsuburb, setTheBillingsuburb] = useState([]);
          const [theShippingsuburb, setTheShippingsuburb] = useState([]);
 
          const [isFetchingBillingSuburb, setIsFetchingBillingSuburb] = useState(false);
@@ -72,7 +72,13 @@ export default function editAddress ({headerFooter,countriesData}){
         
          const [ input, setInput ] = useState( initialState );
          const [loading, SetLoading] = useState(false);
-		 const [message ,setMessage] = useState('');
+		 const [message ,setMessage] = useState({
+										success: false,
+										customers: null,
+										message: '',
+										error: '',
+										loading: false,
+									});
 
         //  On change Input event 
          const handleOnChange = async ( event, isShipping = false, isBillingOrShipping = false ) => {
@@ -228,7 +234,12 @@ export default function editAddress ({headerFooter,countriesData}){
 	const handleFormSubmit = async ( event ) => {
 		event.preventDefault();
 
-		
+		setMessage({
+			...message,
+			message: '',
+			error: '',
+			loading: true, 
+			});
 		/**
 		 * Validate Billing and Shipping Details
 		 *
@@ -272,32 +283,32 @@ export default function editAddress ({headerFooter,countriesData}){
 			},
 			};
 		  //console.log('userData 1',userData);
-		let responseCus = {
-			success: false,
-			customers: null,
-			message: '',
-			error: '',
-		};
+		
 		await axios.post('/api/customer/update-customers/',
 		userData
 		).then((response) => {
 			//console.log(response.data);
-			responseCus.success = true;
-			responseCus.customers = response.data.customers;
-			responseCus.message = "User update successfully";
+			
+			Cookies.set('customerData',JSON.stringify(response.data.customers));
+			setMessage({
+				...message,
+				success:true,
+				message: "User update successfully",
+				loading: false, 
+				});
 			//res.json( responseCus );
 		})
 		.catch((error) => {
 			//console.log('Err',error.response.data);
-			responseCus.error = error.response.data.error;
-			responseCus.message = "Invalid data";
 			//res.status( 500 ).json( responseCus  );
+			setMessage({
+				...message,
+				success:false,
+				error:error.response.data.error,
+				message: "Invalid data",
+				loading: false, 
+				});
 		});
-		if(responseCus.success)
-		{
-			Cookies.set('customerData',JSON.stringify(responseCus.customers));
-			setMessage(responseCus);
-		}
 		//console.log('responseCus',responseCus);
 	};
 

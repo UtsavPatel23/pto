@@ -366,7 +366,7 @@ const max_num_pages = Math.ceil(ProductsTmp.length / itemsPerPage);
 
 	
 	const currentProduct = ProductsTmp.slice(itemOffset, endOffset);
-	//console.log('currentProduct',currentProduct);
+	console.log('currentProduct',currentProduct);
 // ************* ********************************  ************************ 
 // ************* Set url with parameter ************************************* 
 // ************* ********************************  ************************ 

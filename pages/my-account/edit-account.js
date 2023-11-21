@@ -44,7 +44,11 @@ export default function editAccount ({headerFooter,countriesData}){
         
          const [ input, setInput ] = useState( initialState );
          const [loading, SetLoading] = useState(false);
-		 const [message ,setMessage] = useState('');
+		 const [message ,setMessage] = useState({
+										success: false,
+										message: '',
+										error: '',
+									});
 
         //  On change Input event 
          const handleOnChange = async ( event) => {
@@ -72,6 +76,13 @@ export default function editAccount ({headerFooter,countriesData}){
 	 */
 	const handleFormSubmit = async ( event ) => {
 		event.preventDefault();
+		
+		setMessage( {
+			...message,
+			regis_error: '',
+			success: '',
+			regis_loading: true }
+			);
 		/**
 		 * Validate Billing and Shipping Details
 		 *
@@ -111,39 +122,47 @@ export default function editAccount ({headerFooter,countriesData}){
 			}
 		  console.log('userData 1',userData);
 		
-		let responseCus = {
-			success: false,
-			customers: null,
-			message: '',
-			error: '',
-		};
+		
 		await axios.post('/api/customer/update-customers/',
 		userData
 		).then((response) => {
 			console.log(response.data);
-			responseCus.success = true;
-			responseCus.customers = response.data.customers;
-			responseCus.message = "User update successfully";
+			setMessage( {
+				...message,
+				regis_error: '',
+				success: true,
+				regis_loading: false,
+				message:"User update successfully"}
+				);
+			Cookies.set('customerData',JSON.stringify(response.data.customers));
+			if(input.password != '')
+			{
+				Cookies.set('u8po1d',btoa(input.password));
+				setInput( {
+					...input,
+					oldpassword:'',
+					password:'',
+					confirmPassword:'',
+				} );
+			}
 			//res.json( responseCus );
 		})
 		.catch((error) => {
 			console.log('Err',error.response.data);
-			responseCus.error = error.response.data.error;
-			responseCus.message = "Invalid data";
+			
+			setMessage( {
+				...message,
+				regis_error: error.response.data.error,
+				success: false,
+				regis_loading: false,
+				message:"Invalid data"
+				}
+				);
 			//res.status( 500 ).json( responseCus  );
 		});
-		if(responseCus.success)
-		{
-			Cookies.set('customerData',JSON.stringify(responseCus.customers));
-			if(input.password != '')
-			{
-				Cookies.set('u8po1d',btoa(input.password));
-			}
-			setMessage(responseCus);
-		}
-		console.log('responseCus',responseCus);
+		
 	};
-
+console.log('message',message);
     // set defaulte user login data 
     useEffect(() => {
         if(Cookies.get('customerData')) {
@@ -221,6 +240,7 @@ export default function editAccount ({headerFooter,countriesData}){
 								label="Email"
 								errors={errors}
 								containerClassNames="w-full overflow-hidden sm:my-2 sm:px-2 md:w-1/2"
+								readonly = {1}
 							/>
 							<InputField
 								name="oldpassword"
