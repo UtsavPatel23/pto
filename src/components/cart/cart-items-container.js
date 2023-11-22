@@ -22,6 +22,7 @@ const CartItemsContainer = () => {
 	const [inputshipdisabled,setInputshipdisabled] = useState(false);
 	const [notice,setNotice] = useState('');
 	const [postcodedis,setPostcodedis] = useState('');
+	const [product_code,setProduct_code] = useState('');
 
 	// Coupon
 	const [couponCodeText, setCouponCodeText] = useState('');
@@ -47,10 +48,25 @@ const CartItemsContainer = () => {
 		await clearCart( setCart, setClearCartProcessing );
 	};
 
+	
 	/** Shipping calculation  */
-	const shippingCalculation = async(e) => {
-		const postcode = e.target.value;
-		//console.log('postcode',postcode);
+	useEffect(() => {
+		shippingCalculation();
+	},[totalPrice]);
+	const inputShipping = async(e) => {
+		if(e.target.value.length <= 4)
+		{
+			setProduct_code(e.target.value);
+		}
+	};
+
+	const shippingCalculation = async() => {
+		if(product_code == '')
+		{
+			return '';
+		}
+		const postcode = product_code;
+		console.log('postcode',postcode);
 		setPostcodedis(postcode);
 		//console.log('cart',cartItems.length);
 		if(postcode.length == 4 && (cartItems.length > 0))
@@ -332,7 +348,7 @@ const CartItemsContainer = () => {
 						) ) }
 						<div key="calculat-shipping">
 							<h5>Calculate Shipping Charge</h5>
-							<input type="number" onKeyUp={shippingCalculation}  size="4"  name="product_code" placeholder="POSTCODE"  disabled={inputshipdisabled} /> 
+							<input type="number" onChange={inputShipping}  size="4" value={product_code}  name="product_code" placeholder="POSTCODE"  disabled={inputshipdisabled} /> 
 							<button onClick={shippingCalculation}>Calculate</button>
 						</div>
 						<div key="coupon">

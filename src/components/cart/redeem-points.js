@@ -52,7 +52,7 @@ const RedeemPoints = ({customerData,setCoutData,totalPrice,coutData,redeem_your_
 	return (
 		<>
         <div key="redeem_your_points">
-			<h5 htmlFor="redeem_your_points" className="">Redeem Your Points:</h5> 
+			<h5 htmlFor="redeem_your_points" className="">Redeem Your Points ({rewardPoints}):</h5> 
 			 Message : {messageRyp.error} {messageRyp.success?<>APPLIED</>:null}<br></br>
 			 <br></br>
         	<input type='number' name="redeem_your_points" id="redeem_your_points" onChange={handleRedeemYourPoints} value={redeem_your_pointsText} className=" border border-sky-500"></input>
