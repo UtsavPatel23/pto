@@ -8,7 +8,7 @@
  import axios from 'axios';
  import { SHOP_SHIPPING_SINGLE } from '../../utils/constants/endpoints';
  import Link from 'next/link';
- import jQuery from "jquery";
+ import jQuery, { queue } from "jquery";
 import { useEffect } from 'react';
 import Warranty_tab from './Warranty_tab';
 import Shipping_guide_tab from './Shipping_guide_tab';
@@ -16,13 +16,14 @@ import Reward_points_tab from './Reward_points_tab';
 import Product from '../products/product';
 import Review from './../review/Review';
 import { isEmpty } from 'lodash';
-import { getNewProductTag } from '../../utils/customjs/custome';
+import { getNewProductTag, storeYourBrowsingHistory } from '../../utils/customjs/custome';
+import { Router } from 'next/router';
 
  const SingleProduct = ( { product,reviews} ) => {
-		 //console.log('in product',product);
 		 const [timer,setTimer] = useState(0);
 		 const [shippingCharge,setShippingCharge] = useState('<span>Calculate Shipping</span>');
 		 const [inputshipdisabled,setInputshipdisabled] = useState(false);
+		 const [yourBrowsingHistory,setYourBrowsingHistory] = useState('');
  // ************* ********************************  ************************ 
  // ************* Shipping Calculation ************************************* 
  // ************* ********************************  ************************ 
@@ -112,8 +113,11 @@ import { getNewProductTag } from '../../utils/customjs/custome';
 					}, 1000);
 				}
 			}
+			
 			},[])
-		  
+			useEffect(()=>{
+				setYourBrowsingHistory(storeYourBrowsingHistory(product));
+			},[product]);
 			if(!isEmpty(reviews))
 			{
 				reviews.sort(function(a, b){
@@ -121,7 +125,6 @@ import { getNewProductTag } from '../../utils/customjs/custome';
 				});      
 		
 			}
-			
 			
 	 return Object.keys( product ).length ? (
 		 <div className="single-product container mx-auto my-32 px-4 xl:px-0">
@@ -292,7 +295,6 @@ import { getNewProductTag } from '../../utils/customjs/custome';
 									<div className='grid grid-cols-4 gap-4'>
 									{
 										product.related_ids.map( product => {
-											
 												return (
 													<Product key={ product?.id } product={product} />
 												)
@@ -307,7 +309,35 @@ import { getNewProductTag } from '../../utils/customjs/custome';
 						}
 						
 					})()}
+					{(() => {
+						if(yourBrowsingHistory != '' && Object.keys(yourBrowsingHistory).length > 1)
+						{
+							var tmphistrydisData = yourBrowsingHistory;
+							var ybhpID = Object.keys(tmphistrydisData).pop();
+							return (<div key="yourBrowsingHistory-Products">
+								<b>Your Browsing History</b>
+								{	Object.keys(tmphistrydisData).length ? 
+							
+									<div className='grid grid-cols-4 gap-4'>
+									{
+										Object.keys(tmphistrydisData).map( key => {
+											if(ybhpID != key)
+											{
+												return (
+													<Product key={ yourBrowsingHistory[key]?.id } product={yourBrowsingHistory[key]} />
+												)
+											}
+										})
+									}
+									</div>
+								: 
+									null
+								}
+							</div>)
 						
+						}
+						
+					})()}	
 						
 				
 				 </div>{/* end product_info */ }

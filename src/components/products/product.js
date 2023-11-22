@@ -95,7 +95,7 @@ const Product = ( { product } ) => {
 			})()} 
 			</div>
 			{getNewProductTag(product.date_created) == 1 ? <>New</>:null}
-			{}<div>menu order : {product.menu_order}</div>
+			{/*}<div>menu order : {product.menu_order}</div>
 			<div>price : {product.price}</div>
 			<div>date_created : {product.date_created}</div>
 			<div>total_sales : {product.total_sales}</div>
@@ -126,7 +126,7 @@ const Product = ( { product } ) => {
 				
 			})}
 
-		{}
+		{*/}
 			{(() => {
 				if (product.stock_quantity >= 1) 
 				{

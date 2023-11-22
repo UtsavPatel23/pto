@@ -34,7 +34,7 @@ const YourOrder = ( { cart,shippingCost,discoutDis,totalPriceDis,notice,postcode
 						<tr className="bg-gray-200">
 							<td className=""/>
 							<td className="woo-next-checkout-total font-normal text-xl">Sub Total</td>
-							<td className="woo-next-checkout-total font-bold text-xl">{ cart?.cartItems?.[ 0 ]?.currency ?? '' }{ cart?.totalPrice ?? '' }</td>
+							<td className="woo-next-checkout-total font-bold text-xl">{ cart?.cartItems?.[ 0 ]?.currency ?? '' }{ cart?.totalPrice.toFixed(2) ?? '' }</td>
 						</tr>
 						{/* Shipping Cost */}
 						{(() => {

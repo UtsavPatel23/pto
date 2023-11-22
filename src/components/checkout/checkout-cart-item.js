@@ -21,7 +21,7 @@ const CheckoutCartItem = ( { item ,notice ,postcodedis} ) => {
 				{ item?.data?.name ?? '' }
 				{notice?<span className='invalid-feedback d-block text-red-500'>Change postcode OR Sorry please remove this product Undeliverable at {postcodedis}.</span>:null}	
 			</td>
-			<td className="woo-next-cart-element">{item?.currency ?? ''}{item?.line_subtotal ?? ''}</td>
+			<td className="woo-next-cart-element">{item?.currency ?? ''}{item?.line_subtotal.toFixed(2) ?? ''}</td>
 		</tr>
 	)
 };

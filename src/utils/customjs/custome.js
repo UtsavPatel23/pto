@@ -289,3 +289,35 @@ export function get_images_resize(url,size)
 	tmpImgUrl.splice(2, 1, tmpImgUrl.slice(-2, -1)[0]+size);
 	return tmpImgUrl.join('.');
 }
+
+// Set Your Browsing History
+export const storeYourBrowsingHistory = ( product ) => {
+	
+	if ( isEmpty( product ) ) {
+		return null;
+	}
+  var histryData = {};
+  var stroageData =  localStorage.getItem( 'YourBrowsingHistory' );
+  if(stroageData)
+  {
+    histryData = JSON.parse(stroageData);
+  }
+  histryData['p'+product.id]= product;
+  //console.log('histryData a',Object.keys(histryData).length);
+  var lenPro = 6;
+  if(Object.keys(histryData).length > lenPro)
+  {
+    var tmphistryData = histryData;
+    var resultLimit = {};
+    tmphistryData =  Object.keys(tmphistryData).slice(-lenPro);
+    //console.log('tmphistryData',tmphistryData);
+    Object.keys(tmphistryData).map( historypro => {
+      //console.log('historypro '+ tmphistryData[historypro] ,histryData[tmphistryData[historypro]]);
+      resultLimit[tmphistryData[historypro]] = histryData[tmphistryData[historypro]];
+   })
+   histryData = resultLimit;
+  }
+  
+  localStorage.setItem( 'YourBrowsingHistory', JSON.stringify(histryData));
+  return histryData;
+}

@@ -10,7 +10,7 @@ import Loader from "./../../../public/loader.gif";
 import Cookies from 'js-cookie';
 import { isEmpty } from 'lodash';
 import RedeemPoints from './redeem-points';
-//import LoginForm from '../my-account/login';
+import LoginForm from '../my-account/login';
 
 
 const CartItemsContainer = () => {
@@ -125,9 +125,15 @@ const CartItemsContainer = () => {
 					const toDay = new Date();
 					const date_expires = new Date(result.couponData.date_expires);
 					var used_byMsg = false;
+					var used_login = false;
 					if(!isEmpty(result.couponData.used_by))
 					{
-						var customerData = JSON.parse(Cookies.get('customerData'));
+						var customerDatastring = Cookies.get('customerData')
+						var customerData = {};
+						if(customerDatastring != undefined)
+						{
+							customerData = JSON.parse(customerDatastring);
+						}
 						if(customerData.email != undefined)
 						{
 							var used_coun_user = 0;
@@ -142,6 +148,8 @@ const CartItemsContainer = () => {
 								used_byMsg = true;
 							}
 							
+						}else{
+							used_login = true;
 						}
 						
 					}
@@ -170,6 +178,10 @@ const CartItemsContainer = () => {
 					}else if(used_byMsg)
 					{
 						response.error = "COUPON USAGE LIMIT HAS BEEN REACHED.";
+						response.success = false;
+					}else if(used_login)
+					{
+						response.error = "PLEASE USAGE LOGIN.";
 						response.success = false;
 					}
 					else{
@@ -345,7 +357,7 @@ const CartItemsContainer = () => {
 							messageRyp = {messageRyp}
 							setMessageRyp = {setMessageRyp}
 						></RedeemPoints>:null}
-						{/*!tokenValid?<LoginForm setTokenValid={setTokenValid} setCustomerData={setCustomerData}></LoginForm>:null*/}
+						{!tokenValid?<LoginForm setTokenValid={setTokenValid} setCustomerData={setCustomerData}></LoginForm>:null}
 						
 					</div>
 					
