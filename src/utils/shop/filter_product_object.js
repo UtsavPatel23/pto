@@ -14,7 +14,7 @@ export const get_products_filtered_by_filter_option = (ProductsTmp,filter_option
             let tempArr = ProductsTmp;    
 
             Object.keys(split_data).forEach(item => { 
-                const result = tempArr.filter(x => x.content_word.find(a => a.toLowerCase() === split_data[item]) || x.name.toLowerCase().match(split_data[item]));
+                const result = tempArr.filter(x => x.content_word.find(a => a.toLowerCase() === split_data[item] || a.toLowerCase() === key.toLowerCase()) || x.name.toLowerCase().match(split_data[item])  || x.sku.toLowerCase().match(split_data[item]));
                 if (result.length > 0) {
                     tempArr = result;
                 } else { 

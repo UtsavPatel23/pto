@@ -237,9 +237,15 @@ const CheckoutForm = ( { countriesData , paymentModes } ) => {
 			}
 			if(input?.billingDifferentThanShipping && isShipping)
 			{
-				await shippingCalculation(target.value);
+				if(target.name == 'postcode')
+				{
+					await shippingCalculation(target.value);
+				}
 			}else if(!input?.billingDifferentThanShipping){
+				if(target.name == 'postcode')
+				{
 				await shippingCalculation(target.value);
+				}
 			}
 		} else {
 			const newState = { ...input, [ target.name ]: target.value };

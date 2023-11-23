@@ -283,6 +283,15 @@ import { Router } from 'next/router';
 					<div key="brand-productcode">
 					{product.meta_data.product_code ? <div key="product_code"><b>Product Code :</b>{product.meta_data.product_code}-{product.sku}</div>:null}
 					{product.meta_data.custom_sku_code ? <div key="custom_sku_code"><b>SKU :</b>{product.meta_data.custom_sku_code}</div>:null}
+					{product.tags.length ? <div key="tags"><b>Tags :</b>
+									{
+										product.tags.map( tag => {
+												return (
+													<Link href={process.env.NEXT_PUBLIC_SITE_URL +'/product-tag/'+tag.slug}>{tag.name}</Link>
+												)
+										})
+									}
+							</div>:null}
 					{product.meta_data.bulky_iteam ? <div key="bulky_iteam"><b>Bulky Item :</b>{product.meta_data.bulky_iteam}</div>:null}
 					</div>
 					{(() => {
