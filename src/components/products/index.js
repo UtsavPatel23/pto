@@ -9,7 +9,7 @@ import { get_products_filtered_by_filter_option } from '../../utils/shop/filter_
 import { paramsToObject } from '../../utils/shop/paramstoobject';
 import * as React from 'react';
 import Slider from '@mui/material/Slider';
-import { useRouter } from 'next/router';
+import Router, { useRouter } from 'next/router';
 import {get_count_total_discount, go_to_main_filter, selectattributdefault} from '../../utils/customjs/custome';
 
 
@@ -424,7 +424,12 @@ const encodeDataToURL = (data) => {
 			}
 			newLocation +=  window.location.pathname + newQuery;
 			newLocation = newLocation.replaceAll("%5B%5D", "-multiple-");
-			window.history.pushState('Details', "search title", newLocation); 
+			console.log('newLocation',newLocation);
+			if(newLocation != '/shop')
+			{
+				window.history.pushState('Details', "search title", newLocation); 
+			}
+			//Router.push(newLocation);
 		  }
 		  go_to_main_filter();
 	  }, [currentProduct]); // <- add empty brackets here
