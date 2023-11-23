@@ -19,7 +19,7 @@ import { isEmpty } from 'lodash';
 import { getNewProductTag, storeYourBrowsingHistory } from '../../utils/customjs/custome';
 import { Router } from 'next/router';
 
- const SingleProduct = ( { product,reviews} ) => {
+ const SingleProduct = ( { product,reviews,paymentOptions} ) => {
 		 const [timer,setTimer] = useState(0);
 		 const [shippingCharge,setShippingCharge] = useState('<span>Calculate Shipping</span>');
 		 const [inputshipdisabled,setInputshipdisabled] = useState(false);
@@ -94,23 +94,53 @@ import { Router } from 'next/router';
 						var dis_price = ((product.price * product.meta_data.product_discount)/100);
 						setCashback((Math.round((product.price-dis_price))/10));
 						setCashbackpoints((Math.round((product.price-dis_price))*10));
-					var countDownDate = product_end_date.getTime();
-					// Update the count down every 1 second
-					var x = setInterval(function() {
-							var now = new Date().getTime();
-							var distance = countDownDate - now;
-							//console.log('distance',distance);
-							if (distance < 0) {
-								clearInterval(x);
-							}else{
-								var days = Math.floor(distance / (1000 * 60 * 60 * 24));
-								var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-								var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-								var seconds = Math.floor((distance % (1000 * 60)) / 1000);
-								var count_down_time = days + "d " + hours + "h " + minutes + "m " + seconds + "s ";
-									jQuery("#timer_count_down").html(count_down_time);
-							}
-					}, 1000);
+						var countDownDate = product_end_date.getTime();
+						// Update the count down every 1 second
+						var x = setInterval(function() {
+
+								// Get todays date and time
+								const now = new Date();
+								var dayNum = now.getDay();
+
+								
+								var daysToFri = 5 - (dayNum < 5? dayNum : dayNum - 7);
+								//console.log('daysToFri = ' + daysToFri);
+								var fridayNoon = new Date(+now);
+								fridayNoon.setDate(fridayNoon.getDate() + daysToFri);
+								fridayNoon.setHours(24,0,0,0);
+								
+								var ms = Math.ceil((fridayNoon - now)/1000)*1000;
+								
+								// Find the distance between now an the count down date
+								var distance = countDownDate - now.getTime();
+								
+								
+								// Time calculations for days, hours, minutes and seconds
+								var days_weekday = Math.floor(ms / (1000 * 60 * 60 * 24));
+								var days_end_date = Math.floor(distance % (1000 * 60 * 60 * 24 * 9) / (1000 * 60 * 60 * 24));
+								days_end_date = days_end_date + 1
+								var days  = 0;
+								if(days_weekday < days_end_date)
+								{
+									days = days_weekday;
+								}else{
+									days = days_end_date;
+								}
+								var hours = Math.floor((ms % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+								var minutes = Math.floor((ms % (1000 * 60 * 60)) / (1000 * 60));
+								var seconds = Math.floor((ms % (1000 * 60)) / 1000);
+
+								if(days >= 0)
+								{
+									jQuery('#timer_count_down').html('<span class="days inline-block"><div  class="wrapper">'+days+'d </div></span><span class="hours inline-block"><div class="wrapper"> '+hours+'h</div></span><span class="minutes inline-block"><div class="wrapper"> '+minutes+'m</div></span><span class="seconds inline-block"><div class="wrapper"> '+seconds+'s</div></span>');
+									//jQuery('.summary-inner h3.timer-heading').html('When Timer goes down, prices go up');
+								}
+								if (ms < 0) {
+									clearInterval(x);
+									//document.getElementById("timer_count_down").remove();
+								}
+								
+						}, 1000);
 				}
 			}
 			
@@ -238,6 +268,43 @@ import { Router } from 'next/router';
 							/> : null
 					}
 					</div>
+					{(() => {
+						if(!isEmpty(paymentOptions))
+						{
+								if(paymentOptions.length > 0)
+									{
+										return(
+											<div key="paymentOptions_list">
+												{
+														paymentOptions.map( paymentOption => {
+																if(paymentOption.payment_class != 'payment-hide')
+																{
+																	if(paymentOption.payment_url != '')
+																	{
+																		return (
+																			<Link className='inline-block'  href={paymentOption.payment_url}>
+																			<img src={ paymentOption.payment_logos } alt={ `${ paymentOption.payment_title } logo` }
+																				width="100"
+																				height="40"/>
+																			</Link>
+																		)
+																	}else{
+																		return (
+																			<img className='inline-block'  src={ paymentOption.payment_logos } alt={ `${ paymentOption.payment_title } logo` }
+																				width="100"
+																				height="40"/>
+																		)
+																	}
+																	
+																}
+																
+														})
+												}
+											</div>
+										);
+									}
+						}
+					})()}
 					<div key="product_info9"
 						dangerouslySetInnerHTML={ {
 							__html: product.description,

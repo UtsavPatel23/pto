@@ -29,7 +29,7 @@ export default function Product( { headerFooter, product,reviews } ) {
 			uri={ `/product/${ product?.slug ?? '' }` }
 			pageData = {product}
 		>
-			<SingleProduct product={ product } reviews={reviews}/>
+			<SingleProduct product={ product } reviews={reviews} paymentOptions={headerFooter?.footer?.options?.payments ?? ''}/>
 		</Layout>
 	);
 }

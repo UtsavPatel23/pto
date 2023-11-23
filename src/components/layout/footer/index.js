@@ -15,7 +15,7 @@ const Footer = ( { footer } ) => {
 	
 	const { copyrightText, footerMenuItems, sidebarOne, sidebarTwo, socialLinks } = footer || {};
 	const [ isMounted, setMount ] = useState( false );
-	
+	const paymentOptions = footer?.options?.payments;
 	
 	useEffect( () => {
 		setMount( true );
@@ -75,6 +75,38 @@ const Footer = ( { footer } ) => {
 						) : null }
 					</div>
 				</div>
+				{(() => {
+						if(!isEmpty(paymentOptions))
+						{
+								if(paymentOptions.length > 0)
+									{
+										return(
+											<div key="paymentOptions_list">
+												{
+														paymentOptions.map( paymentOption => {
+																	if(paymentOption.payment_url != '')
+																	{
+																		return (
+																			<Link className='inline-block' href={paymentOption.payment_url}>
+																			<img src={ paymentOption.payment_logos } alt={ `${ paymentOption.payment_title } logo` }
+																				width="100"
+																				height="40"/>
+																			</Link>
+																		)
+																	}else{
+																		return (
+																			<img className='inline-block'  src={ paymentOption.payment_logos } alt={ `${ paymentOption.payment_title } logo` }
+																				width="100"
+																				height="40"/>
+																		)
+																	}
+														})
+												}
+											</div>
+										);
+									}
+						}
+					})()}
 			</div>
 		</footer>
 	);
