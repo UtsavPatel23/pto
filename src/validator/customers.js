@@ -85,7 +85,10 @@ const validateAndSanitizeCheckoutFormCustomers = ( data) => {
 	
 	if(data.oldpassword != '' || data.password != '' || data.confirmPassword != '')
 	{
-		addErrorAndSanitizedData( 'oldpassword', 'Old Password', 6, 60, 'oldpassword', true );
+		if(Cookies.get('token') != 'loginphone')
+		{
+			addErrorAndSanitizedData( 'oldpassword', 'Old Password', 6, 60, 'oldpassword', true );
+		}
 		addErrorAndSanitizedData( 'password', 'Password', 6, 60, 'string', true );
 		addErrorAndSanitizedData( 'confirmPassword', 'Confirm Password', 6, 60, 'confirmPassword', true );
 	}

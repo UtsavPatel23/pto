@@ -45,10 +45,11 @@ export default function editAccount ({headerFooter,countriesData}){
          const [ input, setInput ] = useState( initialState );
          const [loading, SetLoading] = useState(false);
 		 const [message ,setMessage] = useState({
-										success: false,
-										message: '',
-										error: '',
-									});
+			 success: false,
+			 message: '',
+			 error: '',
+			});
+		const [token, setToken] = useState('');
 
         //  On change Input event 
          const handleOnChange = async ( event) => {
@@ -191,6 +192,7 @@ console.log('message',message);
 		//check token
         if(Cookies.get('token')) {
 			setTokenValid(1)
+			setToken(Cookies.get('token'));
         }else{
 			Router.push("/my-account/");
 		}
@@ -242,14 +244,14 @@ console.log('message',message);
 								containerClassNames="w-full overflow-hidden sm:my-2 sm:px-2 md:w-1/2"
 								readonly = {1}
 							/>
-							<InputField
+							{token != 'loginphone'?<InputField
 								name="oldpassword"
 								inputValue={input?.oldpassword}
 								handleOnChange={handleOnChange}
 								label="Old password"
 								errors={errors}
 								containerClassNames="w-full overflow-hidden sm:my-2 sm:px-2 md:w-1/2"
-							/>
+							/>:null}
 							<InputField
 								name="password"
 								inputValue={input?.password}
