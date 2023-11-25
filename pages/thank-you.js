@@ -39,10 +39,10 @@ const ThankYouContent = () => {
 		}
 		
 	}, [ session_id ] );
-	/*useEffect( () => {
-		getOrderData(586167);
+	useEffect( () => {
+		getOrderData(586218);
 		
-	},[]);*/
+	},[]);
 console.log('sessionData',sessionData);
 	const getOrderData = (id) => {
 		let data = '';
@@ -78,7 +78,8 @@ console.log('sessionData',sessionData);
 			const findfee_linesData = orderData.fee_lines.find((element) => element.name == 'Redeem Price:');
 			const findmeta_dataData = orderData.meta_data.find((element) => element.key == '_reward_points_used');
 			const findMeta_dataUserReedemData = orderData.meta_data.find((element) => element.key == '_customer_after_reedem_reward_points');
-			console.log('findmeta_dataData',findmeta_dataData);
+			if(findfee_linesData != undefined)
+			{
 			if(findfee_linesData.total < 0 && (findmeta_dataData == undefined) && (findMeta_dataUserReedemData.value > 0))
 			{
 
@@ -130,6 +131,7 @@ console.log('sessionData',sessionData);
 				});
 			}else{
 				console.log('already user update redeem point');
+			}
 			}
 		}
 		
