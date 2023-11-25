@@ -9,6 +9,7 @@ import LoginForm from '../../src/components/my-account/login';
 import RegisterForm from '../../src/components/my-account/register';
 import Sidebar from '../../src/components/my-account/sidebar';
 import { get_points } from '../../src/utils/customjs/custome';
+import LoginPhone from '../../src/components/my-account/login-phone';
 
 
 
@@ -67,6 +68,7 @@ console.log('customerData',customerData);
 				<div className='grid grid-cols-12 gap-4'>
 				<div className="col-span-12 ">
 					<LoginForm setTokenValid={setTokenValid} setCustomerData={setCustomerData} tokenValid={tokenValid}></LoginForm>
+					<LoginPhone setTokenValid={setTokenValid} setCustomerData={setCustomerData} tokenValid={tokenValid}></LoginPhone>
 					<RegisterForm></RegisterForm>
 				</div>
 				</div>

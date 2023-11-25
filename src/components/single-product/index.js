@@ -18,6 +18,7 @@ import Review from './../review/Review';
 import { isEmpty } from 'lodash';
 import { getNewProductTag, storeYourBrowsingHistory } from '../../utils/customjs/custome';
 import { Router } from 'next/router';
+import BuyNow from '../cart/buy-now';
 
  const SingleProduct = ( { product,reviews,paymentOptions} ) => {
 		 const [timer,setTimer] = useState(0);
@@ -210,7 +211,13 @@ import { Router } from 'next/router';
 							return (
 								<div>Hurry Up, Limited Stock available !</div>
 							)	
+						}else if(product.stock_quantity > 20) 
+						{
+							return (
+								<div>In stock</div>
+							)	
 						}
+
 					})()} 
 					</div>
 					<div key="product_info5"> 
@@ -224,7 +231,10 @@ import { Router } from 'next/router';
 							})()}
 					</div>
 					<div key="product_info6">
-					{ 'simple' === product?.type ? <AddToCart product={ product }/> : null }
+					{ 'simple' === product?.type ? <>
+						<AddToCart product={ product }/>
+						<BuyNow  product={ product } />
+						</> : null }
 					</div>
 					<div key="reward-wrapper">
 						<div key="reward-inner">
