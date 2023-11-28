@@ -16,8 +16,8 @@ export default NextAuth({
       clientSecret: process.env.FACEBOOK_SECRET
     }),*/
     GoogleProvider({
-      clientId: '967401960537-1b51qae10qcqdcq97qu50osjsc36kcmd.apps.googleusercontent.com',
-      clientSecret: 'GX-6FSJgLBJXM_OiXaWBCS4o'
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET
     }),
     // Passwordless / email sign in
     /*EmailProvider({
