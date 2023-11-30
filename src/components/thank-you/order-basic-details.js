@@ -21,7 +21,7 @@ function orderBasicDetails({orderData,sessionData}) {
 							</tr>
 							<tr>
 								<td className="px-4 py-3">Email</td>
-								<td className="px-4 py-3">{sessionData?.customer_email ?  sessionData?.customer_email   : <>{orderData?.billing?.email ? <p>{orderData?.billing?.email} </p>:null}</>}</td>
+								<td className="px-4 py-3">{sessionData?.customer_email ? <>{sessionData?.customer_email}</>    : <>{orderData?.billing?.email ? <p>{orderData?.billing?.email} </p>:null}</>}</td>
 							</tr>
 							<tr>
 								<td className="px-4 py-3">Total</td>
