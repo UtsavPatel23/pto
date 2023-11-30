@@ -4,25 +4,19 @@ import Link from 'next/link';
 import axios from 'axios';
 import Layout from '../src/components/layout';
 import Loading from '../src/components/icons/Loading';
+import Bag from '../src/components/icons/Bag';
 import { AppContext } from '../src/components/context';
 import { HEADER_FOOTER_ENDPOINT, USER_LOGIN } from '../src/utils/constants/endpoints';
 import { isEmpty } from 'lodash';
 import Cookies from 'js-cookie';
-import Bacs from './../src/components/thank-you/bacs';
-import OrderBasicDetails from './../src/components/thank-you/order-basic-details';
-import OrderDetails from './../src/components/thank-you/order-details';
-import OrderAddress from './../src/components/thank-you/order-address';
 
-
-const ThankYouContent = ({headerFooter}) => {
+const ThankYouContent = () => {
 	const [ cart, setCart ] = useContext( AppContext );
 	const [ isSessionFetching, setSessionFetching ] = useState( false );
 	const [ sessionData, setSessionData ] = useState( {} );
 	const session_id = process.browser ? Router.query.session_id : null;
-	const orderPostnb = process.browser ? Router.query.orderPostnb : null;
 	const [ orderData, setOrderData ] = useState( {} );
 	const [subtotal,setSubtotal] = useState(0);
-	var paymentModes = headerFooter?.footer?.options?.nj_payment_method ?? '';
 	
 	useEffect( () => {
 		setSessionFetching( true );
@@ -32,43 +26,23 @@ const ThankYouContent = ({headerFooter}) => {
 			
 			if ( session_id ) {
 				axios.get( `/api/get-stripe-session/?session_id=${ session_id }` )
-				.then( ( response ) => {
-					setSessionData( response?.data ?? {} );
-					getOrderData(response?.data?.metadata?.orderPostID);
-					setSessionFetching( false );
-				} )
-				.catch( ( error ) => {
-					console.log( 'error',error );
-					setSessionFetching( false );
-				} );
+					.then( ( response ) => {
+						setSessionData( response?.data ?? {} );
+						getOrderData(response?.data?.metadata?.orderPostID);
+						setSessionFetching( false );
+					} )
+					.catch( ( error ) => {
+						console.log( error );
+						setSessionFetching( false );
+					} );
 			}
-			console.log('session_id',session_id);
 		}
 		
 	}, [ session_id ] );
-
 	useEffect( () => {
-		setSessionFetching( true );
-		if ( process.browser ) {
-			localStorage.removeItem( 'woo-next-cart' );
-			setCart( null );
-			
-			if ( orderPostnb ) {
-				if(window.atob(orderPostnb))
-				{
-					console.log('orderPostnb consv',orderPostnb);
-					getOrderData(window.atob(orderPostnb));
-					setSessionFetching( false );
-				 }
-				 
-			}
-		}
-	}, [ orderPostnb ] );
-	console.log('orderPostnb',orderPostnb);
-	/*useEffect( () => {
 		getOrderData(586218);
 		
-	},[]);*/
+	},[]);
 console.log('sessionData',sessionData);
 	const getOrderData = (id) => {
 		let data = '';
@@ -171,19 +145,117 @@ console.log('sessionData',sessionData);
 			<div className="w-600px mt-10 m-auto">
 				{ isSessionFetching ? <Loading/> : (
 					<>
-						<OrderBasicDetails orderData={orderData} sessionData={sessionData} />
-						
-						{orderData?.payment_method_title == 'bacs'? <>
-						<Bacs paymentModes={paymentModes}></Bacs>
-						</> : null}
-
+						<h2 className="mb-6 text-xl"><Bag className="inline-block mr-1"/> <span>Thank you for placing the order.</span>
+						</h2>
+						<p>Your payment is successful and your order details are: </p>
+						<table className="table-auto w-full text-left whitespace-no-wrap mb-8">
+							<thead>
+							<tr>
+								<th className="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100 rounded-tl rounded-bl">Name</th>
+								<th className="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">Details</th>
+							</tr>
+							</thead>
+							<tbody>
+							<tr>
+								<td className="px-4 py-3">Order#</td>
+								<td className="px-4 py-3">{ orderData?.number }</td>
+							</tr>
+							<tr>
+								<td className="px-4 py-3">Email</td>
+								<td className="px-4 py-3">{ sessionData?.customer_email }</td>
+							</tr>
+							<tr>
+								<td className="px-4 py-3">Total</td>
+								<td className="px-4 py-3">{orderData?.currency_symbol} { orderData?.total }</td>
+							</tr>
+							<tr>
+								<td className="px-4 py-3">PAYMENT METHOD</td>
+								<td className="px-4 py-3">{ orderData?.payment_method_title }</td>
+							</tr>
+							</tbody>
+						</table>
 						{orderData != undefined?
-						<OrderDetails orderData={orderData} subtotal={subtotal}/>
+						<div key='Order-details'>Order details
+						<table className="table-auto w-full text-left whitespace-no-wrap mb-8">
+							<thead>
+							<tr>
+								<th className="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100 rounded-tl rounded-bl">Product</th>
+								<th className="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">Total</th>
+							</tr>
+							</thead>
+							<tbody>
+							{ orderData?.line_items &&
+								orderData?.line_items.map( ( item ) => (
+								<tr>
+									<td className="px-4 py-3">{item.name}</td>
+									<td className="px-4 py-3">{orderData?.currency_symbol} { item.subtotal }</td>
+								</tr>
+							) ) }
+							
+							<tr>
+								<td className="px-4 py-3">Subtotal</td>
+								<td className="px-4 py-3">{orderData?.currency_symbol} { parseFloat(subtotal).toFixed(2) }</td>
+							</tr>
+							
+							{orderData?.discount_total > 0? <tr>
+								<td className="px-4 py-3">Discount:</td>
+								<td className="px-4 py-3">{orderData?.currency_symbol} { orderData?.discount_total }</td>
+							</tr>: null}
+							{ orderData?.fee_lines &&
+								orderData?.fee_lines.map( ( item ) => (
+								<tr>
+									<td className="px-4 py-3">{item.name}</td>
+									<td className="px-4 py-3">{orderData?.currency_symbol} { item.total }</td>
+								</tr>
+							) ) }
+							<tr>
+								<td className="px-4 py-3">Total</td>
+								<td className="px-4 py-3">{orderData?.currency_symbol} { orderData?.total }</td>
+							</tr>
+							<tr>
+								<td className="px-4 py-3">PAYMENT METHOD</td>
+								<td className="px-4 py-3">{ orderData?.payment_method_title }</td>
+							</tr>
+							{orderData?.customer_note ? <tr>
+								<td className="px-4 py-3">Note:</td>
+								<td className="px-4 py-3">{ orderData?.customer_note }</td>
+							</tr>: null}
+							
+
+							</tbody>
+						</table>
+						</div>
 						:null}
-						<Link href="/shop/">
+						<Link href="/">
 							<div className="bg-purple-600 text-white px-5 py-3 rounded-sm w-auto">Shop more</div>
 						</Link>
-						<OrderAddress orderData={orderData}/>
+						<div key='coustomer-details'>
+								<h4>Billing address</h4>
+								{orderData?.billing?.first_name ? <p>{orderData?.billing?.first_name} </p>:null}
+								{orderData?.billing?.last_name ? <p>{orderData?.billing?.last_name}</p>:null}
+								{orderData?.billing?.address_1 ? <p>{orderData?.billing?.address_1}</p>:null}
+								{orderData?.billing?.address_2 ? <p>{orderData?.billing?.address_2}</p>:null}
+								{orderData?.billing?.city ? <p>{orderData?.billing?.city} </p>:null}
+								{orderData?.billing?.company ? <p>{orderData?.billing?.company} </p>:null}
+								{orderData?.billing?.country ? <p>{orderData?.billing?.country} </p>:null}
+								{orderData?.billing?.email ? <p>{orderData?.billing?.email} </p>:null}
+								{orderData?.billing?.phone ? <p>{orderData?.billing?.phone} </p>:null}
+								{orderData?.billing?.postcode ? <p>{orderData?.billing?.postcode} </p>:null}
+								{orderData?.billing?.state ? <p>{orderData?.billing?.state} </p>:null}
+
+								<h4>Sipping address</h4>
+								{orderData?.shipping?.first_name ? <p>{orderData?.shipping?.first_name} </p>:null}
+								{orderData?.shipping?.last_name ? <p>{orderData?.shipping?.last_name}</p>:null}
+								{orderData?.shipping?.address_1 ? <p>{orderData?.shipping?.address_1}</p>:null}
+								{orderData?.shipping?.address_2 ? <p>{orderData?.shipping?.address_2}</p>:null}
+								{orderData?.shipping?.city ? <p>{orderData?.shipping?.city} </p>:null}
+								{orderData?.shipping?.company ? <p>{orderData?.shipping?.company} </p>:null}
+								{orderData?.shipping?.country ? <p>{orderData?.shipping?.country} </p>:null}
+								{orderData?.shipping?.email ? <p>{orderData?.shipping?.email} </p>:null}
+								{orderData?.shipping?.phone ? <p>{orderData?.shipping?.phone} </p>:null}
+								{orderData?.shipping?.postcode ? <p>{orderData?.shipping?.postcode} </p>:null}
+								{orderData?.shipping?.state ? <p>{orderData?.shipping?.state} </p>:null}
+						</div>
 					</>
 				) }
 			</div>
@@ -194,7 +266,7 @@ console.log('sessionData',sessionData);
 export default function ThankYou( { headerFooter } ) {
 	return (
 		<Layout headerFooter={ headerFooter || {} }>
-			<ThankYouContent headerFooter={ headerFooter || {} }/>
+			<ThankYouContent/>
 		</Layout>
 	);
 };
