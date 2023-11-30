@@ -46,12 +46,19 @@ export default async function handler( req, res ) {
 			  ]
 		}
 	}
+	if(req.body?.bacs == 1)
+	{
+		newOrderData = {
+			status: 'on-hold'
+		}
+	}
 	
 	
 	try {
 		const {data} = await api.put( `orders/${ req.body.orderId }`, newOrderData );
 		console.log( '✅ Order updated data', data );
 		responseData.success = true;
+		//responseData.newOrderData = newOrderData;
 		res.json(responseData);
 		
 		

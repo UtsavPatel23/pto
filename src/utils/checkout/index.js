@@ -5,6 +5,7 @@ import { createTheOrder, getCreateOrderData } from './order';
 import { clearCart } from '../cart';
 import axios from 'axios';
 import { WOOCOMMERCE_STATES_ENDPOINT } from '../constants/endpoints';
+import Router from "next/router";
 
 /**
  * Handle Other Payment Method checkout.
@@ -70,6 +71,51 @@ export const handleStripeCheckout = async (shippingCost,couponName,totalPriceDis
 	// On success show stripe form.
 	setCreatedOrderData( customerOrderData );
 	await createCheckoutSessionAndRedirect( totalPriceDis,products, input, customerOrderData?.orderId,customerOrderData?.orderPostID );
+	
+	return customerOrderData;
+};
+
+/**
+ * Handle Bacs Direct bank transfer  checkout.
+ *
+ * 1. Create Formatted Order data.
+ * 2. Create Order using Next.js create-order endpoint.
+ * 3. Clear the cart session.
+ * 
+ */
+ export const handleBacsCheckout = async (shippingCost,couponName,totalPriceDis, input, products, setRequestError, setCart, setIsProcessing, setCreatedOrderData ,coutData,setCoutData) => {
+	//console.log('input order ',input);
+	setIsProcessing( true );
+	const orderData = getCreateOrderData(shippingCost,couponName, input, products ,coutData);
+	console.log('input orderData',orderData);
+	const customerOrderData = await createTheOrder( orderData, setRequestError, '' );
+	console.log('customerOrderData',customerOrderData);
+
+	const newOrderData = {
+		bacs : 1,
+		orderId: customerOrderData?.orderPostID,
+	};
+   	await	axios.post( '/api/update-order', newOrderData )
+		.then( res => {
+			console.log('res UPDATE DATA ORDER',res);
+		} )
+		.catch( err => {
+			console.log('err UPDATE DATA ORDER',err);
+		} )
+	
+	setCoutData('');
+	const cartCleared = await clearCart( setCart, () => {
+	} );
+	setIsProcessing( false );
+	
+	if ( isEmpty( customerOrderData?.orderId ) || cartCleared?.error ) {
+		setRequestError( 'Clear cart failed' );
+		return null;
+	}
+	
+	window.location.href = process.env.NEXT_PUBLIC_SITE_URL+'/thank-you/?orderPostnb='+window.btoa(customerOrderData?.orderPostID)+'&orderId='+customerOrderData?.orderId;
+	// On success show stripe form.
+	setCreatedOrderData( customerOrderData );
 	
 	return customerOrderData;
 };

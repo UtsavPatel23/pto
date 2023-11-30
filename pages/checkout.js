@@ -7,25 +7,16 @@ import axios from 'axios';
 import CheckoutForm from '../src/components/checkout/checkout-form';
 import { get_countries } from '../src/utils/customjs/custome';
 
-const WooCommerceRestApi = require("@woocommerce/woocommerce-rest-api").default;
-
-const api = new WooCommerceRestApi({
-	url: process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL,
-	consumerKey: process.env.WC_CONSUMER_KEY,
-	consumerSecret: process.env.WC_CONSUMER_SECRET,
-	version: "wc/v3"
-});
-
-export default function Checkout({ headerFooter, paymentModes }) {
+export default function Checkout({ headerFooter }) {
 	const countries = get_countries();
+	var paymentModes = headerFooter?.footer?.options?.nj_payment_method ?? '';
+	
 	paymentModes = paymentModes.filter(obj => 
 		{
-		if (obj.enabled == true) {
+		if (obj.method_enabled == true) {
 			return true;
 		}
 	});
-	
-	//console.log("paymentModes", paymentModes);
 	return (
 		<Layout headerFooter={headerFooter || {}}>
 			<h1>Checkout</h1>
@@ -37,14 +28,10 @@ export default function Checkout({ headerFooter, paymentModes }) {
 export async function getStaticProps() {
 	
 	const { data: headerFooterData } = await axios.get( HEADER_FOOTER_ENDPOINT );
-	//const { data: countries } = await axios.get( WOOCOMMERCE_COUNTRIES_ENDPOINT );
-	const { data: paymentModes } = await api.get('payment_gateways');
-
+	
 	return {
 		props: {
 			headerFooter: headerFooterData?.data ?? {},
-			//countries: countries,
-			paymentModes: paymentModes || {}
 		},
 		
 		/**
