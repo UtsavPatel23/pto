@@ -11,13 +11,13 @@ import Sidebar from '../../src/components/my-account/sidebar';
 import { get_points } from '../../src/utils/customjs/custome';
 import LoginPhone from '../../src/components/my-account/login-phone';
 
-//import { useSession, signIn } from "next-auth/react"
+import { useSession, signIn } from "next-auth/react"
 import { get_customer } from '../../src/utils/customer';
 
 
 export default function Login ({headerFooter}){
 	
-	//const { data: session } = useSession()
+	const { data: session } = useSession()
 	
 	
 	//get token
@@ -49,8 +49,7 @@ export default function Login ({headerFooter}){
 
 	// redeem point  
 	var rewardPoints = get_points(customerData);
-
-	/*useEffect(() => {
+	useEffect(() => {
 		if(session) {
 			console.log('session',session);
 			if(session.user.email && (tokenValid == 0))
@@ -60,7 +59,7 @@ export default function Login ({headerFooter}){
 				setTokenValid(1);
 			}
 		}
-    }, [session]);*/
+    }, [session]);
 	
 	console.log('customerData',customerData);
 	if(tokenValid)
@@ -86,12 +85,17 @@ export default function Login ({headerFooter}){
 					<LoginForm setTokenValid={setTokenValid} setCustomerData={setCustomerData} tokenValid={tokenValid}></LoginForm>
 					<LoginPhone setTokenValid={setTokenValid} setCustomerData={setCustomerData} tokenValid={tokenValid}></LoginPhone>
 					{(() => {
-					/*	if(!session) {
+						if(!session) {
+							/*return <>
+							  Signed in as {session.user.email} <br/>
+							  <button onClick={() => signOut()}>Sign out</button>
+							</>*/
 							return <>
 							Not signed in <br/>
 							<button onClick={() => signIn()}>Sign in</button>
+							{/*}<iframe src="http://localhost:3000/api/auth/signin" frameborder="0"></iframe>{*/}
 						  </>
-						  }*/
+						  }
 						  
 					})()} 
 					<RegisterForm></RegisterForm>
