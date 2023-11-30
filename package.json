@@ -28,6 +28,7 @@
     "lodash": "^4.17.21",
     "micro": "^9.4.1",
     "next": "^13.5.4",
+    "next-auth": "^4.24.5",
     "next-seo": "^5.15.0",
     "next-stripe": "^1.0.0-beta.9",
     "nprogress": "^0.2.0",
