@@ -237,7 +237,7 @@ function RegisterForm() {
 											<option value='+91'>IN +91</option>
 										</select>
 										<input name="phone" autoComplete='off' label='Phone Number'  {...register('phone')}  className={`form-control ${errors.phone ? 'is-invalid' : ''} border border-sky-500`} onChange={phoneChange} />
-										<span onClick={handleSendOTP}>Send Code</span>
+										<span onClick={handleSendOTP}>Verify</span>
 									</>	
 									:
 									<>
