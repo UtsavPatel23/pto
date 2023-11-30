@@ -84,7 +84,7 @@ export const getCreateOrderData = ( shippingCost,couponName,order, products ,cou
 			}};
 	}
 	// Add redeem pride
-	if(coutData.redeemPrice != undefined)
+	if(coutData?.redeemPrice != undefined)
 		{
 			if(coutData?.redeemPrice > 0)
 			{
