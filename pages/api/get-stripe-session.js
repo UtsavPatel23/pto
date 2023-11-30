@@ -1,6 +1,6 @@
 const stripe = require( 'stripe' )( process.env.STRIPE_SECRET_KEY );
 
-module.exports = async ( req, res ) => {
+const handler  = async ( req, res ) => {
 	
 	const { session_id } = req.query;
 	
@@ -8,3 +8,5 @@ module.exports = async ( req, res ) => {
 	
 	res.status( 200 ).json( session );
 };
+
+export default handler;
