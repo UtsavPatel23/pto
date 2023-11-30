@@ -94,6 +94,7 @@ export default function Login ({headerFooter}){
 							Not signed in <br/>
 							<button onClick={() => signIn()}>Sign in</button>
 							{/*}<iframe src="http://localhost:3000/api/auth/signin" frameborder="0"></iframe>{*/}
+							<signIn></signIn>
 						  </>
 						  }
 						  

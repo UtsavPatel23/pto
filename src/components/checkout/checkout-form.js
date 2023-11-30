@@ -9,7 +9,6 @@ import { AppContext } from '../context';
 import CheckboxField from './form-elements/checkbox-field';
 import {
 	handleAgreeTerms,
-	handleBacsCheckout,
 	handleBillingDifferentThanShipping,
 	handleCreateAccount, handleOtherPaymentMethodCheckout, handleStripeCheckout,
 	setStatesForCountry,
@@ -188,12 +187,6 @@ const CheckoutForm = ( { countriesData , paymentModes } ) => {
 		// For stripe payment mode, handle the strip payment and thank you.
 		if ( 'stripe' === input.paymentMethod ) {
 			const createdOrderData = await handleStripeCheckout( shippingCost,couponName,totalPriceDis,input, cart?.cartItems, setRequestError, setCart, setIsOrderProcessing, setCreatedOrderData ,coutData,setCoutData);
-			return null;
-		}
-
-		// For bacs payment mode, handle the bacs payment and thank you.
-		if ( 'bacs' === input.paymentMethod ) {
-			const createdOrderData = await handleBacsCheckout( shippingCost,couponName,totalPriceDis,input, cart?.cartItems, setRequestError, setCart, setIsOrderProcessing, setCreatedOrderData ,coutData,setCoutData);
 			return null;
 		}
 		
