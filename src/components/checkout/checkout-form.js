@@ -106,6 +106,9 @@ const CheckoutForm = ( { countriesData , paymentModes } ) => {
 	const [tokenValid,setTokenValid]=useState(0);
 	const [customerData,setCustomerData] = useState(0);
 
+	const [paymentMethodDiscount , setPaymentMethodDiscount] = useState(0);
+	const [cartSubTotalDiscount,setCartSubTotalDiscount] = useState(null);
+
 	/**
 	 * Handle form submit.
 	 *
@@ -187,18 +190,18 @@ const CheckoutForm = ( { countriesData , paymentModes } ) => {
 		
 		// For stripe payment mode, handle the strip payment and thank you.
 		if ( 'stripe' === input.paymentMethod ) {
-			const createdOrderData = await handleStripeCheckout( shippingCost,couponName,totalPriceDis,input, cart?.cartItems, setRequestError, setCart, setIsOrderProcessing, setCreatedOrderData ,coutData,setCoutData);
+			const createdOrderData = await handleStripeCheckout( shippingCost,couponName,totalPriceDis,input, cart?.cartItems, setRequestError, setCart, setIsOrderProcessing, setCreatedOrderData ,coutData,setCoutData,cartSubTotalDiscount);
 			return null;
 		}
 
 		// For bacs payment mode, handle the bacs payment and thank you.
 		if ( 'bacs' === input.paymentMethod ) {
-			const createdOrderData = await handleBacsCheckout( shippingCost,couponName,totalPriceDis,input, cart?.cartItems, setRequestError, setCart, setIsOrderProcessing, setCreatedOrderData ,coutData,setCoutData);
+			const createdOrderData = await handleBacsCheckout( shippingCost,couponName,totalPriceDis,input, cart?.cartItems, setRequestError, setCart, setIsOrderProcessing, setCreatedOrderData ,coutData,setCoutData,cartSubTotalDiscount);
 			return null;
 		}
 		
 		// For Any other payment mode, create the order and redirect the user to payment url.
-		const createdOrderData = await handleOtherPaymentMethodCheckout(shippingCost,couponName,input, cart?.cartItems, setRequestError, setCart, setIsOrderProcessing, setCreatedOrderData ,coutData,setCoutData);
+		const createdOrderData = await handleOtherPaymentMethodCheckout(shippingCost,couponName,totalPriceDis,input, cart?.cartItems, setRequestError, setCart, setIsOrderProcessing, setCreatedOrderData ,coutData,setCoutData,cartSubTotalDiscount);
 		
 		if ( createdOrderData.paymentUrl ) {
 			window.location.href = createdOrderData.paymentUrl;
@@ -220,6 +223,26 @@ const CheckoutForm = ( { countriesData , paymentModes } ) => {
 	const handleOnChange = async ( event, isShipping = false, isBillingOrShipping = false ) => {
 		const { target } = event || {};
 		SetLoading(true);
+
+		//  paymentMethod Discount
+		if ( 'paymentMethod' === target.name ) {
+			const toDay = new Date();
+			var paymentModesDisSel = paymentModes.filter(obj => 
+				{
+				var	product_start_date = new Date(obj.discount_start_time+' 00:00:00');
+				var	product_end_date = new Date(obj.discount_end_time+' 23:59:59');
+				if (obj.method_key == target.value && obj.discount_enabled == true && product_start_date <= toDay && toDay <= product_end_date) {
+					return true;
+				}
+			});
+			if(!isEmpty(paymentModesDisSel))
+			{
+				setPaymentMethodDiscount(paymentModesDisSel[0]?.discount);
+			}else{
+				setPaymentMethodDiscount(0);
+			}
+		} 
+
 		if ( 'createAccount' === target.name ) {
 			handleCreateAccount( input, setInput, target );
 		} 
@@ -405,10 +428,13 @@ const CheckoutForm = ( { countriesData , paymentModes } ) => {
 		var totalPriceSum = totalPrice;
 		var discount_cal = 0;
         const {CouponApply} = coutData;
+		// shippingCost
 		if(undefined != shippingCost)
 		{
 			totalPriceSum = totalPriceSum+shippingCost
 		}
+
+		// CouponApply
 		if(CouponApply != '' && CouponApply != undefined)
 		{
 			if(CouponApply.success)
@@ -427,6 +453,29 @@ const CheckoutForm = ( { countriesData , paymentModes } ) => {
 			}
 		}
 
+		//  paymentMethod Discount  // paymentMethodDiscount
+		var paymentMethodDiscount_cal = 0
+		if(paymentMethodDiscount == 0)
+		{
+			setCartSubTotalDiscount({ ...cartSubTotalDiscount, paymentMethodDiscount: ''} );
+		}else{
+			if(paymentMethodDiscount.length > 0)
+			{
+				var paymentMethodDisPer = 0;
+				paymentMethodDiscount.map(function (discount) {
+					if(discount.start_cart_total < totalPrice && totalPrice < discount.end_cart_total)
+					{
+						paymentMethodDisPer = discount.discount;
+					}
+				});
+				paymentMethodDiscount_cal = ((totalPrice*parseFloat(paymentMethodDisPer))/100);
+				totalPriceSum = totalPriceSum - paymentMethodDiscount_cal;
+				//console.log('paymentMethodDisPer',paymentMethodDisPer);
+				setCartSubTotalDiscount({ ...cartSubTotalDiscount, paymentMethodDiscount: {name : 'Payment Discount', discount : paymentMethodDiscount_cal}} );
+			}
+		}
+
+		// redeemPrice
 		if(coutData.redeemPrice != undefined)
 		{
 			if(coutData?.redeemPrice > 0)
@@ -438,7 +487,10 @@ const CheckoutForm = ( { countriesData , paymentModes } ) => {
 		setDiscoutDis(discount_cal);
 		setTotalPriceDis(totalPriceSum);
 		
-    }, [totalPrice,shippingCost,coutData]);
+    }, [totalPrice,shippingCost,coutData,paymentMethodDiscount]);
+
+	
+
 
 	/******   getAuspost  *******/
 	const getAuspost = async (postcode,isBilling = true)=>{
@@ -520,6 +572,7 @@ const CheckoutForm = ( { countriesData , paymentModes } ) => {
 			
 		}
 	}
+	console.log('paymentMethodDiscount',paymentMethodDiscount);
 	return (
 		<>
 		{ loading && <img className="loader" src={Loader.src} alt="Loader" width={50}/> }
@@ -612,7 +665,7 @@ const CheckoutForm = ( { countriesData , paymentModes } ) => {
 						<div className="your-orders">
 							{/*	Order*/ }
 							<h2 className="text-xl font-medium mb-4">Your Order</h2>
-							<YourOrder cart={ cart } shippingCost={shippingCost} discoutDis={discoutDis} totalPriceDis={totalPriceDis} notice={notice} postcodedis={postcodedis} coutData={coutData}/>
+							<YourOrder cart={ cart } shippingCost={shippingCost} discoutDis={discoutDis} cartSubTotalDiscount={cartSubTotalDiscount} totalPriceDis={totalPriceDis} notice={notice} postcodedis={postcodedis} coutData={coutData}/>
 
 							{/*Payment*/ }
 							<PaymentModes input={input}  handleOnChange={handleOnChange} paymentModes={paymentModes } />

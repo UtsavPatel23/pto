@@ -18,9 +18,9 @@ import Router from "next/router";
  * @param setCreatedOrderData
  * @return {Promise<{orderId: null, error: string}|null>}
  */
-export const handleOtherPaymentMethodCheckout = async (shippingCost,couponName, input, products, setRequestError, setCart, setIsOrderProcessing, setCreatedOrderData ) => {
+export const handleOtherPaymentMethodCheckout = async (shippingCost,couponName, input, products, setRequestError, setCart, setIsOrderProcessing, setCreatedOrderData,cartSubTotalDiscount ) => {
 	setIsOrderProcessing( true );
-	const orderData = getCreateOrderData(shippingCost,couponName, input, products);
+	const orderData = getCreateOrderData(shippingCost,couponName, input, products,cartSubTotalDiscount);
 	const customerOrderData = await createTheOrder( orderData, setRequestError, '' );
 	const cartCleared = await clearCart( setCart, () => {
 	} );
@@ -52,10 +52,10 @@ export const handleOtherPaymentMethodCheckout = async (shippingCost,couponName, 
  *
  * @param setCreatedOrderData
  */
-export const handleStripeCheckout = async (shippingCost,couponName,totalPriceDis, input, products, setRequestError, setCart, setIsProcessing, setCreatedOrderData ,coutData,setCoutData) => {
+export const handleStripeCheckout = async (shippingCost,couponName,totalPriceDis, input, products, setRequestError, setCart, setIsProcessing, setCreatedOrderData ,coutData,setCoutData,cartSubTotalDiscount) => {
 	//console.log('input order ',input);
 	setIsProcessing( true );
-	const orderData = getCreateOrderData(shippingCost,couponName, input, products ,coutData);
+	const orderData = getCreateOrderData(shippingCost,couponName, input, products ,coutData,cartSubTotalDiscount);
 	//console.log('input orderData',orderData);return '';
 	const customerOrderData = await createTheOrder( orderData, setRequestError, '' );
 	setCoutData('');
@@ -83,10 +83,10 @@ export const handleStripeCheckout = async (shippingCost,couponName,totalPriceDis
  * 3. Clear the cart session.
  * 
  */
- export const handleBacsCheckout = async (shippingCost,couponName,totalPriceDis, input, products, setRequestError, setCart, setIsProcessing, setCreatedOrderData ,coutData,setCoutData) => {
+ export const handleBacsCheckout = async (shippingCost,couponName,totalPriceDis, input, products, setRequestError, setCart, setIsProcessing, setCreatedOrderData ,coutData,setCoutData,cartSubTotalDiscount) => {
 	//console.log('input order ',input);
 	setIsProcessing( true );
-	const orderData = getCreateOrderData(shippingCost,couponName, input, products ,coutData);
+	const orderData = getCreateOrderData(shippingCost,couponName, input, products ,coutData,cartSubTotalDiscount);
 	console.log('input orderData',orderData);
 	const customerOrderData = await createTheOrder( orderData, setRequestError, '' );
 	console.log('customerOrderData',customerOrderData);

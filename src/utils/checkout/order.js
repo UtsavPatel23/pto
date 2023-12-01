@@ -31,7 +31,7 @@ export const getCreateOrderLineItems = ( products ) => {
  * @param products
  * @return {{shipping: {country: *, city: *, phone: *, address_1: (string|*), address_2: (string|*), postcode: (string|*), last_name: (string|*), company: *, state: *, first_name: (string|*), email: *}, payment_method_title: string, line_items: (*[]|*), payment_method: string, billing: {country: *, city: *, phone: *, address_1: (string|*), address_2: (string|*), postcode: (string|*), last_name: (string|*), company: *, state: *, first_name: (string|*), email: *}}}
  */
-export const getCreateOrderData = ( shippingCost,couponName,order, products ,coutData) => {
+export const getCreateOrderData = ( shippingCost,couponName,order, products ,coutData,cartSubTotalDiscount) => {
 	// Set the billing Data to shipping, if applicable.
 	const shippingData = order.billingDifferentThanShipping ? order.shipping : order.billing;
 	
@@ -107,6 +107,50 @@ export const getCreateOrderData = ( shippingCost,couponName,order, products ,cou
 
 			}
 		}
+
+	// 
+	if(coutData?.redeemPrice != undefined)
+	{
+		if(coutData?.redeemPrice > 0)
+		{
+			tmpOrderData = { ...tmpOrderData, ...{
+				"fee_lines":[             
+					...tmpOrderData.fee_lines,
+					{    
+						"name":"Redeem Price:",
+						"total": '-'+coutData?.redeemPrice.toString()
+					}
+				],
+				"meta_data" : [
+					{
+					  "key": "_customer_after_reedem_reward_points",
+					  "value": order?._customer_after_reedem_reward_points
+					}
+				  ]
+				}};
+
+
+		}
+	}
+
+	if(Object.keys(cartSubTotalDiscount).length > 0)
+	{
+			Object.keys(cartSubTotalDiscount).map(function(key) {
+				if(cartSubTotalDiscount[key] != '')
+				{
+					tmpOrderData = { ...tmpOrderData, ...{
+						"fee_lines":[             
+							...tmpOrderData.fee_lines,
+							{    
+								"name":cartSubTotalDiscount[key].name,
+								"total": '-'+cartSubTotalDiscount[key].discount.toFixed(2)
+							}
+						]
+						}};
+				}
+				
+			})
+	}
 
 	// Checkout data.
 	return tmpOrderData;

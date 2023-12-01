@@ -3,9 +3,10 @@
 import { Fragment } from 'react';
 import CheckoutCartItem from "./checkout-cart-item";
 
-const YourOrder = ( { cart,shippingCost,discoutDis,totalPriceDis,notice,postcodedis ,coutData} ) => {
+const YourOrder = ( { cart,shippingCost,discoutDis,cartSubTotalDiscount,totalPriceDis,notice,postcodedis ,coutData} ) => {
 	//console.log('totalPriceDis',totalPriceDis);
 	//console.log('shippingCost',shippingCost);
+	console.log('cartSubTotalDiscount',cartSubTotalDiscount);
 	return (
 		<Fragment>
 			{ cart ? (
@@ -36,19 +37,7 @@ const YourOrder = ( { cart,shippingCost,discoutDis,totalPriceDis,notice,postcode
 							<td className="woo-next-checkout-total font-normal text-xl">Sub Total</td>
 							<td className="woo-next-checkout-total font-bold text-xl">{ cart?.cartItems?.[ 0 ]?.currency ?? '' }{ cart?.totalPrice.toFixed(2) ?? '' }</td>
 						</tr>
-						{/* Shipping Cost */}
-						{(() => {
-							if(shippingCost >= 0 && (undefined != shippingCost)) 
-							{
-								return (
-									<tr className="">
-										<td className=""/>
-										<td className="woo-next-checkout-total font-normal text-xl">Shipping Cost</td>
-										<td className="woo-next-checkout-total  text-xl">+{ cart?.cartItems?.[ 0 ]?.currency ?? '' }{ shippingCost ?? '' }</td>
-									</tr>
-									)	
-							} 
-						})()} 
+						
 						{/* DiscoutDis*/}
 						{(() => {
 							if(discoutDis != 0 && (undefined != discoutDis)) 
@@ -62,7 +51,34 @@ const YourOrder = ( { cart,shippingCost,discoutDis,totalPriceDis,notice,postcode
 									)	
 							} 
 						})()} 
-						{/* DiscoutDis*/}
+						{/* cart Sub Total Discount */}
+						{(() => {
+							if(Object.keys(cartSubTotalDiscount).length > 0)
+							{
+								return (
+									Object.keys(cartSubTotalDiscount).map(function(key) {
+										console.log('key',cartSubTotalDiscount[key].name);
+										if(cartSubTotalDiscount[key] != '')
+										{
+											return (
+												<tr className="">
+													<td className=""/>
+													<td className="woo-next-checkout-total font-normal text-xl">{cartSubTotalDiscount[key].name}</td>
+													<td className="woo-next-checkout-total  text-xl">-{ cart?.cartItems?.[ 0 ]?.currency ?? '' }{cartSubTotalDiscount[key].discount.toFixed(2) ?? ''}</td>
+												</tr>
+											)
+										}
+										
+									})
+								)
+							}
+							
+							if(cartSubTotalDiscount.paymentMethodDiscount != '') 
+							{
+									
+							} 
+						})()} 
+						{/* Discout redeemPrice*/}
 						{(() => {
 							if(coutData.redeemPrice != undefined)
 							{
@@ -79,7 +95,19 @@ const YourOrder = ( { cart,shippingCost,discoutDis,totalPriceDis,notice,postcode
 								}
 							} 
 						})()} 
-						
+						{/* Shipping Cost */}
+						{(() => {
+							if(shippingCost >= 0 && (undefined != shippingCost)) 
+							{
+								return (
+									<tr className="">
+										<td className=""/>
+										<td className="woo-next-checkout-total font-normal text-xl">Shipping Cost</td>
+										<td className="woo-next-checkout-total  text-xl">+{ cart?.cartItems?.[ 0 ]?.currency ?? '' }{ shippingCost ?? '' }</td>
+									</tr>
+									)	
+							} 
+						})()} 
 						{/*Total*/}
 						<tr className="bg-gray-200">
 							<td className=""/>
