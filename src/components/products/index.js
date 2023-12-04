@@ -10,10 +10,10 @@ import { paramsToObject } from '../../utils/shop/paramstoobject';
 import * as React from 'react';
 import Slider from '@mui/material/Slider';
 import Router, { useRouter } from 'next/router';
-import {get_count_total_discount, go_to_main_filter, selectattributdefault} from '../../utils/customjs/custome';
+import {getMemberOnlyProduct,  get_count_total_discount, go_to_main_filter, selectattributdefault} from '../../utils/customjs/custome';
 
 
-const Products = ({ products }) => {
+const Products = ({ products , options ,  tokenValid }) => {
 	
 	
 	// -----------------------------------
@@ -932,9 +932,14 @@ const encodeDataToURL = (data) => {
 					<div className='grid grid-cols-4 gap-4'>
 					{
 						currentProduct.map( product => {
-							
+							var Membersonly  = '';
+							if(tokenValid == 1 && options?.discount_type_3 == 1)
+								{
+									var messageText  = options?.nj_display_box_member_only ?? '';
+									Membersonly = getMemberOnlyProduct(options,product,messageText);
+								}
 								return (
-									<Product key={ product?.id } product={product} />
+									<Product key={ product?.id } product={product} Membersonly={Membersonly}/>
 								)
 						})
 					}

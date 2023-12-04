@@ -456,7 +456,7 @@ const CheckoutForm = ( { countriesData , paymentModes , options} ) => {
 		
 		// discount_type_cart_quantity
 		var discount_type_cart_cal = 0;
-		discount_type_cart_cal = get_discount_type_cart(cart?.cartItems,options,setCartSubTotalDiscount,cartSubTotalDiscount,paymentMethodDiscount,totalPrice);
+		discount_type_cart_cal = get_discount_type_cart(cart?.cartItems,options,setCartSubTotalDiscount,cartSubTotalDiscount,paymentMethodDiscount,totalPrice,tokenValid);
 		
 		if(discount_type_cart_cal != 0)
 		{
@@ -475,35 +475,9 @@ const CheckoutForm = ( { countriesData , paymentModes , options} ) => {
 		setDiscoutDis(discount_cal);
 		setTotalPriceDis(totalPriceSum);
 		
-    }, [totalPrice,shippingCost,coutData,paymentMethodDiscount]);
+    }, [totalPrice,shippingCost,coutData,paymentMethodDiscount,tokenValid]);
 
-	/*//  paymentMethod Discount  // paymentMethodDiscount
-	useEffect(() => {
-			var totalPriceSum = totalPrice;
-			var paymentMethodDiscount_cal = 0
-			if(paymentMethodDiscount == 0)
-			{
-				setCartSubTotalDiscount({ ...cartSubTotalDiscount, paymentMethodDiscount: ''} );
-			}else{
-				if(paymentMethodDiscount.length > 0)
-				{
-					var paymentMethodDisPer = 0;
-					paymentMethodDiscount.map(function (discount) {
-						if(discount.start_cart_total < totalPrice && totalPrice < discount.end_cart_total)
-						{
-							paymentMethodDisPer = discount.discount;
-						}
-					});
-					paymentMethodDiscount_cal = ((totalPrice*parseFloat(paymentMethodDisPer))/100);
-					totalPriceSum = totalPriceSum - paymentMethodDiscount_cal;
-					//console.log('paymentMethodDisPer',paymentMethodDisPer);
-					setCartSubTotalDiscount({ ...cartSubTotalDiscount, paymentMethodDiscount: {name : 'Payment Discount', discount : paymentMethodDiscount_cal}} );
-				}
-			}
-			setTotalPriceDis(totalPriceSum);
-	}, [paymentMethodDiscount]);*/
-
-
+	
 	/******   getAuspost  *******/
 	const getAuspost = async (postcode,isBilling = true)=>{
 		//console.log('postcode W',postcode)

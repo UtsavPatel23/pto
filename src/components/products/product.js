@@ -6,7 +6,7 @@ import { isEmpty } from 'lodash';
 import ExternalLink from './external-link';
 import { getNewProductTag } from '../../utils/customjs/custome';
 
-const Product = ( { product } ) => {
+const Product = ( { product , Membersonly} ) => {
 	if ( isEmpty( product ) ) {
 		return null;
 	}
@@ -95,6 +95,20 @@ const Product = ( { product } ) => {
 			})()} 
 			</div>
 			{getNewProductTag(product.date_created) == 1 ? <>New</>:null}
+			{(() =>{
+				// Member only
+				if(Membersonly != '')
+				{
+				return(
+						<div key="Membersonly"
+							dangerouslySetInnerHTML={ {
+								__html: Membersonly ?? '',
+							} }
+							className="Membersonly"
+						/>
+					);
+				}
+			})()}
 			{/*}<div>menu order : {product.menu_order}</div>
 			<div>price : {product.price}</div>
 			<div>date_created : {product.date_created}</div>

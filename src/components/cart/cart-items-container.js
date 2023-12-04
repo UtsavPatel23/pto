@@ -290,6 +290,7 @@ const CartItemsContainer = ({options}) => {
 	
 	//hook useEffect Total Price change
     useEffect(() => {
+		
 		var totalPriceSum = totalPrice;
 		var discount_cal = 0;
         const {CouponApply} = coutData;
@@ -327,7 +328,7 @@ const CartItemsContainer = ({options}) => {
 		
 		// discount_type_cart_quantity
 		var discount_type_cart_cal = 0;
-		discount_type_cart_cal = get_discount_type_cart(cartItems,options,setCartSubTotalDiscount,cartSubTotalDiscount);
+		discount_type_cart_cal = get_discount_type_cart(cartItems,options,setCartSubTotalDiscount,cartSubTotalDiscount,undefined,totalPrice,tokenValid);
 		
 		if(discount_type_cart_cal != 0)
 		{
@@ -340,7 +341,7 @@ const CartItemsContainer = ({options}) => {
 		// Final total price
 		setTotalPriceDis(totalPriceSum);
 		
-    }, [totalPrice,shippingCost,coutData]);
+    }, [totalPrice,shippingCost,coutData,tokenValid]);
 	
 	console.log('cartSubTotalDiscount',cartSubTotalDiscount);
 	

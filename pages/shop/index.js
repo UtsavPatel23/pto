@@ -10,9 +10,13 @@ import { HEADER_FOOTER_ENDPOINT, SHOP_PRODUCTLIST } from '../../src/utils/consta
 import axios from 'axios';
 //import { getProductsData } from '../../src/utils/products'; // api default
 import Layout from '../../src/components/layout';
+import { useEffect, useState } from 'react';
+import Cookies from 'js-cookie';
 
 export default function Home({ headerFooter, products }) {
 	console.log('products',products);
+	const options = headerFooter?.footer?.options;
+	const [tokenValid,setTokenValid]=useState(0);
 	//debugger;
 	const seo = {
 		title: 'Shop',
@@ -24,9 +28,14 @@ export default function Home({ headerFooter, products }) {
 			follow: 'follow',
 		},
 	}
+	useEffect(() => {
+        if(Cookies.get('token')) {
+			setTokenValid(1);
+        }
+	}, []);
 	return (
 		<Layout headerFooter={ headerFooter || {} } seo={ seo }>
-			<Products products={products}/>
+			<Products products={products} options={options} tokenValid={tokenValid}/>
 		</Layout>
 	)
 }

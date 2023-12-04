@@ -323,9 +323,7 @@ export const storeYourBrowsingHistory = ( product ) => {
 }
 
 
-		var discount_type_cart_cal = 0;
-		var discount_type_cart_cal = 0;
-export function get_discount_type_cart(cartItems,options,setCartSubTotalDiscount,cartSubTotalDiscount,paymentMethodDiscount,totalPrice)
+export function get_discount_type_cart(cartItems,options,setCartSubTotalDiscount,cartSubTotalDiscount,paymentMethodDiscount,totalPrice,tokenValid)
 {
    if(cartItems == undefined || options == undefined)
    {
@@ -334,7 +332,7 @@ export function get_discount_type_cart(cartItems,options,setCartSubTotalDiscount
    // Duscount cart quantity  
   var discount_type_cart_quantity_cal = 0
   var cartSubTotalDiscountTmp = {};
-  if(options.discount_type_cart_quantity == 1)
+  if(options?.discount_type_cart_quantity == 1)
   {
     var cartNote = [];
     { cartItems.length &&
@@ -381,7 +379,7 @@ export function get_discount_type_cart(cartItems,options,setCartSubTotalDiscount
 
  // Duscount cart Product
  var discount_type_cart_product_cal = 0
- if(options.discount_type_cart_product == 1)
+ if(options?.discount_type_cart_product == 1)
  {
   var purchase_note = '';
   var cartNote = [];
@@ -428,7 +426,7 @@ export function get_discount_type_cart(cartItems,options,setCartSubTotalDiscount
  }
 
  //  paymentMethod Discount  // paymentMethodDiscount
-  var paymentMethodDiscount_cal = 0
+  var paymentMethodDiscount_cal = 0;
   if(paymentMethodDiscount == 0 || paymentMethodDiscount == undefined)
   {
     cartSubTotalDiscountTmp.paymentMethodDiscount = '';
@@ -447,13 +445,139 @@ export function get_discount_type_cart(cartItems,options,setCartSubTotalDiscount
     }
   }
   
+  // Discount User login (Members only)
+  if(tokenValid == 1 && options?.discount_type_3 == 1)
+  {
+    var membersOnlyDiscount_cal = 0;
+    //console.log('date ',options.nj_set_date_range_for_discount_login_user);
+    if(options?.nj_set_date_range_for_discount_login_user != undefined && (!isEmpty(options?.nj_set_date_range_for_discount_login_user)))
+    {
+      var validDateUserLoginDis = getvalidDateUserLoginDis(options);
+      if(validDateUserLoginDis)
+      {
+        //console.log('cartItems',cartItems);
+        //console.log('cat',options.exclude_category_for_discount_sku_list);
+        var provalid = [];
+        var line_subtotal = 0;
+        { cartItems.length &&
+          cartItems.map( ( item ) => {
+            var validProductDis = Membersonlyptoduct(item.data,options);
+            if(!validProductDis)
+            {
+              //console.log('product include Yes =======',item.data.name);
+              provalid.push(item.data.name);
+              if(item.line_subtotal != undefined)
+              {
+                line_subtotal +=item.line_subtotal;
+              }
+            }
+          }) 
+        }
+        //console.log('provalid',provalid);
+        //console.log('line_subtotal',line_subtotal);
+        if(line_subtotal != 0)
+        {
+          membersOnlyDiscount_cal = ((line_subtotal * options.rate_percentage_login_user)/100);
+        }
+        cartSubTotalDiscountTmp.membersOnlyDiscount = {name : 'Members only discount', discount : membersOnlyDiscount_cal};;
+      }else{
+        //console.log('No s');
+        cartSubTotalDiscountTmp.membersOnlyDiscount = '';
+      }
+    }
+  }else{
+    //console.log(' vv tokenValid discount NOT');
+    cartSubTotalDiscountTmp.membersOnlyDiscount = '';
+  }
 
   setCartSubTotalDiscount({ 
     ...cartSubTotalDiscount, 
     discount_type_cart_quantity : cartSubTotalDiscountTmp.discount_type_cart_quantity,
     discount_type_cart_product :  cartSubTotalDiscountTmp.discount_type_cart_product,
     paymentMethodDiscount :  cartSubTotalDiscountTmp.paymentMethodDiscount,
+    membersOnlyDiscount :  cartSubTotalDiscountTmp.membersOnlyDiscount,
     } );
  
-  return discount_type_cart_quantity_cal + discount_type_cart_product_cal + paymentMethodDiscount_cal;
+  return discount_type_cart_quantity_cal + discount_type_cart_product_cal + paymentMethodDiscount_cal + membersOnlyDiscount_cal;
+}
+// GEt valid product for members only
+export function Membersonlyptoduct(data,options) {
+  var validProductDis  = false;
+  var proCatIDs = [];
+   if(data?.category_ids != undefined)
+   {
+    proCatIDs = data?.category_ids;
+   }else{
+    proCatIDs = data.categories;
+   }
+   console.log('proCatIDs',proCatIDs);
+            if(proCatIDs != undefined && options?.exclude_category_for_discount_sku_list != undefined)
+            {
+              if(options.exclude_category_for_discount_sku_list.length > 0)
+              {
+                proCatIDs.map( ( proCatID ) => {
+                    console.log('proCatID',proCatID);
+                    if(proCatID.id == undefined)
+                    {
+                      if(options.exclude_category_for_discount_sku_list.includes(proCatID) && (!validProductDis))
+                      {
+                        validProductDis = true;
+                      }
+                    }else{
+                      if(options.exclude_category_for_discount_sku_list.includes(proCatID.id) && (!validProductDis))
+                      {
+                        validProductDis = true;
+                      }
+                    }
+                    
+                })
+              }
+              
+            }
+  return validProductDis;
+}
+
+export function getvalidDateUserLoginDis(options){
+    var toDay = new Date();
+    var validDateUserLoginDis = false;
+    if(options?.nj_set_date_range_for_discount_login_user.length > 0)
+    {
+      options?.nj_set_date_range_for_discount_login_user.map(function (discount) 
+      {
+        var	multi_start_date = new Date(discount.multi_start_date+' 00:00:00');
+        var	multi_end_date = new Date(discount.multi_end_date+' 23:59:59');
+        if (multi_start_date <= toDay && toDay <= multi_end_date && (!validDateUserLoginDis)) {
+          validDateUserLoginDis =  true;
+        }
+      });
+    }
+    return validDateUserLoginDis;
+}
+
+export function getMemberOnlyProduct(options,product,messageText) {
+   var Membersonly  = '';
+      if(options?.nj_set_date_range_for_discount_login_user != undefined && (!isEmpty(options?.nj_set_date_range_for_discount_login_user)))
+									{
+									var rate_percentage_login_user = options?.rate_percentage_login_user; 
+									var validDateUserLoginDis = getvalidDateUserLoginDis(options);
+									if(validDateUserLoginDis)
+									{
+										var validProductDis = Membersonlyptoduct(product,options,messageText);
+											if(!validProductDis)
+											{		var tmpProPrice = product.price;
+													var toDay = new Date();
+													var	product_start_date = new Date(product?.meta_data?.product_start_date+' 00:00:00');
+													var	product_end_date = new Date(product?.meta_data?.product_end_date+' 23:59:59');
+													var product_discount = product?.meta_data?.product_discount;
+													if (product_start_date <= toDay && toDay <= product_end_date && product_discount > 0) {
+														tmpProPrice = (tmpProPrice - ((tmpProPrice * product_discount)/100));
+													}
+												var memberPrice = (tmpProPrice - ((rate_percentage_login_user * tmpProPrice)/100));
+												memberPrice = memberPrice.toFixed(2);
+												Membersonly = messageText.replace("NJSC_price", memberPrice);
+											}
+											
+									}
+									}
+    return Membersonly;
 }

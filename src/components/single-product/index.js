@@ -16,15 +16,21 @@ import Reward_points_tab from './Reward_points_tab';
 import Product from '../products/product';
 import Review from './../review/Review';
 import { isEmpty } from 'lodash';
-import { getNewProductTag, storeYourBrowsingHistory } from '../../utils/customjs/custome';
+import { getMemberOnlyProduct, getNewProductTag, storeYourBrowsingHistory } from '../../utils/customjs/custome';
 import { Router } from 'next/router';
 import BuyNow from '../cart/buy-now';
+import Cookies from 'js-cookie';
 
- const SingleProduct = ( { product,reviews,paymentOptions} ) => {
+ const SingleProduct = ( { product,reviews,options} ) => {
+		 const paymentOptions = options?.payments;
 		 const [timer,setTimer] = useState(0);
 		 const [shippingCharge,setShippingCharge] = useState('<span>Calculate Shipping</span>');
 		 const [inputshipdisabled,setInputshipdisabled] = useState(false);
 		 const [yourBrowsingHistory,setYourBrowsingHistory] = useState('');
+
+		 const [tokenValid,setTokenValid]=useState(0);
+		 const [membersonly,setMembersonly]=useState('');
+		 
  // ************* ********************************  ************************ 
  // ************* Shipping Calculation ************************************* 
  // ************* ********************************  ************************ 
@@ -157,6 +163,18 @@ import BuyNow from '../cart/buy-now';
 		
 			}
 			
+		useEffect(() => {
+			if(Cookies.get('token')) {
+				setTokenValid(1);
+			}
+		}, []);
+		useEffect(() => {
+			if(tokenValid == 1 && options?.discount_type_3 == 1)
+				{
+					var messageText  = options?.nj_display_single_product_member_only ?? '';
+					setMembersonly(getMemberOnlyProduct(options,product,messageText));
+				}
+		}, [tokenValid]);
 	 return Object.keys( product ).length ? (
 		 <div className="single-product container mx-auto my-32 px-4 xl:px-0">
 			 <div key="section1" className="grid md:grid-cols-2 gap-4">
@@ -199,6 +217,20 @@ import BuyNow from '../cart/buy-now';
 						} 
 					})()} 
 					</div>
+					{(() =>{
+						// Member only
+						if(membersonly != '')
+						{
+						return(
+								<div key="membersonly"
+									dangerouslySetInnerHTML={ {
+										__html: membersonly ?? '',
+									} }
+									className="membersonly"
+								/>
+							);
+						}
+					})()}
 					<div key="product_info4">
 					{(() => {
 						if (product.stock_quantity < 1) 
@@ -381,8 +413,14 @@ import BuyNow from '../cart/buy-now';
 									<div className='grid grid-cols-4 gap-4'>
 									{
 										product.related_ids.map( product => {
+											var Membersonly  = '';
+												if(tokenValid == 1 && options?.discount_type_3 == 1)
+													{
+														var messageText  = options?.nj_display_box_member_only ?? '';
+														Membersonly = getMemberOnlyProduct(options,product,messageText);
+													}
 												return (
-													<Product key={ product?.id } product={product} />
+													<Product key={ product?.id } product={product}  Membersonly={Membersonly}/>
 												)
 										})
 									}
@@ -409,8 +447,14 @@ import BuyNow from '../cart/buy-now';
 										Object.keys(tmphistrydisData).map( key => {
 											if(ybhpID != key)
 											{
+												var Membersonly  = '';
+												if(tokenValid == 1 && options?.discount_type_3 == 1)
+													{
+														var messageText  = options?.nj_display_box_member_only ?? '';
+														Membersonly = getMemberOnlyProduct(options,yourBrowsingHistory[key],messageText);
+													}
 												return (
-													<Product key={ yourBrowsingHistory[key]?.id } product={yourBrowsingHistory[key]} />
+													<Product key={ yourBrowsingHistory[key]?.id } product={yourBrowsingHistory[key]} Membersonly={Membersonly}/>
 												)
 											}
 										})
