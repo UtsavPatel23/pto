@@ -323,12 +323,15 @@ export const storeYourBrowsingHistory = ( product ) => {
 }
 
 
-export function get_discount_type_cart(cartItems,options,setCartSubTotalDiscount,cartSubTotalDiscount)
+		var discount_type_cart_cal = 0;
+		var discount_type_cart_cal = 0;
+export function get_discount_type_cart(cartItems,options,setCartSubTotalDiscount,cartSubTotalDiscount,paymentMethodDiscount,totalPrice)
 {
-   if(cartItems == undefined)
+   if(cartItems == undefined || options == undefined)
    {
     return 0;
    }
+   // Duscount cart quantity  
   var discount_type_cart_quantity_cal = 0
   var cartSubTotalDiscountTmp = {};
   if(options.discount_type_cart_quantity == 1)
@@ -376,8 +379,81 @@ export function get_discount_type_cart(cartItems,options,setCartSubTotalDiscount
     cartSubTotalDiscountTmp.discount_type_cart_quantity = '';
   }
 
+ // Duscount cart Product
+ var discount_type_cart_product_cal = 0
+ if(options.discount_type_cart_product == 1)
+ {
+  var purchase_note = '';
+  var cartNote = [];
+  var arr_msg = [];
+  var minPriceArr = [] ; 
+   var discount_rate_multiple_product_in_cart_discount = options.discount_rate_multiple_product_in_cart_discount;
+   { cartItems.length &&
+      cartItems.map( ( item ) => {
+        var priceTmp = item?.data?.price;
+        if(priceTmp != undefined)
+        {
+          minPriceArr.push(parseFloat(priceTmp));
+        }
+        
+      }) 
+    }
+    let minValuePrice = Math.min(...minPriceArr);
+    //console.log('minPriceArr',minPriceArr);
+    //console.log('minValuePrice',minValuePrice);
+    //console.log('discount_rate_multiple_product_in_cart_discount',discount_rate_multiple_product_in_cart_discount);
+    { discount_rate_multiple_product_in_cart_discount.length &&
+      discount_rate_multiple_product_in_cart_discount.map( ( item ) => {
+      //    console.log('item',item);
+      //    console.log('CL ',cartItems.length);
+          if(cartItems.length < item.quantity)
+          {
+            arr_msg.push("Add "+(item.quantity - cartItems.length)+" more product to get "+item.rate_percentage+"% discount on min price product");
+          }else{
+            discount_type_cart_product_cal = ((minValuePrice * item.rate_percentage) / 100)
+          }
+      });
+    }
+    if(!isEmpty(arr_msg))
+    {
+      purchase_note = arr_msg.join('<br>');
+    }
+    if(purchase_note != '')
+        {
+          cartNote.push({purchase_note:purchase_note});
+        }
+   cartSubTotalDiscountTmp.discount_type_cart_product = {name : 'Super Saver Stockup', discount : discount_type_cart_product_cal,cartNote:cartNote};
+ }else{
+   cartSubTotalDiscountTmp.discount_type_cart_product = '';
+ }
+
+ //  paymentMethod Discount  // paymentMethodDiscount
+  var paymentMethodDiscount_cal = 0
+  if(paymentMethodDiscount == 0 || paymentMethodDiscount == undefined)
+  {
+    cartSubTotalDiscountTmp.paymentMethodDiscount = '';
+  }else{
+    if(paymentMethodDiscount.length > 0)
+    {
+      var paymentMethodDisPer = 0;
+      paymentMethodDiscount.map(function (discount) {
+        if(discount.start_cart_total < totalPrice && totalPrice < discount.end_cart_total)
+        {
+          paymentMethodDisPer = discount.discount;
+        }
+      });
+      paymentMethodDiscount_cal = ((totalPrice*parseFloat(paymentMethodDisPer))/100);
+      cartSubTotalDiscountTmp.paymentMethodDiscount = {name : 'Payment Discount', discount : paymentMethodDiscount_cal};
+    }
+  }
+  
+
+  setCartSubTotalDiscount({ 
+    ...cartSubTotalDiscount, 
+    discount_type_cart_quantity : cartSubTotalDiscountTmp.discount_type_cart_quantity,
+    discount_type_cart_product :  cartSubTotalDiscountTmp.discount_type_cart_product,
+    paymentMethodDiscount :  cartSubTotalDiscountTmp.paymentMethodDiscount,
+    } );
  
-  setCartSubTotalDiscount({ ...cartSubTotalDiscount, discount_type_cart_quantity : cartSubTotalDiscountTmp.discount_type_cart_quantity } );
- 
-  return discount_type_cart_quantity_cal;
+  return discount_type_cart_quantity_cal + discount_type_cart_product_cal + paymentMethodDiscount_cal;
 }

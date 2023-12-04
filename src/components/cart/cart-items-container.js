@@ -348,11 +348,21 @@ const CartItemsContainer = ({options}) => {
 	//console.log('shippingCost',shippingCost);
 	//console.log('notice',notice);
 	//console.log('cart',cart);
+	console.log('cartItems',cartItems);
 	return (
 		<div className="content-wrap-cart">
 			{ loading && <img className="loader" src={Loader.src} alt="Loader" width={50}/> }
 			{ cart ? (
 				<div key="cart-left" className="woo-next-cart-table-row grid lg:grid-cols-3 gap-4">
+					{cartSubTotalDiscount?.discount_type_cart_product != '' ? 
+					<div key="discount_type_cart_product"
+						dangerouslySetInnerHTML={ {
+							__html: cartSubTotalDiscount?.discount_type_cart_product?.cartNote[0]?.purchase_note ?? '',
+						} }
+						className="woo-next-cart-table lg:col-span-2 mb-md-0 mb-5"
+					/> 	
+					:null}
+					
 					{/*Cart Items*/ }
 					<div key='product-list' className="woo-next-cart-table lg:col-span-2 mb-md-0 mb-5">
 						{ cartItems.length &&

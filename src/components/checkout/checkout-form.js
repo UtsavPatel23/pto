@@ -456,7 +456,7 @@ const CheckoutForm = ( { countriesData , paymentModes , options} ) => {
 		
 		// discount_type_cart_quantity
 		var discount_type_cart_cal = 0;
-		discount_type_cart_cal = get_discount_type_cart(cart?.cartItems,options,setCartSubTotalDiscount,cartSubTotalDiscount);
+		discount_type_cart_cal = get_discount_type_cart(cart?.cartItems,options,setCartSubTotalDiscount,cartSubTotalDiscount,paymentMethodDiscount,totalPrice);
 		
 		if(discount_type_cart_cal != 0)
 		{
@@ -475,9 +475,9 @@ const CheckoutForm = ( { countriesData , paymentModes , options} ) => {
 		setDiscoutDis(discount_cal);
 		setTotalPriceDis(totalPriceSum);
 		
-    }, [totalPrice,shippingCost,coutData]);
+    }, [totalPrice,shippingCost,coutData,paymentMethodDiscount]);
 
-	//  paymentMethod Discount  // paymentMethodDiscount
+	/*//  paymentMethod Discount  // paymentMethodDiscount
 	useEffect(() => {
 			var totalPriceSum = totalPrice;
 			var paymentMethodDiscount_cal = 0
@@ -501,7 +501,7 @@ const CheckoutForm = ( { countriesData , paymentModes , options} ) => {
 				}
 			}
 			setTotalPriceDis(totalPriceSum);
-	}, [paymentMethodDiscount]);
+	}, [paymentMethodDiscount]);*/
 
 
 	/******   getAuspost  *******/
