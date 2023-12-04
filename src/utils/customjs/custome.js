@@ -446,9 +446,10 @@ export function get_discount_type_cart(cartItems,options,setCartSubTotalDiscount
   }
   
   // Discount User login (Members only)
+  var membersOnlyDiscount_cal = 0;
   if(tokenValid == 1 && options?.discount_type_3 == 1)
   {
-    var membersOnlyDiscount_cal = 0;
+    
     //console.log('date ',options.nj_set_date_range_for_discount_login_user);
     if(options?.nj_set_date_range_for_discount_login_user != undefined && (!isEmpty(options?.nj_set_date_range_for_discount_login_user)))
     {
