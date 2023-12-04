@@ -10,7 +10,7 @@ import { get_countries } from '../src/utils/customjs/custome';
 export default function Checkout({ headerFooter }) {
 	const countries = get_countries();
 	var paymentModes = headerFooter?.footer?.options?.nj_payment_method ?? '';
-	
+	const options = headerFooter?.footer?.options;
 	paymentModes = paymentModes.filter(obj => 
 		{
 		if (obj.method_enabled == true) {
@@ -20,7 +20,7 @@ export default function Checkout({ headerFooter }) {
 	return (
 		<Layout headerFooter={headerFooter || {}}>
 			<h1>Checkout</h1>
-			<CheckoutForm countriesData={countries} paymentModes={ paymentModes } />
+			<CheckoutForm countriesData={countries} paymentModes={ paymentModes } options={options}/>
 		</Layout>
 	);
 }

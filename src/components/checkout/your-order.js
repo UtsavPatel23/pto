@@ -53,12 +53,14 @@ const YourOrder = ( { cart,shippingCost,discoutDis,cartSubTotalDiscount,totalPri
 						})()} 
 						{/* cart Sub Total Discount */}
 						{(() => {
+							if(cartSubTotalDiscount != undefined)
+							{
 							if(Object.keys(cartSubTotalDiscount).length > 0)
 							{
 								return (
 									Object.keys(cartSubTotalDiscount).map(function(key) {
 										console.log('key',cartSubTotalDiscount[key].name);
-										if(cartSubTotalDiscount[key] != '')
+										if(cartSubTotalDiscount[key] != '' && cartSubTotalDiscount[key]?.discount != 0)
 										{
 											return (
 												<tr className="">
@@ -72,11 +74,7 @@ const YourOrder = ( { cart,shippingCost,discoutDis,cartSubTotalDiscount,totalPri
 									})
 								)
 							}
-							
-							if(cartSubTotalDiscount.paymentMethodDiscount != '') 
-							{
-									
-							} 
+							}
 						})()} 
 						{/* Discout redeemPrice*/}
 						{(() => {

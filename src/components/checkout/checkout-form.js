@@ -16,7 +16,7 @@ import {
 } from '../../utils/checkout';
 import { useEffect } from 'react';
 import Cookies from 'js-cookie';
-import { getShipping, get_points, get_stateList } from '../../utils/customjs/custome';
+import { getShipping, get_discount_type_cart, get_points, get_stateList } from '../../utils/customjs/custome';
 import Loader from "./../../../public/loader.gif";
 import axios from 'axios';
 import { SUBURB_API_URL } from '../../utils/constants/endpoints';
@@ -57,7 +57,7 @@ const defaultCustomerInfo = {
 	errors: null
 }
 
-const CheckoutForm = ( { countriesData , paymentModes } ) => {
+const CheckoutForm = ( { countriesData , paymentModes , options} ) => {
 
 	
 	const { billingCountries, shippingCountries } = countriesData || {};
@@ -453,26 +453,14 @@ const CheckoutForm = ( { countriesData , paymentModes } ) => {
 			}
 		}
 
-		//  paymentMethod Discount  // paymentMethodDiscount
-		var paymentMethodDiscount_cal = 0
-		if(paymentMethodDiscount == 0)
+		
+		// discount_type_cart_quantity
+		var discount_type_cart_cal = 0;
+		discount_type_cart_cal = get_discount_type_cart(cart?.cartItems,options,setCartSubTotalDiscount,cartSubTotalDiscount);
+		
+		if(discount_type_cart_cal != 0)
 		{
-			setCartSubTotalDiscount({ ...cartSubTotalDiscount, paymentMethodDiscount: ''} );
-		}else{
-			if(paymentMethodDiscount.length > 0)
-			{
-				var paymentMethodDisPer = 0;
-				paymentMethodDiscount.map(function (discount) {
-					if(discount.start_cart_total < totalPrice && totalPrice < discount.end_cart_total)
-					{
-						paymentMethodDisPer = discount.discount;
-					}
-				});
-				paymentMethodDiscount_cal = ((totalPrice*parseFloat(paymentMethodDisPer))/100);
-				totalPriceSum = totalPriceSum - paymentMethodDiscount_cal;
-				//console.log('paymentMethodDisPer',paymentMethodDisPer);
-				setCartSubTotalDiscount({ ...cartSubTotalDiscount, paymentMethodDiscount: {name : 'Payment Discount', discount : paymentMethodDiscount_cal}} );
-			}
+			totalPriceSum = totalPriceSum - discount_type_cart_cal;
 		}
 
 		// redeemPrice
@@ -487,9 +475,33 @@ const CheckoutForm = ( { countriesData , paymentModes } ) => {
 		setDiscoutDis(discount_cal);
 		setTotalPriceDis(totalPriceSum);
 		
-    }, [totalPrice,shippingCost,coutData,paymentMethodDiscount]);
+    }, [totalPrice,shippingCost,coutData]);
 
-	
+	//  paymentMethod Discount  // paymentMethodDiscount
+	useEffect(() => {
+			var totalPriceSum = totalPrice;
+			var paymentMethodDiscount_cal = 0
+			if(paymentMethodDiscount == 0)
+			{
+				setCartSubTotalDiscount({ ...cartSubTotalDiscount, paymentMethodDiscount: ''} );
+			}else{
+				if(paymentMethodDiscount.length > 0)
+				{
+					var paymentMethodDisPer = 0;
+					paymentMethodDiscount.map(function (discount) {
+						if(discount.start_cart_total < totalPrice && totalPrice < discount.end_cart_total)
+						{
+							paymentMethodDisPer = discount.discount;
+						}
+					});
+					paymentMethodDiscount_cal = ((totalPrice*parseFloat(paymentMethodDisPer))/100);
+					totalPriceSum = totalPriceSum - paymentMethodDiscount_cal;
+					//console.log('paymentMethodDisPer',paymentMethodDisPer);
+					setCartSubTotalDiscount({ ...cartSubTotalDiscount, paymentMethodDiscount: {name : 'Payment Discount', discount : paymentMethodDiscount_cal}} );
+				}
+			}
+			setTotalPriceDis(totalPriceSum);
+	}, [paymentMethodDiscount]);
 
 
 	/******   getAuspost  *******/
@@ -573,6 +585,7 @@ const CheckoutForm = ( { countriesData , paymentModes } ) => {
 		}
 	}
 	console.log('paymentMethodDiscount',paymentMethodDiscount);
+	console.log('cartSubTotalDiscount',cartSubTotalDiscount);
 	return (
 		<>
 		{ loading && <img className="loader" src={Loader.src} alt="Loader" width={50}/> }

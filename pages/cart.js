@@ -4,10 +4,11 @@ import axios from 'axios';
 import CartItemsContainer from '../src/components/cart/cart-items-container';
 
 export default function Cart({ headerFooter }) {
+	const options = headerFooter?.footer?.options;
 	return (
 		<Layout headerFooter={headerFooter || {}}>
 			<h1 className="uppercase tracking-0.5px">Cart</h1>
-			<CartItemsContainer/>
+			<CartItemsContainer options={options}/>
 		</Layout>
 	);
 }

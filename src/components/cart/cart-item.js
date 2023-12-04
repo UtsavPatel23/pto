@@ -9,13 +9,27 @@ const CartItem = ( {
 	                   products,
 	                   setCart,
 					   notice,
-					   postcodedis
+					   postcodedis,
+					   cartNote
                    } ) => {
 	const [productCount, setProductCount] = useState( item.quantity );
 	const [updatingProduct, setUpdatingProduct] = useState( false );
 	const [removingProduct, setRemovingProduct] = useState( false );
 	const productImg = item?.data?.images?.[0] ?? '';
+	//console.log('cartNote inc',cartNote);
+	//console.log('item inc',item);
+	var itemNote = '';
+	if(cartNote != undefined)
+	{
+		itemNote  =cartNote.find(function (element) {
+			if(item.key == element.key)
+			{
+				return true;
+			}
+		});
+	}
 	
+	//console.log('item itemNote',itemNote);
 	/**
 	 * Do not allow state update on an unmounted component.
 	 *
@@ -117,6 +131,15 @@ const CartItem = ( {
 						<h5 className="cart-product-title text-brand-orange">{ item?.data?.name }</h5>
 					</Link>	
 					{notice?<span className='invalid-feedback d-block text-red-500'>Sorry please remove this product Undeliverable at {postcodedis}.</span>:null}
+					{itemNote != ''? 
+					<div key="purchase_note"
+						dangerouslySetInnerHTML={ {
+							__html: itemNote.purchase_note ?? '',
+						} }
+						className="purchase_note mb-5"
+					/> 
+					:null}
+					{}
 						{ 
 						//item?.data?.description ? <p>{item?.data?.description}</p> : ''
 						}

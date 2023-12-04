@@ -321,3 +321,63 @@ export const storeYourBrowsingHistory = ( product ) => {
   localStorage.setItem( 'YourBrowsingHistory', JSON.stringify(histryData));
   return histryData;
 }
+
+
+export function get_discount_type_cart(cartItems,options,setCartSubTotalDiscount,cartSubTotalDiscount)
+{
+   if(cartItems == undefined)
+   {
+    return 0;
+   }
+  var discount_type_cart_quantity_cal = 0
+  var cartSubTotalDiscountTmp = {};
+  if(options.discount_type_cart_quantity == 1)
+  {
+    var cartNote = [];
+    { cartItems.length &&
+      cartItems.map( ( item ) => {
+        //console.log('item',item);
+        var purchase_note = '';
+        var msgTmpDiscount = '';
+        var arr_msg = [];
+        { options.discount_rate_product_quantity_discount.length &&
+          options.discount_rate_product_quantity_discount.map( ( discount_item ) => {
+            //console.log('discount_item',discount_item);
+            if(item.quantity < discount_item.quantity)
+            {
+              var pro_price = item.data?.price ?? 0;
+              pro_price = parseFloat(pro_price);
+              var dis_price = ((pro_price * discount_item.quantity * discount_item.rate_percentage)/100);
+              arr_msg.push("<span class='variation-Note'>Note: </span> Add "+(discount_item.quantity-item.quantity)+" more to get " +discount_item.rate_percentage+"% discount "+ cartItems?.[0]?.currency +dis_price.toFixed(2));
+            }else{
+              discount_type_cart_quantity_cal = ((item.line_subtotal*discount_item.rate_percentage)/100);
+              msgTmpDiscount = "<span class='variation-Note'>Discount: </span>  "+(discount_item.rate_percentage)+"% discount applied (" +((item.line_subtotal*discount_item.rate_percentage)/100).toFixed(2)+")";
+            }
+          }) 
+        }
+        if(msgTmpDiscount != '')
+        {
+          arr_msg.push(msgTmpDiscount);
+        }
+        if(!isEmpty(arr_msg))
+        {
+          purchase_note = arr_msg.join('<br>');
+        }
+        //console.log('arr_msg',arr_msg);
+        //console.log('purchase_note',purchase_note);
+        if(purchase_note != '')
+        {
+          cartNote.push({key:item.key,purchase_note:purchase_note});
+        }
+      }) 
+    }
+    cartSubTotalDiscountTmp.discount_type_cart_quantity = {name : 'Bulkbuy Discount', discount : discount_type_cart_quantity_cal,cartNote:cartNote};
+  }else{
+    cartSubTotalDiscountTmp.discount_type_cart_quantity = '';
+  }
+
+ 
+  setCartSubTotalDiscount({ ...cartSubTotalDiscount, discount_type_cart_quantity : cartSubTotalDiscountTmp.discount_type_cart_quantity } );
+ 
+  return discount_type_cart_quantity_cal;
+}

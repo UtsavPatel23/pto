@@ -4,7 +4,7 @@ import CartItem from './cart-item';
 
 import Link from 'next/link';
 import { clearCart } from '../../utils/cart';
-import { getShipping } from '../../utils/customjs/custome';
+import { getShipping, get_discount_type_cart } from '../../utils/customjs/custome';
 
 import Loader from "./../../../public/loader.gif";
 import Cookies from 'js-cookie';
@@ -13,7 +13,7 @@ import RedeemPoints from './redeem-points';
 import LoginForm from '../my-account/login';
 
 
-const CartItemsContainer = () => {
+const CartItemsContainer = ({options}) => {
 	const [ cart, setCart ] = useContext( AppContext );
 	const { cartItems, totalPrice, totalQty,shippingCost } = cart || {};
 	const [totalPriceDis,setTotalPriceDis] =useState(totalPrice);
@@ -38,6 +38,9 @@ const CartItemsContainer = () => {
         success: false,
 		error: '',
     });
+
+	// Cart sub total Discount 
+	const [cartSubTotalDiscount,setCartSubTotalDiscount] = useState(null);
 	
 	// Clear the entire cart.
 	const handleClearCart = async ( event ) => {
@@ -290,10 +293,12 @@ const CartItemsContainer = () => {
 		var totalPriceSum = totalPrice;
 		var discount_cal = 0;
         const {CouponApply} = coutData;
+		// shippingCost
 		if(undefined != shippingCost)
 		{
 			totalPriceSum = totalPriceSum+shippingCost
 		}
+		// CouponApply
 		if(CouponApply != '' && CouponApply != undefined)
 		{
 			if(CouponApply.success)
@@ -310,6 +315,8 @@ const CartItemsContainer = () => {
 			totalPriceSum = totalPriceSum - discount_cal;
 			}
 		}
+		setDiscoutDis(discount_cal);
+		//  redeemPrice
 		if(coutData.redeemPrice != undefined)
 		{
 			if(coutData?.redeemPrice > 0)
@@ -318,11 +325,24 @@ const CartItemsContainer = () => {
 			}
 		}
 		
-		setDiscoutDis(discount_cal);
+		// discount_type_cart_quantity
+		var discount_type_cart_cal = 0;
+		discount_type_cart_cal = get_discount_type_cart(cartItems,options,setCartSubTotalDiscount,cartSubTotalDiscount);
+		
+		if(discount_type_cart_cal != 0)
+		{
+			totalPriceSum = totalPriceSum - discount_type_cart_cal;
+		}
+		//console.log('options',options);
+		//console.log('cartItems',cartItems);
+		//console.log('discount_type_cart_cal',discount_type_cart_cal);
+		
+		// Final total price
 		setTotalPriceDis(totalPriceSum);
 		
     }, [totalPrice,shippingCost,coutData]);
 	
+	console.log('cartSubTotalDiscount',cartSubTotalDiscount);
 	
 	//console.log('coutData in',coutData);
 	//console.log('shippingCost',shippingCost);
@@ -344,6 +364,7 @@ const CartItemsContainer = () => {
 								setCart={setCart}
 								notice={notice != ''?notice.find((element) => element == item?.data?.sku):null}
 								postcodedis={postcodedis}
+								cartNote = {cartSubTotalDiscount?.discount_type_cart_quantity?.cartNote ?? null}
 							/>
 						) ) }
 						<div key="calculat-shipping">
@@ -385,17 +406,33 @@ const CartItemsContainer = () => {
 							<p className="col-span-2 p-2 mb-0">Sub Total({totalQty})</p>
 							<p className="col-span-1 p-2 mb-0">{cartItems?.[0]?.currency ?? ''}{parseFloat(totalPrice).toFixed(2)}</p>
 						</div>
-						{(() => {
-							if(shippingCost >= 0 && (undefined != shippingCost)) 
-							{
-								return (
-										<div className="flex grid grid-cols-3 bg-gray-100 mb-4">
-											<p className="col-span-2 p-2 mb-0">Shipping Cost</p>
-											<p className="col-span-1 p-2 mb-0">+{cartItems?.[0]?.currency ?? ''}{ shippingCost }</p>
-										</div>
-										)	
-							} 
-						})()} 
+						<div key='discount'>
+							{/* cart Sub Total Discount */}
+							{(() => {
+								if(cartSubTotalDiscount != null)
+								{
+									if(Object.keys(cartSubTotalDiscount).length > 0)
+									{
+										return (
+											Object.keys(cartSubTotalDiscount).map(function(key) {
+												//console.log('key',cartSubTotalDiscount[key].name);
+												//console.log('key',key);
+												if(cartSubTotalDiscount[key] != '' && cartSubTotalDiscount[key]?.discount != 0)
+												{
+													return (
+														<div className="flex grid grid-cols-3 bg-gray-100 mb-4">
+															<p className="col-span-2 p-2 mb-0">{cartSubTotalDiscount[key]?.name}</p>
+															<p className="col-span-1 p-2 mb-0">-{ cart?.cartItems?.[ 0 ]?.currency ?? '' }{cartSubTotalDiscount[key]?.discount?.toFixed(2) ?? ''}</p>
+														</div>
+													)
+												}
+												
+											})
+										)
+									}
+								}
+							})()} 
+						</div>
 						{(() => {
 							if(coutData.CouponApply != undefined) 
 							{
@@ -423,6 +460,17 @@ const CartItemsContainer = () => {
 										</div>
 										)
 								}
+							} 
+						})()} 
+						{(() => {
+							if(shippingCost >= 0 && (undefined != shippingCost)) 
+							{
+								return (
+										<div className="flex grid grid-cols-3 bg-gray-100 mb-4">
+											<p className="col-span-2 p-2 mb-0">Shipping Cost</p>
+											<p className="col-span-1 p-2 mb-0">+{cartItems?.[0]?.currency ?? ''}{ shippingCost }</p>
+										</div>
+										)	
 							} 
 						})()} 
 						<div className="flex grid grid-cols-3 bg-gray-100 mb-4">
