@@ -511,13 +511,13 @@ export function Membersonlyptoduct(data,options) {
    }else{
     proCatIDs = data.categories;
    }
-   console.log('proCatIDs',proCatIDs);
+   //console.log('proCatIDs',proCatIDs);
             if(proCatIDs != undefined && options?.exclude_category_for_discount_sku_list != undefined)
             {
               if(options.exclude_category_for_discount_sku_list.length > 0)
               {
                 proCatIDs.map( ( proCatID ) => {
-                    console.log('proCatID',proCatID);
+                   // console.log('proCatID',proCatID);
                     if(proCatID.id == undefined)
                     {
                       if(options.exclude_category_for_discount_sku_list.includes(proCatID) && (!validProductDis))
@@ -581,4 +581,42 @@ export function getMemberOnlyProduct(options,product,messageText) {
 									}
 									}
     return Membersonly;
+}
+
+
+// Get product id in exclude categry return true is in category 
+export function exclude_category_for(data,exclude_category) {
+  var validProductDis  = false;
+  var proCatIDs = [];
+   if(data?.category_ids != undefined)
+   {
+    proCatIDs = data?.category_ids;
+   }else{
+    proCatIDs = data.categories;
+   }
+   //console.log('proCatIDs',proCatIDs);
+            if(proCatIDs != undefined && exclude_category != undefined)
+            {
+              if(exclude_category.length > 0)
+              {
+                proCatIDs.map( ( proCatID ) => {
+                   // console.log('proCatID',proCatID);
+                    if(proCatID.id == undefined)
+                    {
+                      if(exclude_category.includes(proCatID) && (!validProductDis))
+                      {
+                        validProductDis = true;
+                      }
+                    }else{
+                      if(exclude_category.includes(proCatID.id) && (!validProductDis))
+                      {
+                        validProductDis = true;
+                      }
+                    }
+                    
+                })
+              }
+              
+            }
+  return validProductDis;
 }

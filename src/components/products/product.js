@@ -4,16 +4,32 @@ import { sanitize } from '../../utils/miscellaneous';
 import AddToCart from '../cart/add-to-cart';
 import { isEmpty } from 'lodash';
 import ExternalLink from './external-link';
-import { getNewProductTag } from '../../utils/customjs/custome';
+import { getMemberOnlyProduct, getNewProductTag } from '../../utils/customjs/custome';
+import { get_coupon_box, get_custom_badge, get_gridtimer } from '../../utils/shop/shop-box';
+import Gridtimer from './gridtimer';
 
-const Product = ( { product , Membersonly} ) => {
+const Product = ( { product , tokenValid ,options} ) => {
 	if ( isEmpty( product ) ) {
 		return null;
 	}
 	
 	const img = product?.images?.[0] ?? {};
 	const productType = product?.type ?? '';
-	
+	// member only 
+	var Membersonly  = '';
+	if(tokenValid == 1 && options?.discount_type_3 == 1)
+		{
+			var messageText  = options?.nj_display_box_member_only ?? '';
+			Membersonly = getMemberOnlyProduct(options,product,messageText);
+		}
+	// Custom badge	
+	var custom_badge = get_custom_badge(options,product.sku);
+	 
+	// Coupon box
+	var coupon_box = get_coupon_box(options,product.sku);
+
+	// All skus grid timer
+	var gridtimer = get_gridtimer(options,product);
 	return (
 		<div className="h-fit">
 			<Link href={ `/product/${ product?.slug }`} legacyBehavior>
@@ -49,6 +65,32 @@ const Product = ( { product , Membersonly} ) => {
 				} 
 			})()} 
 			</div>
+			{(() => {
+				if(custom_badge != '')
+				{
+					return (
+						<div key='custom_badge'>{custom_badge}</div>
+					);
+				}
+			})()}
+			{(() => {
+				if(coupon_box != '')
+				{
+					return (
+						<div key='coupon_box'>{coupon_box?.multiple_sku_list_coupon_value} coupon inside</div>
+					);
+				}
+			})()}
+			{(() => {
+				if(gridtimer != '')
+				{
+					return (
+						<div key='gridtimer'>
+						<Gridtimer imgurl={gridtimer}></Gridtimer>
+						</div>
+					);
+				}
+			})()}
 			<div>
 			{(() => {
 				if ((product.type == 'simple') && (product.meta_data.product_discount != '') && product.meta_data.product_discount != undefined) 

@@ -20,6 +20,7 @@ import { getMemberOnlyProduct, getNewProductTag, storeYourBrowsingHistory } from
 import { Router } from 'next/router';
 import BuyNow from '../cart/buy-now';
 import Cookies from 'js-cookie';
+import { get_coupon_box } from '../../utils/shop/shop-box';
 
  const SingleProduct = ( { product,reviews,options} ) => {
 		 const paymentOptions = options?.payments;
@@ -30,6 +31,7 @@ import Cookies from 'js-cookie';
 
 		 const [tokenValid,setTokenValid]=useState(0);
 		 const [membersonly,setMembersonly]=useState('');
+
 		 
  // ************* ********************************  ************************ 
  // ************* Shipping Calculation ************************************* 
@@ -175,6 +177,10 @@ import Cookies from 'js-cookie';
 					setMembersonly(getMemberOnlyProduct(options,product,messageText));
 				}
 		}, [tokenValid]);
+
+		// Coupon box
+		var coupon_box = get_coupon_box(options,product.sku);
+
 	 return Object.keys( product ).length ? (
 		 <div className="single-product container mx-auto my-32 px-4 xl:px-0">
 			 <div key="section1" className="grid md:grid-cols-2 gap-4">
@@ -291,6 +297,14 @@ import Cookies from 'js-cookie';
 							className="product-price mb-5"
 						/>
 					</div>
+					{(() => {
+						if(coupon_box != '')
+						{
+							return (
+								<div key='coupon_box'>Save {coupon_box?.multiple_sku_list_coupon_value} Use Code {coupon_box?.multiple_sku_list_coupon_name}</div>
+							);
+						}
+					})()}
 					<div key="estimated-time">
 							<p>Estimated Dispatch*: Leaves warehouse in 1-2 business days</p>
 							{product.meta_data.product_code == 'VX'?<>
