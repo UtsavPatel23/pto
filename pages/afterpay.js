@@ -99,7 +99,6 @@ let config = {
     'Accept': 'application/json', 
     'Content-Type': 'application/json', 
     'Authorization': 'Basic NDIzMTI6YTQ3ZjM4ZjlhYzc2ZWQxZDA2MmRmYjRmZmU2ZDk4YjM1ZGZkYmQ0MGFlYTU5MTdhOWJhMWYzOTlkNTFlMmQxZjc2NjA3NzIxNGZiNmJhOTg1OThlZWVmMzQwNDlmNjEyOTFiNGI3OTI5MTQyMDg5ZmQ3MGFjZWU1YTE3YmQ3ODg=', 
-    'Cookie': '__cf_bm=GvtEYY7.OWAfdHGDd7ietQFWm14poXuz6Lfzr3YxghE-1701834597-0-AWT6Yo2ScmSncRP/65gyxlueshaISlj/39G3ZYgMU8XxmCJE0hRnX8SGdlpxbNLZmLt1cc72kUZy6uH4CuM3v3Jcj9cympXkdpbU5MaxWFkd',
     'Access-Control-Allow-Origin': '*',
     "Access-Control-Allow-Methods": "GET,HEAD,OPTIONS,POST,PUT",
     "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type,Accept, x-client-key, x-client-token, x-client-secret, Authorization",
