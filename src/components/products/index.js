@@ -948,7 +948,6 @@ const encodeDataToURL = (data) => {
 				<div className="rpagination">
 					{max_num_pages != 1 ? <>
 						{ itemOffset==0 ? 
-						<>
 						<ReactPaginate
 							breakLabel="..."
 							nextLabel="next >"
@@ -959,10 +958,7 @@ const encodeDataToURL = (data) => {
 							renderOnZeroPageCount={null}
 							forcePage={itemOffset}
 						/>
-						<p>AAAAA</p>
-						</>
 						: 
-						<>
 						<ReactPaginate
 							breakLabel="..."
 							nextLabel="next >"
@@ -972,9 +968,6 @@ const encodeDataToURL = (data) => {
 							previousLabel="< previous"
 							renderOnZeroPageCount={null}
 						/>
-						<>BBBBBB</>
-						</>
-						
 						} </> : ''
 					}
 					</div>
