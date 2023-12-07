@@ -20,10 +20,13 @@ const ThankYouContent = ({headerFooter}) => {
 	const [ sessionData, setSessionData ] = useState( {} );
 	const session_id = process.browser ? Router.query.session_id : null;
 	const orderPostnb = process.browser ? Router.query.orderPostnb : null;
+	const status = process.browser ? Router.query.status : null;
+	const orderToken = process.browser ? Router.query.orderToken : null;
 	const [ orderData, setOrderData ] = useState( {} );
 	const [subtotal,setSubtotal] = useState(0);
 	var paymentModes = headerFooter?.footer?.options?.nj_payment_method ?? '';
 	
+	// stripe
 	useEffect( () => {
 		setSessionFetching( true );
 		if ( process.browser ) {
@@ -47,6 +50,7 @@ const ThankYouContent = ({headerFooter}) => {
 		
 	}, [ session_id ] );
 
+	// bank & afterpay
 	useEffect( () => {
 		setSessionFetching( true );
 		if ( process.browser ) {
@@ -99,6 +103,24 @@ console.log('sessionData',sessionData);
 	console.log('orderData',orderData);
 	 
 	useEffect(()=>{
+		if(orderData?.status != undefined)
+		{
+			if(status == 'SUCCESS' && orderToken != '' && orderData?.status == 'pending'  && orderData?.payment_method == 'afterpay') 
+			{
+				const newOrderData = {
+					orderId: orderData?.id,
+					afterpayOrderStaus: 1,
+				};
+				axios.post( '/api/update-order', newOrderData )
+					.then( res => {
+		
+						console.log('res UPDATE DATA ORDER',res);
+					} )
+					.catch( err => {
+						console.log('err UPDATE DATA ORDER',err);
+					} )
+			}
+		}
 		if(orderData?.id != undefined && orderData.fee_lines != undefined)
 		{
 			const findfee_linesData = orderData.fee_lines.find((element) => element.name == 'Redeem Price:');

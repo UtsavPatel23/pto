@@ -27,7 +27,7 @@ export default async function handler( req, res ) {
 	
 	if ( isEmpty( req.body ) ) {
 		responseData.error = 'Required data not sent';
-		return responseData;
+		res.json(responseData);
 	}
 	
 	let newOrderData = {};
@@ -45,14 +45,19 @@ export default async function handler( req, res ) {
 				}
 			  ]
 		}
-	}
-	if(req.body?.bacs == 1)
+	}else if(req.body?.bacs == 1)
 	{
 		newOrderData = {
 			status: 'on-hold'
 		}
+	}else if(req.body?.afterpayOrderStaus == 1)
+	{
+		newOrderData = {
+			status: 'snv'
+		}
+	}else if(!isEmpty(req.body?.meta_data)){
+		newOrderData = {meta_data : req.body?.meta_data};
 	}
-	
 	
 	try {
 		const {data} = await api.put( `orders/${ req.body.orderId }`, newOrderData );

@@ -8,6 +8,7 @@ import Address from './user-address';
 import { AppContext } from '../context';
 import CheckboxField from './form-elements/checkbox-field';
 import {
+	handleAfterpayCheckout,
 	handleAgreeTerms,
 	handleBacsCheckout,
 	handleBillingDifferentThanShipping,
@@ -197,6 +198,12 @@ const CheckoutForm = ( { countriesData , paymentModes , options} ) => {
 		// For bacs payment mode, handle the bacs payment and thank you.
 		if ( 'bacs' === input.paymentMethod ) {
 			const createdOrderData = await handleBacsCheckout( shippingCost,couponName,totalPriceDis,input, cart?.cartItems, setRequestError, setCart, setIsOrderProcessing, setCreatedOrderData ,coutData,setCoutData,cartSubTotalDiscount);
+			return null;
+		}
+
+		// For Afterpay payment mode, handle the afterpay payment and thank you.
+		if ( 'afterpay' === input.paymentMethod ) {
+			const createdOrderData = await handleAfterpayCheckout( shippingCost,couponName,totalPriceDis,input, cart?.cartItems, setRequestError, setCart, setIsOrderProcessing, setCreatedOrderData ,coutData,setCoutData,cartSubTotalDiscount);
 			return null;
 		}
 		
