@@ -29,9 +29,9 @@ const AddToCart = ( { product } ) => {
 				onClick={ () => addToCart( product?.id ?? 0, 1, setCart, setIsAddedToCart, setLoading ) }
 				disabled={ loading }
 			>
-				{ loading ? 'Adding...' : 'Add to cart' }
+			{ loading  ? 'Adding...' : 'Add to cart' }
 			</button>
-			{ isAddedToCart && ! loading ? (
+			{ isAddedToCart && ! loading  &&  cart?.totalQty > 0 ? (
 				<Link href="/cart" legacyBehavior>
 					<a
 						className="bg-white hover:bg-gray-100 text-gray-800 font-semibold ml-4 py-11px px-4 border border-gray-400 rounded shadow"
