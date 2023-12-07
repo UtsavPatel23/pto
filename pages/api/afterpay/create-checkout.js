@@ -46,7 +46,7 @@ export default async function handler(req, res) {
         'Accept': 'application/json', 
         'Content-Type': 'application/json', 
         'Authorization': 'Basic '+base64StringAuth, 
-        'Cookie': '__cf_bm=m2N3BBJ4WXeT5EIOqeEGkmaAvPtMIv9Jp8fAKqstBlU-1701837205-0-AXNAQZtJO0/7fqypLAwuPbgPCT2+hNktTS3EjOR26qCNwPCX903kiPgVJuUY/tBGkxwpRU4l/KwXx+0Qpwmwym0cPoBJ9PdcWuvAJhO6X44C'
+       // 'Cookie': '__cf_bm=m2N3BBJ4WXeT5EIOqeEGkmaAvPtMIv9Jp8fAKqstBlU-1701837205-0-AXNAQZtJO0/7fqypLAwuPbgPCT2+hNktTS3EjOR26qCNwPCX903kiPgVJuUY/tBGkxwpRU4l/KwXx+0Qpwmwym0cPoBJ9PdcWuvAJhO6X44C'
         },
        data : req.body?.afterpayOrderData
     };

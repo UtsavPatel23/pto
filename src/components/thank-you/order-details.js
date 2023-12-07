@@ -32,12 +32,14 @@ function orderDetails({orderData,subtotal}) {
 								<td className="px-4 py-3">{orderData?.currency_symbol} { orderData?.discount_total }</td>
 							</tr>: null}
 							{ orderData?.fee_lines &&
-								orderData?.fee_lines.map( ( item ) => (
+								orderData?.fee_lines.map( ( item ) => {
+									if(item.total != 0)
+								return (
 								<tr>
 									<td className="px-4 py-3">{item.name}</td>
 									<td className="px-4 py-3">{orderData?.currency_symbol} { item.total }</td>
 								</tr>
-							) ) }
+							)} ) }
 							<tr>
 								<td className="px-4 py-3">Total</td>
 								<td className="px-4 py-3">{orderData?.currency_symbol} { orderData?.total }</td>

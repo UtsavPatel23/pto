@@ -108,31 +108,7 @@ export const getCreateOrderData = ( shippingCost,couponName,order, products ,cou
 			}
 		}
 
-	// 
-	if(coutData?.redeemPrice != undefined)
-	{
-		if(coutData?.redeemPrice > 0)
-		{
-			tmpOrderData = { ...tmpOrderData, ...{
-				"fee_lines":[             
-					...tmpOrderData.fee_lines,
-					{    
-						"name":"Redeem Price:",
-						"total": '-'+coutData?.redeemPrice.toString()
-					}
-				],
-				"meta_data" : [
-					{
-					  "key": "_customer_after_reedem_reward_points",
-					  "value": order?._customer_after_reedem_reward_points
-					}
-				  ]
-				}};
-
-
-		}
-	}
-
+	
 	if(Object.keys(cartSubTotalDiscount).length > 0)
 	{
 			Object.keys(cartSubTotalDiscount).map(function(key) {
