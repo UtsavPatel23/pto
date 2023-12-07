@@ -31,8 +31,8 @@ export const addToCart = ( productId, qty = 1, setCart, setIsAddedToCart, setLoa
 				storeSession( res?.headers?.[ 'x-wc-session' ] );
 			}
 			setIsAddedToCart(true);
-			setLoading(false);
 			viewCart( setCart );
+			setLoading(false);
 		} )
 		.catch( err => {
 			console.log( 'err', err );
