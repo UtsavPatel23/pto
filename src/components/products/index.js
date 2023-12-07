@@ -435,6 +435,8 @@ const encodeDataToURL = (data) => {
 	  }, [currentProduct]); // <- add empty brackets here
 
 	  var i = 1;
+	  console.log('max_num_pages',max_num_pages);
+	console.log('itemOffset',itemOffset);
 	return (
 		<>
 		<div id="main_filter">
