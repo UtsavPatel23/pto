@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import React from 'react'
 import Cookies from 'js-cookie';
-import { signOut } from "next-auth/react"
+//import { signOut } from "next-auth/react"
 
 function Sidebar({setTokenValid}) {
    //function logout
@@ -14,7 +14,7 @@ function Sidebar({setTokenValid}) {
 		Cookies.remove('coutData');
         if(tokenName == 'logingoogle')
         {
-            await signOut();
+            //await signOut();
         }else{
             setTokenValid(0);
         }
