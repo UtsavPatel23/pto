@@ -50,7 +50,6 @@ export default async function handler(req, res) {
         },
        data : req.body?.afterpayOrderData
     };
-	console.log('config',config);
   try {
     // Make an HTTP request using Axios
     const response = await axios.request(config);
