@@ -23,6 +23,7 @@ const CartItemsContainer = ({options}) => {
 	const [notice,setNotice] = useState('');
 	const [postcodedis,setPostcodedis] = useState('');
 	const [product_code,setProduct_code] = useState('');
+	const [cartBtnDisabled,setCartBtnDisabled] = useState(false);
 
 	// Coupon
 	const [couponCodeText, setCouponCodeText] = useState('');
@@ -343,6 +344,15 @@ const CartItemsContainer = ({options}) => {
 		
     }, [totalPrice,shippingCost,coutData,tokenValid]);
 	
+	useEffect(() => {
+        if(!isEmpty(notice))
+		{
+			setCartBtnDisabled(true);
+		}else{
+			setCartBtnDisabled(false);
+		}
+    }, [notice]);
+	
 	console.log('cartSubTotalDiscount',cartSubTotalDiscount);
 	
 	//console.log('coutData in',coutData);
@@ -350,6 +360,8 @@ const CartItemsContainer = ({options}) => {
 	//console.log('notice',notice);
 	//console.log('cart',cart);
 	console.log('cartItems',cartItems);
+	
+	
 	return (
 		<div className="content-wrap-cart">
 			{ loading && <img className="loader" src={Loader.src} alt="Loader" width={50}/> }
@@ -502,7 +514,7 @@ const CartItemsContainer = ({options}) => {
 							</div>
 							{/*Checkout*/}
 							<Link href="/checkout">
-								<button className="text-white duration-500 bg-brand-orange hover:bg-brand-royal-blue focus:ring-4 focus:text-white font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 dark:focus:ring-yellow-900">
+							 <button className="text-white duration-500 bg-brand-orange hover:bg-brand-royal-blue focus:ring-4 focus:text-white font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 dark:focus:ring-yellow-900" disabled={cartBtnDisabled}>
 			                  <span className="woo-next-cart-checkout-txt">
 			                    Proceed to Checkout
 			                  </span>

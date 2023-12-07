@@ -340,6 +340,7 @@ export function get_discount_type_cart(cartItems,options,setCartSubTotalDiscount
         //console.log('item',item);
         var purchase_note = '';
         var msgTmpDiscount = '';
+        var tmpDiscount = 0;
         var arr_msg = [];
         { options.discount_rate_product_quantity_discount.length &&
           options.discount_rate_product_quantity_discount.map( ( discount_item ) => {
@@ -351,11 +352,12 @@ export function get_discount_type_cart(cartItems,options,setCartSubTotalDiscount
               var dis_price = ((pro_price * discount_item.quantity * discount_item.rate_percentage)/100);
               arr_msg.push("<span class='variation-Note'>Note: </span> Add "+(discount_item.quantity-item.quantity)+" more to get " +discount_item.rate_percentage+"% discount "+ cartItems?.[0]?.currency +dis_price.toFixed(2));
             }else{
-              discount_type_cart_quantity_cal = ((item.line_subtotal*discount_item.rate_percentage)/100);
+              tmpDiscount = ((item.line_subtotal*discount_item.rate_percentage)/100);
               msgTmpDiscount = "<span class='variation-Note'>Discount: </span>  "+(discount_item.rate_percentage)+"% discount applied (" +((item.line_subtotal*discount_item.rate_percentage)/100).toFixed(2)+")";
             }
           }) 
         }
+        discount_type_cart_quantity_cal +=tmpDiscount;
         if(msgTmpDiscount != '')
         {
           arr_msg.push(msgTmpDiscount);

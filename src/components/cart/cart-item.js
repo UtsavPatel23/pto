@@ -110,7 +110,11 @@ const CartItem = ( {
 			
 		}
 	};
-	
+	var maxQty = true;
+	if(item?.data?.stock_quantity > productCount)
+	{
+		maxQty = false;
+	}
 	return (
 		<div className="cart-item-wrap grid grid-cols-3 gap-6 mb-5 border border-brand-bright-grey p-5">
 			<div className="col-span-1 cart-left-col">
@@ -157,13 +161,15 @@ const CartItem = ( {
 							<input
 								type="number"
 								min="1"
+								max={item?.data?.stock_quantity ?? 0}
 								style={{ textAlign: 'center', width: '50px', paddingRight: '0' }}
 								data-cart-key={ item?.data?.cartKey }
 								className={ `woo-next-cart-qty-input ml-3 ${ updatingProduct ? 'disabled' : '' } ` }
 								value={ productCount }
 								onChange={ ( event ) => handleQtyChange( event, item?.cartKey, '' ) }
+								readonly='readonly'
 							/>
-							<button className="increment-btn text-20px" onClick={( event ) => handleQtyChange( event, item?.cartKey, 'increment' )}>+</button>
+							<button className={` increment-btn text-20px `} disabled={maxQty} onClick={( event ) => handleQtyChange( event, item?.cartKey, 'increment' )}>+</button>
 						</div>
 					</footer>
 				</div>
