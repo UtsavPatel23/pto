@@ -5,7 +5,7 @@ import { AppContext } from '../context';
 import Link from 'next/link';
 import cx from 'classnames';
 
-const AddToCart = ( { product } ) => {
+const AddToCart = ( { product ,productCountQty} ) => {
 	
 	const [ cart, setCart ] = useContext( AppContext );
 	const [ isAddedToCart, setIsAddedToCart ] = useState( false );
@@ -26,7 +26,7 @@ const AddToCart = ( { product } ) => {
 		<>
 			<button
 				className={ addToCartBtnClasses }
-				onClick={ () => addToCart( product?.id ?? 0, 1, setCart, setIsAddedToCart, setLoading ) }
+				onClick={ () => addToCart( product?.id ?? 0, productCountQty, setCart, setIsAddedToCart, setLoading ) }
 				disabled={ loading }
 			>
 			{ loading  ? 'Adding...' : 'Add to cart' }

@@ -19,6 +19,7 @@ import { isEmpty } from 'lodash';
 import { getMemberOnlyProduct, getNewProductTag, storeYourBrowsingHistory } from '../../utils/customjs/custome';
 import { Router } from 'next/router';
 import BuyNow from '../cart/buy-now';
+import InputQty from '../single-product/input-qty';
 import Cookies from 'js-cookie';
 import { get_coupon_box } from '../../utils/shop/shop-box';
 
@@ -31,6 +32,8 @@ import { get_coupon_box } from '../../utils/shop/shop-box';
 
 		 const [tokenValid,setTokenValid]=useState(0);
 		 const [membersonly,setMembersonly]=useState('');
+
+		 const [productCountQty, setProductCountQty] = useState(1);
 
 		 
  // ************* ********************************  ************************ 
@@ -269,9 +272,10 @@ import { get_coupon_box } from '../../utils/shop/shop-box';
 							})()}
 					</div>
 					<div key="product_info6">
-					{ 'simple' === product?.type ? <>
-						<AddToCart product={ product }/>
-						<BuyNow  product={ product } />
+					{ 'simple' === product?.type && product?.stock_quantity > 0 ? <>
+						<InputQty product={ product } productCountQty={productCountQty} setProductCountQty={setProductCountQty}/>
+						<AddToCart product={ product } productCountQty={productCountQty}/>
+						<BuyNow  product={ product } productCountQty={productCountQty}/>
 						</> : null }
 					</div>
 					<div key="reward-wrapper">

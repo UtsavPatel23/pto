@@ -52,6 +52,7 @@ export default async function handler( req, res ) {
 		newOrderData = {
 			status: 'on-hold'
 		}
+		noteMessage = 'Awaiting BACS payment Order status changed from Pending payment to On hold.';
 	}else if(req.body?.afterpayOrderStaus == 1)
 	{
 		newOrderData = {

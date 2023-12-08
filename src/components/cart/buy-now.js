@@ -6,7 +6,7 @@ import Link from 'next/link';
 import cx from 'classnames';
 import Router from "next/router";
 
-const BuyNow = ( { product } ) => {
+const BuyNow = ( { product ,productCountQty} ) => {
 	
 	const [ cart, setCart ] = useContext( AppContext );
 	const [ isAddedToCart, setIsAddedToCart ] = useState( false );
@@ -28,7 +28,7 @@ const BuyNow = ( { product } ) => {
 			<>
 				<button
 					className={ addToCartBtnClasses }
-					onClick={ () => addToCart( product?.id ?? 0, 1, setCart, setIsAddedToCart, setLoading ) }
+					onClick={ () => addToCart( product?.id ?? 0, productCountQty, setCart, setIsAddedToCart, setLoading ) }
 					disabled={ loading }
 				>
 					{isAddedToCart? 'Adding...' : <>{ loading ? 'Adding...' : 'Buy Now' }</> }
