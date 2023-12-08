@@ -24,6 +24,8 @@ export default async function handler( req, res ) {
 		success: false,
 		error: '',
 	};
+	var noteMessage = '';
+	
 	
 	if ( isEmpty( req.body ) ) {
 		responseData.error = 'Required data not sent';
@@ -55,6 +57,7 @@ export default async function handler( req, res ) {
 		newOrderData = {
 			status: 'snv'
 		}
+		noteMessage = 'Order charge successful in afterpay. Token : ' +req.body?.orderToken;
 	}else if(!isEmpty(req.body?.meta_data)){
 		newOrderData = {meta_data : req.body?.meta_data};
 	}else if(req.body?.paymentMethodUpdate == 1)
@@ -74,6 +77,21 @@ export default async function handler( req, res ) {
 	}
 	
 	
+	if(noteMessage != '')
+	{
+		const noteData = {
+			note: noteMessage
+		  };
+		try {
+			const {data} = await api.post( `orders/${ req.body.orderId }/notes`, noteData );
+			console.log( '✅ Order updated data', data );
+		} catch (ex) {
+			console.error('Order creation error', ex);
+			throw ex;
+		}
+	}
+    
+
 	try {
 		const {data} = await api.put( `orders/${ req.body.orderId }`, newOrderData );
 		console.log( '✅ Order updated data', data );

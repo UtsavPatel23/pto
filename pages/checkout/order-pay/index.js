@@ -260,7 +260,8 @@ export default function Checkout({ headerFooter }) {
 			</>
 			:
 			<>
-				This order cannot be paid for. Please contact us if you need assistance. 
+				<div className="invalid-feedback d-block text-red-500">This order cannot be paid for. Please contact us if you need assistance.</div>
+				 
 			</>}
 			
 		</Layout>

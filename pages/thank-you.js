@@ -101,6 +101,7 @@ console.log('sessionData',sessionData);
 		});
 	}
 	console.log('orderData',orderData);
+	console.log('orderToken',orderToken);
 	 
 	useEffect(()=>{
 		if(orderData?.status != undefined)
@@ -110,6 +111,7 @@ console.log('sessionData',sessionData);
 				const newOrderData = {
 					orderId: orderData?.id,
 					afterpayOrderStaus: 1,
+					orderToken: orderToken,
 				};
 				axios.post( '/api/update-order', newOrderData )
 					.then( res => {
