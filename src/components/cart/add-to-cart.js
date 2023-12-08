@@ -31,7 +31,7 @@ const AddToCart = ( { product } ) => {
 			>
 			{ loading  ? 'Adding...' : 'Add to cart' }
 			</button>
-			{ isAddedToCart && ! loading  &&  cart?.totalQty > 0 ? (
+			{ isAddedToCart && ! loading  ? (
 				<Link href="/cart" legacyBehavior>
 					<a
 						className="bg-white hover:bg-gray-100 text-gray-800 font-semibold ml-4 py-11px px-4 border border-gray-400 rounded shadow"

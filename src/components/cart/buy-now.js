@@ -22,7 +22,7 @@ const BuyNow = ( { product } ) => {
 	if ( isEmpty( product ) ) {
 		return null;
 	}
-	if(isAddedToCart && ! loading && cart?.totalQty > 0) 
+	if(isAddedToCart && ! loading) 
 	{ Router.push("/checkout/")}
 		return (
 			<>
