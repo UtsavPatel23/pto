@@ -78,12 +78,12 @@ console.log('sessionData',sessionData);
 		let data = '';
 		var tmpsubtotal = 0;
 		let config = {
-		method: 'post',
-		maxBodyLength: Infinity,
-		url: '/api/get-order?id='+id,
-		headers: { },
-		data : data
-		};
+				method: 'post',
+				maxBodyLength: Infinity,
+				url: '/api/get-order?id='+id,
+				headers: { },
+				data : data
+				};
 		axios.request(config)
 		.then((response) => {
 			setOrderData(response.data.orderData);

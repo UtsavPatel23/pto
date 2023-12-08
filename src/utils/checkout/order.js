@@ -148,6 +148,8 @@ export const createTheOrder = async ( orderData, setOrderFailedError, previousRe
 		total: '',
 		currency: '',
 		error: '',
+		order_key: '',
+		order_key: '',
 	};
 	
 	// Don't proceed if previous request has error.
@@ -168,6 +170,7 @@ export const createTheOrder = async ( orderData, setOrderFailedError, previousRe
 		} );
 		
 		const result = await request.json();
+		//console.log('c order',result);
 		if ( result.error ) {
 			response.error = result.error;
 			setOrderFailedError( 'Something went wrong. Order creation failed. Please try again' );
@@ -177,6 +180,7 @@ export const createTheOrder = async ( orderData, setOrderFailedError, previousRe
 		response.total = result.total ?? '';
 		response.currency = result.currency ?? '';
 		response.paymentUrl = result.paymentUrl ?? '';
+		response.order_key = result.order_key ?? '';
 		
 	} catch ( error ) {
 		// @TODO to be handled later.

@@ -70,7 +70,7 @@ export const handleStripeCheckout = async (shippingCost,couponName,totalPriceDis
 	
 	// On success show stripe form.
 	setCreatedOrderData( customerOrderData );
-	await createCheckoutSessionAndRedirect( totalPriceDis,products, input, customerOrderData?.orderId,customerOrderData?.orderPostID );
+	await createCheckoutSessionAndRedirect( totalPriceDis,products, input, customerOrderData?.orderId,customerOrderData?.orderPostID,customerOrderData?.order_key );
 	
 	return customerOrderData;
 };
@@ -135,7 +135,6 @@ export const handleStripeCheckout = async (shippingCost,couponName,totalPriceDis
 	console.log('input orderData',orderData);
 	const customerOrderData = await createTheOrder( orderData, setRequestError, '' );
 	console.log('customerOrderData',customerOrderData);
-
 	setCoutData('');
 	const cartCleared = await clearCart( setCart, () => {
 	} );
@@ -148,7 +147,7 @@ export const handleStripeCheckout = async (shippingCost,couponName,totalPriceDis
 	
 	// On success show stripe form.
 	setCreatedOrderData( customerOrderData );
-	await createCheckoutAfterpayAndRedirect( totalPriceDis,products, input, customerOrderData?.orderId,customerOrderData?.orderPostID ,setIsProcessing);
+	await createCheckoutAfterpayAndRedirect( totalPriceDis,products, input, customerOrderData?.orderId,customerOrderData?.orderPostID ,setIsProcessing,customerOrderData?.order_key);
 	return customerOrderData;
 };
 
@@ -159,10 +158,11 @@ export const handleStripeCheckout = async (shippingCost,couponName,totalPriceDis
  * @param orderId
  * @return {Promise<void>}
  */
-const createCheckoutSessionAndRedirect = async ( totalPriceDis,products, input, orderId,orderPostID ) => {
+export const createCheckoutSessionAndRedirect = async ( totalPriceDis,products, input, orderId,orderPostID ,order_key) => {
 	const sessionData = {
 		success_url: window.location.origin + `/thank-you?session_id={CHECKOUT_SESSION_ID}&order_id=${ orderId }`,
-		cancel_url: window.location.href,
+		//cancel_url: window.location.href,
+		cancel_url: process.env.NEXT_PUBLIC_SITE_URL+'/checkout/order-pay?orderid='+orderPostID+'&key='+order_key,
 		customer_email: input.billingDifferentThanShipping ? input?.shipping?.email : input?.billing?.email,
 		//line_items: getStripeLineItems( products ),
 		line_items:  [{
@@ -320,7 +320,7 @@ export const getStates = async ( countryCode = '' ) => {
  * @param orderId
  * @return {Promise<void>}
  */
- const createCheckoutAfterpayAndRedirect = async ( totalPriceDis,products, input, orderId,orderPostID,setIsProcessing ) => {
+export const createCheckoutAfterpayAndRedirect = async ( totalPriceDis,products, input, orderId,orderPostID,setIsProcessing ,order_key) => {
 	
 	let afterpayOrderData = JSON.stringify({
 			"amount": {
@@ -335,7 +335,7 @@ export const getStates = async ( countryCode = '' ) => {
 				},
 			"merchant": {
 				"redirectConfirmUrl": process.env.NEXT_PUBLIC_SITE_URL+'/thank-you/?orderPostnb='+window.btoa(orderPostID)+'&orderId='+orderId,
-				"redirectCancelUrl": process.env.NEXT_PUBLIC_SITE_URL+'/checkout/'
+				"redirectCancelUrl": process.env.NEXT_PUBLIC_SITE_URL+'/checkout/order-pay?orderid='+orderPostID+'&key='+order_key
 				},
 			"merchantReference": "OrderID "+orderId+" OrderPostID"+orderPostID,
 		});

@@ -26,6 +26,7 @@ export default async function handler( req, res ) {
 		total: '',
 		currency: '',
 		error: '',
+		order_key: '',
 	};
 	
 	if ( isEmpty( req.body ) ) {
@@ -51,6 +52,7 @@ export default async function handler( req, res ) {
 		responseData.total = data.total;
 		responseData.currency = data.currency;
 		responseData.paymentUrl = data.payment_url;
+		responseData.order_key = data.order_key;
 		
 		console.log("Create responseData", responseData);
 

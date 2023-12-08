@@ -57,7 +57,22 @@ export default async function handler( req, res ) {
 		}
 	}else if(!isEmpty(req.body?.meta_data)){
 		newOrderData = {meta_data : req.body?.meta_data};
+	}else if(req.body?.paymentMethodUpdate == 1)
+	{
+		newOrderData = {
+			meta_data: [
+				{
+				  "key": "_payment_method",
+				  "value": req.body.paymentMethodName
+				},
+				{
+				  "key": "_payment_method_title",
+				  "value":req.body.paymentMethodName
+				}
+			  ]
+		}
 	}
+	
 	
 	try {
 		const {data} = await api.put( `orders/${ req.body.orderId }`, newOrderData );

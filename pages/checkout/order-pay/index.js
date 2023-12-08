@@ -1,0 +1,286 @@
+import Layout from '/src/components/layout';
+import cx from 'classnames';
+import {HEADER_FOOTER_ENDPOINT} from '/src/utils/constants/endpoints';
+import axios from 'axios';
+import { useState } from 'react';
+import CheckboxField from '../../../src/components/checkout/form-elements/checkbox-field';
+import PaymentModes from '../../../src/components/checkout/payment-modes';
+import validateAndSanitizeCheckoutForm from '../../../src/validator/checkout';
+import { createCheckoutAfterpayAndRedirect, createCheckoutSessionAndRedirect, handleAgreeTerms, handleBacsCheckout } from '../../../src/utils/checkout';
+import Router from 'next/router';
+import { useEffect } from 'react';
+import Cookies from 'js-cookie';
+import OrderDetails from '../../../src/components/thank-you/order-details';
+const defaultCustomerInfo = {
+	firstName: '',
+	lastName: '',
+	address1: '',
+	address2: '',
+	city: '',
+	country: 'AU',
+	state: '',
+	postcode: '',
+	email: '',
+	phone: '',
+	company: '',
+	errors: null
+}
+
+export default function Checkout({ headerFooter }) {
+	const initialState = {
+		billing: {
+			...defaultCustomerInfo,
+		},
+		shipping: {
+			...defaultCustomerInfo,
+		},
+		createAccount: false,
+		createAccountPassword: '',
+		orderNotes: '',
+		billingDifferentThanShipping: false,
+		paymentMethod: '',
+		agreeTerms: false,
+	};
+	const [ input, setInput ] = useState( initialState );
+	const [ isOrderProcessing, setIsOrderProcessing ] = useState( false );
+	const [ requestError, setRequestError ] = useState( null );
+	const [loading, SetLoading] = useState(false);
+	const orderid = process.browser ? Router.query.orderid : null;
+	const wc_order_key = process.browser ? Router.query.key : null;
+	const [ orderData, setOrderData ] = useState( {} );
+	const [subtotal,setSubtotal] = useState(0);
+	const [tokenValid,setTokenValid] = useState(0);
+	const [totalPriceDis,setTotalPriceDis] = useState(0);
+
+	var paymentModes = headerFooter?.footer?.options?.nj_payment_method ?? '';
+	const options = headerFooter?.footer?.options;
+	paymentModes = paymentModes.filter(obj => 
+		{
+		if (obj.method_enabled == true) {
+			return true;
+		}
+	});
+
+	//hook useEffect
+    useEffect(() => {
+        //check token
+        if(Cookies.get('token')) {
+			setTokenValid(1)
+        }
+	}, []);
+
+	// Get Order
+	useEffect( () => {
+		if(orderid)
+		{
+			var tmpsubtotal = 0;
+			let config = {
+					method: 'post',
+					maxBodyLength: Infinity,
+					url: '/api/get-order?id='+orderid,
+					headers: { }
+					};
+			axios.request(config)
+			.then((response) => {
+				setOrderData(response.data.orderData);
+				if(response.data.orderData.line_items != undefined)
+					{
+						response.data.orderData?.line_items.map( ( item ) => {
+							tmpsubtotal =tmpsubtotal+parseFloat(item.subtotal);
+						}) 
+					}
+					setSubtotal(tmpsubtotal);
+					setTotalPriceDis(parseFloat(response.data.orderData.total));
+					orderData.total
+				setInput( {
+					...input,
+					billing: response.data.orderData.billing,
+					shipping: response.data.orderData.shipping,
+				} );
+			})
+			.catch((error) => {
+				console.log(error);
+			});
+		}
+		
+	}, [ orderid ] );
+	/**
+	 * Handle form submit.
+	 *
+	 * @param {Object} event Event Object.
+	 *
+	 * @return Null.
+	 */
+	 const handleFormSubmit = async ( event ) => {
+		event.preventDefault();
+
+		
+		// validation other fiield 
+		const ValidationResult =  validateAndSanitizeCheckoutForm( input);
+		console.log('ValidationResult',ValidationResult);
+		
+		// update error message
+		setInput( {
+			...input,
+			errors: ValidationResult.errors
+		} );
+
+		// If there are any errors, return.
+		if ( !ValidationResult.isValid) {
+			return null;
+		}
+		
+		// For stripe payment mode, handle the strip payment and thank you.
+		if ( 'stripe' === input.paymentMethod ) {
+			setIsOrderProcessing( true );
+			await paymentMethodUpdate( orderData?.id, input.paymentMethod);
+			await createCheckoutSessionAndRedirect( totalPriceDis,null, input, orderData?.number, orderData?.id,orderData.order_key);
+			return null;
+		}
+
+		// For bacs payment mode, handle the bacs payment and thank you.
+		if ( 'bacs' === input.paymentMethod ) {
+			setIsOrderProcessing( true );
+			const newOrderData = {
+				bacs : 1,
+				orderId: orderData?.id,
+			};
+			   await	axios.post( '/api/update-order', newOrderData )
+				.then( res => {
+					console.log('res UPDATE DATA ORDER',res);
+				} )
+				.catch( err => {
+					console.log('err UPDATE DATA ORDER',err);
+				} )
+			await paymentMethodUpdate( orderData?.id, input.paymentMethod);
+			window.location.href = process.env.NEXT_PUBLIC_SITE_URL+'/thank-you/?orderPostnb='+window.btoa(orderData?.id)+'&orderId='+orderData?.number;
+			return null;
+		}
+
+		// For Afterpay payment mode, handle the afterpay payment and thank you.
+		if ( 'afterpay' === input.paymentMethod ) {
+			await paymentMethodUpdate( orderData?.id, input.paymentMethod);
+			await createCheckoutAfterpayAndRedirect( totalPriceDis,null, input, orderData?.number, orderData?.id,setIsOrderProcessing,orderData.order_key);
+			return null;
+		}
+	};
+
+	const paymentMethodUpdate = async ( orderId, paymentMethodName) =>
+	{
+		const newOrderData = {
+			orderId: orderId,
+			paymentMethodUpdate: 1,
+			paymentMethodName: paymentMethodName,
+		};
+		axios.post( '/api/update-order', newOrderData )
+			.then( res => {
+
+				console.log('res UPDATE DATA ORDER',res);
+			} )
+			.catch( err => {
+				console.log('err UPDATE DATA ORDER',err);
+			} )
+	}
+
+	/*
+	 * Handle onchange input.
+	 *
+	 * @param {Object} event Event Object.
+	 * @param {bool} isShipping If this is false it means it is billing.
+	 * @param {bool} isBillingOrShipping If this is false means its standard input and not billing or shipping.
+	 *
+	 * @return {void}
+	 */
+	const handleOnChange = async (event) => {
+		const { target } = event || {};
+		SetLoading(true);
+		if ( 'agreeTerms' === target.name ) {
+			handleAgreeTerms( input, setInput, target );
+		} else {
+			const newState = { ...input, [ target.name ]: target.value };
+			setInput( newState );
+		}
+		SetLoading(false);
+	};
+	console.log('input',input);
+	console.log('orderData',orderData);
+	console.log('wc_order_key',wc_order_key);
+	if(orderData?.order_key == undefined)
+	{
+		return(<div>Loading...</div>);
+	}
+	return (
+		<Layout headerFooter={headerFooter || {}}>
+			<h1>Pay for order</h1>
+			{wc_order_key == orderData.order_key && tokenValid &&  orderData.status  == 'pending' ? 
+			<>
+			<div key="check-outform">
+				<form onSubmit={ handleFormSubmit } className="woo-next-checkout-form">
+					<div className="grid grid-cols-1 md:grid-cols-2 gap-20">
+						{/* Order & Payments*/ }
+						<div className="your-orders">
+							{/*	Order*/ }
+							<OrderDetails orderData={orderData} subtotal={subtotal}/>
+
+							{/*Payment*/ }
+							<PaymentModes input={input}  handleOnChange={handleOnChange} paymentModes={paymentModes } />
+							
+							{/* terms and conditions */ }
+							<CheckboxField
+								name="agreeTerms"
+								type="checkbox"
+								checked={ input?.agreeTerms }
+								handleOnChange={ handleOnChange }
+								label="I have read and agree to the website terms and conditions *"
+								containerClassNames="mb-4 pt-4"
+								errors = {input?.errors ? input.errors : null}
+							/>
+							{input?.errors ?
+							<div className="invalid-feedback d-block text-red-500">{ input?.errors['shippingCost'] }</div>:null}
+							<div className="woo-next-place-order-btn-wrap mt-5">
+								<button
+									disabled={ isOrderProcessing }
+									className={ cx(
+										'bg-purple-600 text-white px-5 py-3 rounded-sm w-auto xl:w-full',
+										{ 'opacity-50': isOrderProcessing },
+									) }
+									type="submit"
+								>
+									Place Order
+								</button>
+							</div>
+
+							{/* Checkout Loading*/ }
+							{ isOrderProcessing && <p>Processing Order...</p> }
+							{ requestError && <p>Error : { requestError } :( Please try again</p> }
+						</div>
+					</div>
+				</form>
+				</div>
+			</>
+			:
+			<>
+				This order cannot be paid for. Please contact us if you need assistance. 
+			</>}
+			
+		</Layout>
+	);
+}
+
+export async function getStaticProps() {
+	
+	const { data: headerFooterData } = await axios.get( HEADER_FOOTER_ENDPOINT );
+	
+	return {
+		props: {
+			headerFooter: headerFooterData?.data ?? {},
+		},
+		
+		/**
+		 * Revalidate means that if a new request comes to server, then every 1 sec it will check
+		 * if the data is changed, if it is changed then it will update the
+		 * static file inside .next folder with the new data, so that any 'SUBSEQUENT' requests should have updated data.
+		 */
+		revalidate: 1,
+	};
+}
