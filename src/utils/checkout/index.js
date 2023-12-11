@@ -293,26 +293,45 @@ export const createCheckoutSessionAndRedirect = async (
 		console.log( 'createCheckout session error', err );
 	}
 
-	// cartCleared
-	if(checkOutOrderPay == 1)
+	if(session?.id)
 	{
-		const cartCleared = await clearCart( setCart, () => {
-		} );
-		if ( isEmpty( customerOrderData?.orderId ) || cartCleared?.error ) {
-			setRequestError( 'Clear cart failed' );
-			return null;
+		// cartCleared
+		if(checkOutOrderPay == 1)
+		{
+			const cartCleared = await clearCart( setCart, () => {
+			} );
+			if ( isEmpty( customerOrderData?.orderId ) || cartCleared?.error ) {
+				setRequestError( 'Clear cart failed' );
+				return null;
+			}
+			setIsProcessing( false );
 		}
+
+		try {
+			const stripe = await loadStripe( process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY );
+			if ( stripe ) {
+				stripe.redirectToCheckout( { sessionId: session.id } );
+			}
+		} catch ( error ) {
+			console.log( error );
+		}
+
+	}else{
+		const newOrderNote = {
+			orderId: orderPostID,
+			noteMessage: 'Error : session not created.'
+		};
+		axios.post( '/api/update-order-notes', newOrderNote )
+			.then( res => {
+					console.log('res UPDATE DATA ORDER Note',res);
+			} )
+			.catch( err => {
+				console.log('err UPDATE DATA ORDER Note ',err);
+			} )
+		setRequestError('Error : session not created.');
 		setIsProcessing( false );
 	}
-
-	try {
-		const stripe = await loadStripe( process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY );
-		if ( stripe ) {
-			stripe.redirectToCheckout( { sessionId: session.id } );
-		}
-	} catch ( error ) {
-		console.log( error );
-	}
+	
 };
 
 /**
@@ -520,6 +539,20 @@ export const createCheckoutAfterpayAndRedirect = async (
 				setIsProcessing( false );
 			}
 			window.location.href = createCheckoutRes?.redirectCheckoutUrl;
+		}else{
+			const newOrderNote = {
+				orderId: orderPostID,
+				noteMessage: 'Error :'+ createCheckoutRes?.message
+			};
+			axios.post( '/api/update-order-notes', newOrderNote )
+				.then( res => {
+						console.log('res UPDATE DATA ORDER Note',res);
+				} )
+				.catch( err => {
+					console.log('err UPDATE DATA ORDER Note ',err);
+				} )
+			setRequestError('Error :' + createCheckoutRes?.message);
+			setIsProcessing( false );
 		}
 };
 
@@ -563,10 +596,10 @@ export const createCheckoutAfterpayAndRedirect = async (
 		var createCheckoutRes = '';
 		   await	axios.post( '/api/laybuy/create-checkout', createCheckout )
 			.then( res => {
-				if(res?.data.paymentUrl)
-				{
+				//if(res?.data.paymentUrl)
+				//{
 					createCheckoutRes = res?.data;
-				}
+				//}
 				//console.log('res ',res);
 			} )
 			.catch( err => {
@@ -574,36 +607,54 @@ export const createCheckoutAfterpayAndRedirect = async (
 			} )
 		if(createCheckoutRes != '' && createCheckoutRes != undefined)
 		{
-			const newOrderData = {
-				meta_data: [
-					{
-					  "key": "_create_checkout_token",
-					  "value": JSON.stringify(createCheckoutRes)
-					}
-				  ],
-				  orderId : orderPostID
-			};
-			
-			await axios.post( '/api/update-order', newOrderData )
-				.then( res => {
-	
-					//console.log('res UPDATE DATA ORDER',res);
-				} )
-				.catch( err => {
-					//console.log('err UPDATE DATA ORDER',err);
-				} )
-				
-			// cartCleared
-			if(checkOutOrderPay == 1)
+			if(createCheckoutRes.result == 'SUCCESS')
 			{
-				const cartCleared = await clearCart( setCart, () => {
-				} );
-				if ( isEmpty( customerOrderData?.orderId ) || cartCleared?.error ) {
-					setRequestError( 'Clear cart failed' );
-					return null;
+				const newOrderData = {
+					meta_data: [
+						{
+						  "key": "_create_checkout_token",
+						  "value": JSON.stringify(createCheckoutRes)
+						}
+					  ],
+					  orderId : orderPostID
+				};
+				
+				await axios.post( '/api/update-order', newOrderData )
+					.then( res => {
+		
+						//console.log('res UPDATE DATA ORDER',res);
+					} )
+					.catch( err => {
+						//console.log('err UPDATE DATA ORDER',err);
+					} )
+					
+				// cartCleared
+				if(checkOutOrderPay == 1)
+				{
+					const cartCleared = await clearCart( setCart, () => {
+					} );
+					if ( isEmpty( customerOrderData?.orderId ) || cartCleared?.error ) {
+						setRequestError( 'Clear cart failed' );
+						return null;
+					}
+					setIsProcessing( false );
 				}
+				window.location.href = createCheckoutRes?.paymentUrl;
+			}else{
+				const newOrderNote = {
+                    orderId: orderPostID,
+                    noteMessage: 'Error :'+ createCheckoutRes?.error
+                };
+                axios.post( '/api/update-order-notes', newOrderNote )
+                    .then( res => {
+                            console.log('res UPDATE DATA ORDER Note',res);
+                    } )
+                    .catch( err => {
+                        console.log('err UPDATE DATA ORDER Note ',err);
+                    } )
+				setRequestError('Error :' + createCheckoutRes?.error);
 				setIsProcessing( false );
 			}
-			window.location.href = createCheckoutRes?.paymentUrl;
+			
 		}
 };

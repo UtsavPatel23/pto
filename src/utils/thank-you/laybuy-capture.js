@@ -1,28 +1,26 @@
 import axios from "axios";
 
-export function payment_capture_afterpay(orderToken,orderData) {
-    let afterpayCapture = JSON.stringify({
-        "token":orderToken,
-        "merchantReference":orderData?.number
+export function payment_capture_laybuy(token,orderData) {
+    let laybuyCapture = JSON.stringify({
+        "token":token
     });
     const createCapture = {
         afterpay : 1,
-        afterpayCapture: afterpayCapture,
+        laybuyCapture: laybuyCapture,
     };
     //console.log('createCapture',createCapture)
-    axios.post( '/api/afterpay/payment-check', createCapture )
+    axios.post( '/api/laybuy/payment-check', createCapture )
         .then( res => {
             console.log('res ',res);
             var data = res?.data;
-            if(data?.status == 'APPROVED')
+            if(data?.result == 'SUCCESS')
             {
-                //console.log('APPROVED aaaa ',data?.status);
                 const newOrderData = {
                     orderId: orderData?.id,
-                    orderStausAfterpay: 1,
-                    orderToken: orderToken,
+                    orderStausLaybuy: 1,
+                    token: token,
                     payment_method : orderData?.payment_method,
-                    orderno : data?.id,
+                    orderno : data?.orderId,
 
                 };
                 axios.post( '/api/update-order', newOrderData )
@@ -36,7 +34,7 @@ export function payment_capture_afterpay(orderToken,orderData) {
             }else{
                 const newOrderNote = {
                     orderId: orderData?.id,
-                    noteMessage: 'Error : ' + data?.status
+                    noteMessage: 'Error :'+ data?.error
                 };
                 axios.post( '/api/update-order-notes', newOrderNote )
                     .then( res => {

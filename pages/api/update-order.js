@@ -58,7 +58,13 @@ export default async function handler( req, res ) {
 		newOrderData = {
 			status: 'snv'
 		}
-		noteMessage = 'Order charge successful in '+req.body?.payment_method+'. Token : ' +req.body?.orderToken+ "  Order no :"+req.body?.orderno;
+		noteMessage = 'Order charge successful in '+req.body?.payment_method+'. Token : ' +req.body?.orderToken+ "  Order no : "+req.body?.orderno;
+	}else if(req.body?.orderStausLaybuy == 1)
+	{
+		newOrderData = {
+			status: 'snv'
+		}
+		noteMessage = 'Order charge successful in '+req.body?.payment_method+'. Token : ' +req.body?.token+ "  Order no : "+req.body?.orderno;
 	}else if(!isEmpty(req.body?.meta_data)){
 		newOrderData = {meta_data : req.body?.meta_data};
 	}else if(req.body?.paymentMethodUpdate == 1)

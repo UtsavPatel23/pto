@@ -12,7 +12,8 @@ import Bacs from './../src/components/thank-you/bacs';
 import OrderBasicDetails from './../src/components/thank-you/order-basic-details';
 import OrderDetails from './../src/components/thank-you/order-details';
 import OrderAddress from './../src/components/thank-you/order-address';
-import { payment_capture } from '../src/utils/thank-you/afterpay-capture';
+import { payment_capture_afterpay } from '../src/utils/thank-you/afterpay-capture';
+import { payment_capture_laybuy } from '../src/utils/thank-you/laybuy-capture';
 
 
 const ThankYouContent = ({headerFooter}) => {
@@ -91,7 +92,7 @@ console.log('sessionData',sessionData);
 		.then((response) => {
 			if(status != 'SUCCESS')
 			{
-					Router.push('/checkout/order-pay?orderid='+response.data.orderData?.id+'&key='+order_key);
+					Router.push('/checkout/order-pay?orderid='+response.data.orderData?.id+'&key='+order_key+'&status=CANCELLED&orderToken='+token);
 					return '';
 			}else{
 				setOrderData(response.data.orderData);
@@ -120,7 +121,12 @@ console.log('sessionData',sessionData);
 				
 				if(orderData?.payment_method == 'afterpay')
 				{
-					payment_capture(orderToken,orderData);
+					payment_capture_afterpay(orderToken,orderData);
+				}
+				else if(orderData?.payment_method == 'laybuy')
+				{
+					console.log('laybuy payment');
+					payment_capture_laybuy(token,orderData)
 				}
 				
 			}

@@ -36,12 +36,13 @@ export default async function handler(req, res) {
     let base64StringAuth = bufferObj.toString("base64");
   const options = {
     method: 'POST',
-    url: process.env.LAYBUY_API_URL+'/order/merchant/586417',
+    url: process.env.LAYBUY_API_URL+'/order/confirm',
     headers: {
       accept: 'application/json',
       'content-type': 'application/json',
       authorization: 'Basic '+base64StringAuth
-    }
+    },
+    data :  req.body?.laybuyCapture
   };
   
   axios

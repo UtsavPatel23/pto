@@ -47,6 +47,8 @@ export default function Checkout({ headerFooter }) {
 	const [loading, SetLoading] = useState(false);
 	const orderid = process.browser ? Router.query.orderid : null;
 	const wc_order_key = process.browser ? Router.query.key : null;
+	const status = process.browser ? Router.query.status : null;
+	const orderToken = process.browser ? Router.query.orderToken : null;
 	const [ orderData, setOrderData ] = useState( {} );
 	const [subtotal,setSubtotal] = useState(0);
 	const [tokenValid,setTokenValid] = useState(0);
@@ -105,6 +107,25 @@ export default function Checkout({ headerFooter }) {
 		}
 		
 	}, [ orderid ] );
+
+	// Get Order
+	useEffect( () => {
+		if(orderData && status == 'CANCELLED')
+		{
+			const newOrderNote = {
+				orderId: orderData?.id,
+				noteMessage: 'PAYMENT STASUS CANCELLED Token : '+orderToken
+			};
+			axios.post( '/api/update-order-notes', newOrderNote )
+				.then( res => {
+						console.log('res UPDATE DATA ORDER Note',res);
+				} )
+				.catch( err => {
+					console.log('err UPDATE DATA ORDER Note ',err);
+				} )
+		}
+		
+	}, [ orderData ] );
 	/**
 	 * Handle form submit.
 	 *
