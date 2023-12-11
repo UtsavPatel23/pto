@@ -12,6 +12,7 @@ import Bacs from './../src/components/thank-you/bacs';
 import OrderBasicDetails from './../src/components/thank-you/order-basic-details';
 import OrderDetails from './../src/components/thank-you/order-details';
 import OrderAddress from './../src/components/thank-you/order-address';
+import { payment_capture } from '../src/utils/thank-you/afterpay-capture';
 
 
 const ThankYouContent = ({headerFooter}) => {
@@ -22,6 +23,8 @@ const ThankYouContent = ({headerFooter}) => {
 	const orderPostnb = process.browser ? Router.query.orderPostnb : null;
 	const status = process.browser ? Router.query.status : null;
 	const orderToken = process.browser ? Router.query.orderToken : null;
+	const token = process.browser ? Router.query.token : null;
+	const order_key = process.browser ? Router.query.key : null;
 	const [ orderData, setOrderData ] = useState( {} );
 	const [subtotal,setSubtotal] = useState(0);
 	var paymentModes = headerFooter?.footer?.options?.nj_payment_method ?? '';
@@ -86,15 +89,21 @@ console.log('sessionData',sessionData);
 				};
 		axios.request(config)
 		.then((response) => {
-			setOrderData(response.data.orderData);
-			if(response.data.orderData.line_items != undefined)
+			if(status != 'SUCCESS')
 			{
-				response.data.orderData?.line_items.map( ( item ) => {
-					tmpsubtotal =tmpsubtotal+parseFloat(item.subtotal);
-				}) 
+					Router.push('/checkout/order-pay?orderid='+response.data.orderData?.id+'&key='+order_key);
+					return '';
+			}else{
+				setOrderData(response.data.orderData);
+				if(response.data.orderData.line_items != undefined)
+				{
+					response.data.orderData?.line_items.map( ( item ) => {
+						tmpsubtotal =tmpsubtotal+parseFloat(item.subtotal);
+					}) 
+				}
+				setSubtotal(tmpsubtotal);
 			}
-			setSubtotal(tmpsubtotal);
-			//console.log(JSON.stringify(response.data));
+			
 		})
 		.catch((error) => {
 		console.log(error);
@@ -106,23 +115,17 @@ console.log('sessionData',sessionData);
 	useEffect(()=>{
 		if(orderData?.status != undefined)
 		{
-			if(status == 'SUCCESS' && orderToken != '' && orderData?.status == 'pending'  && orderData?.payment_method == 'afterpay') 
+			if(status == 'SUCCESS' && (orderToken != '' || token != '') && orderData?.status == 'pending') 
 			{
-				const newOrderData = {
-					orderId: orderData?.id,
-					afterpayOrderStaus: 1,
-					orderToken: orderToken,
-				};
-				axios.post( '/api/update-order', newOrderData )
-					.then( res => {
-		
-						console.log('res UPDATE DATA ORDER',res);
-					} )
-					.catch( err => {
-						console.log('err UPDATE DATA ORDER',err);
-					} )
+				
+				if(orderData?.payment_method == 'afterpay')
+				{
+					payment_capture(orderToken,orderData);
+				}
+				
 			}
 		}
+		// Redeem process
 		if(orderData?.id != undefined && orderData.fee_lines != undefined)
 		{
 			const findfee_linesData = orderData.fee_lines.find((element) => element.name == 'Redeem Price:');
@@ -189,7 +192,10 @@ console.log('sessionData',sessionData);
 
 		
 	},[orderData]);
-		
+	if(status != 'SUCCESS')
+			{
+				return (<></>);
+			}
 	return (
 		<div className="h-almost-screen">
 			<div className="w-600px mt-10 m-auto">

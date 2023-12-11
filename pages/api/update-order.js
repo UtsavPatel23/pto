@@ -53,12 +53,12 @@ export default async function handler( req, res ) {
 			status: 'on-hold'
 		}
 		noteMessage = 'Awaiting BACS payment Order status changed from Pending payment to On hold.';
-	}else if(req.body?.afterpayOrderStaus == 1)
+	}else if(req.body?.orderStausAfterpay == 1)
 	{
 		newOrderData = {
 			status: 'snv'
 		}
-		noteMessage = 'Order charge successful in afterpay. Token : ' +req.body?.orderToken;
+		noteMessage = 'Order charge successful in '+req.body?.payment_method+'. Token : ' +req.body?.orderToken+ "  Order no :"+req.body?.orderno;
 	}else if(!isEmpty(req.body?.meta_data)){
 		newOrderData = {meta_data : req.body?.meta_data};
 	}else if(req.body?.paymentMethodUpdate == 1)

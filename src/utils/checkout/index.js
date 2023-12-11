@@ -52,25 +52,42 @@ export const handleOtherPaymentMethodCheckout = async (shippingCost,couponName, 
  *
  * @param setCreatedOrderData
  */
-export const handleStripeCheckout = async (shippingCost,couponName,totalPriceDis, input, products, setRequestError, setCart, setIsProcessing, setCreatedOrderData ,coutData,setCoutData,cartSubTotalDiscount) => {
+export const handleStripeCheckout = async (
+					shippingCost,
+					couponName,
+					totalPriceDis, 
+					input, 
+					products, 
+					setRequestError, 
+					setCart, 
+					setIsProcessing, 
+					setCreatedOrderData,
+					coutData,
+					setCoutData,
+					cartSubTotalDiscount
+					) => {
 	//console.log('input order ',input);
 	setIsProcessing( true );
 	const orderData = getCreateOrderData(shippingCost,couponName, input, products ,coutData,cartSubTotalDiscount);
 	//console.log('input orderData',orderData);return '';
 	const customerOrderData = await createTheOrder( orderData, setRequestError, '' );
 	setCoutData('');
-	const cartCleared = await clearCart( setCart, () => {
-	} );
-	setIsProcessing( false );
-	
-	if ( isEmpty( customerOrderData?.orderId ) || cartCleared?.error ) {
-		setRequestError( 'Clear cart failed' );
-		return null;
-	}
 	
 	// On success show stripe form.
 	setCreatedOrderData( customerOrderData );
-	await createCheckoutSessionAndRedirect( totalPriceDis,products, input, customerOrderData?.orderId,customerOrderData?.orderPostID,customerOrderData?.order_key );
+	await createCheckoutSessionAndRedirect( 
+					totalPriceDis,
+					products, 
+					input, 
+					customerOrderData?.orderId,
+					customerOrderData?.orderPostID,
+					setIsProcessing,
+					customerOrderData?.order_key,
+					1, // checkOutOrderPay
+					setRequestError,
+					setCart,
+					customerOrderData
+					);
 	
 	return customerOrderData;
 };
@@ -83,7 +100,20 @@ export const handleStripeCheckout = async (shippingCost,couponName,totalPriceDis
  * 3. Clear the cart session.
  * 
  */
- export const handleBacsCheckout = async (shippingCost,couponName,totalPriceDis, input, products, setRequestError, setCart, setIsProcessing, setCreatedOrderData ,coutData,setCoutData,cartSubTotalDiscount) => {
+ export const handleBacsCheckout = async (
+				shippingCost,
+				couponName,
+				totalPriceDis, 
+				input, 
+				products, 
+				setRequestError, 
+				setCart, 
+				setIsProcessing, 
+				setCreatedOrderData,
+				coutData,
+				setCoutData,
+				cartSubTotalDiscount
+				) => {
 	//console.log('input order ',input);
 	setIsProcessing( true );
 	const orderData = getCreateOrderData(shippingCost,couponName, input, products ,coutData,cartSubTotalDiscount);
@@ -113,7 +143,7 @@ export const handleStripeCheckout = async (shippingCost,couponName,totalPriceDis
 		return null;
 	}
 	
-	window.location.href = process.env.NEXT_PUBLIC_SITE_URL+'/thank-you/?orderPostnb='+window.btoa(customerOrderData?.orderPostID)+'&orderId='+customerOrderData?.orderId;
+	window.location.href = process.env.NEXT_PUBLIC_SITE_URL+'/thank-you/?orderPostnb='+window.btoa(customerOrderData?.orderPostID)+'&orderId='+customerOrderData?.orderId+'&status=SUCCESS';
 	// On success show stripe form.
 	setCreatedOrderData( customerOrderData );
 	
@@ -128,7 +158,20 @@ export const handleStripeCheckout = async (shippingCost,couponName,totalPriceDis
  * 3. Clear the cart session.
  * 
  */
- export const handleAfterpayCheckout = async (shippingCost,couponName,totalPriceDis, input, products, setRequestError, setCart, setIsProcessing, setCreatedOrderData ,coutData,setCoutData,cartSubTotalDiscount) => {
+ export const handleAfterpayCheckout = async (
+						shippingCost,
+						couponName,
+						totalPriceDis, 
+						input, 
+						products, 
+						setRequestError, 
+						setCart, 
+						setIsProcessing, 
+						setCreatedOrderData,
+						coutData,
+						setCoutData,
+						cartSubTotalDiscount
+						) => {
 	//console.log('input order ',input);
 	setIsProcessing( true );
 	const orderData = getCreateOrderData(shippingCost,couponName, input, products ,coutData,cartSubTotalDiscount);
@@ -136,18 +179,71 @@ export const handleStripeCheckout = async (shippingCost,couponName,totalPriceDis
 	const customerOrderData = await createTheOrder( orderData, setRequestError, '' );
 	console.log('customerOrderData',customerOrderData);
 	setCoutData('');
-	const cartCleared = await clearCart( setCart, () => {
-	} );
-	
-	
-	if ( isEmpty( customerOrderData?.orderId ) || cartCleared?.error ) {
-		setRequestError( 'Clear cart failed' );
-		return null;
-	}
 	
 	// On success show stripe form.
 	setCreatedOrderData( customerOrderData );
-	await createCheckoutAfterpayAndRedirect( totalPriceDis,products, input, customerOrderData?.orderId,customerOrderData?.orderPostID ,setIsProcessing,customerOrderData?.order_key);
+	await createCheckoutAfterpayAndRedirect( 
+					totalPriceDis,
+					products, 
+					input, 
+					customerOrderData?.orderId,
+					customerOrderData?.orderPostID,
+					setIsProcessing,
+					customerOrderData?.order_key,
+					1, // checkOutOrderPay
+					setRequestError,
+					setCart,
+					customerOrderData
+				);
+	return customerOrderData;
+};
+
+
+/**
+ * Handle Laybuy  checkout.
+ *
+ * 1. Create Formatted Order data.
+ * 2. Create Order using Next.js create-order endpoint.
+ * 3. Clear the cart session.
+ * 
+ */
+ export const handleLaybuyCheckout = async (
+					shippingCost,
+					couponName,
+					totalPriceDis, 
+					input, 
+					products, 
+					setRequestError, 
+					setCart, 
+					setIsProcessing, 
+					setCreatedOrderData,
+					coutData,
+					setCoutData,
+					cartSubTotalDiscount
+					) => {
+	//console.log('input order ',input);
+	setIsProcessing( true );
+	const orderData = getCreateOrderData(shippingCost,couponName, input, products ,coutData,cartSubTotalDiscount);
+	console.log('input orderData',orderData);
+	const customerOrderData = await createTheOrder( orderData, setRequestError, '' );
+	console.log('customerOrderData',customerOrderData);
+	setCoutData('');
+	
+	// On success show stripe form.
+	setCreatedOrderData( customerOrderData );
+	await createCheckoutLaybuyAndRedirect( 
+			totalPriceDis,
+			products, 
+			input, 
+			customerOrderData?.orderId,
+			customerOrderData?.orderPostID,
+			setIsProcessing,
+			customerOrderData?.order_key,
+			1, // checkOutOrderPay
+			setRequestError,
+			setCart,
+			customerOrderData
+			);
 	return customerOrderData;
 };
 
@@ -158,9 +254,21 @@ export const handleStripeCheckout = async (shippingCost,couponName,totalPriceDis
  * @param orderId
  * @return {Promise<void>}
  */
-export const createCheckoutSessionAndRedirect = async ( totalPriceDis,products, input, orderId,orderPostID ,order_key) => {
+export const createCheckoutSessionAndRedirect = async ( 
+								totalPriceDis,
+								products, 
+								input, 
+								orderId,
+								orderPostID,
+								setIsProcessing,
+								order_key,
+								checkOutOrderPay,
+								setRequestError,
+								setCart,
+								customerOrderData
+								) => {
 	const sessionData = {
-		success_url: window.location.origin + `/thank-you?session_id={CHECKOUT_SESSION_ID}&order_id=${ orderId }`,
+		success_url: window.location.origin + `/thank-you?session_id={CHECKOUT_SESSION_ID}&order_id=${ orderId }&status=SUCCESS`,
 		//cancel_url: window.location.href,
 		cancel_url: process.env.NEXT_PUBLIC_SITE_URL+'/checkout/order-pay?orderid='+orderPostID+'&key='+order_key,
 		customer_email: input.billingDifferentThanShipping ? input?.shipping?.email : input?.billing?.email,
@@ -184,6 +292,19 @@ export const createCheckoutSessionAndRedirect = async ( totalPriceDis,products, 
 	} catch ( err ) {
 		console.log( 'createCheckout session error', err );
 	}
+
+	// cartCleared
+	if(checkOutOrderPay == 1)
+	{
+		const cartCleared = await clearCart( setCart, () => {
+		} );
+		if ( isEmpty( customerOrderData?.orderId ) || cartCleared?.error ) {
+			setRequestError( 'Clear cart failed' );
+			return null;
+		}
+		setIsProcessing( false );
+	}
+
 	try {
 		const stripe = await loadStripe( process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY );
 		if ( stripe ) {
@@ -320,8 +441,19 @@ export const getStates = async ( countryCode = '' ) => {
  * @param orderId
  * @return {Promise<void>}
  */
-export const createCheckoutAfterpayAndRedirect = async ( totalPriceDis,products, input, orderId,orderPostID,setIsProcessing ,order_key) => {
-	
+export const createCheckoutAfterpayAndRedirect = async ( 
+								totalPriceDis,
+								products, 
+								input, 
+								orderId,
+								orderPostID,
+								setIsProcessing,
+								order_key,
+								checkOutOrderPay,
+								setRequestError,
+								setCart,
+								customerOrderData
+									) => {
 	let afterpayOrderData = JSON.stringify({
 			"amount": {
 			"amount":  totalPriceDis.toFixed(2),
@@ -329,15 +461,15 @@ export const createCheckoutAfterpayAndRedirect = async ( totalPriceDis,products,
 			},
 			"consumer": {
 				"phoneNumber": input?.billing?.phone,
-				"givenNames": input?.billing?.firstName,
-				"surname": input?.billing?.lastName,
+				"givenNames": input?.billing?.firstName ? input?.billing?.firstName : input?.billing?.first_name,
+				"surname": input?.billing?.lastName ? input?.billing?.lastName : input?.billing?.last_name,
 				"email": input?.billing?.email
 				},
 			"merchant": {
 				"redirectConfirmUrl": process.env.NEXT_PUBLIC_SITE_URL+'/thank-you/?orderPostnb='+window.btoa(orderPostID)+'&orderId='+orderId,
 				"redirectCancelUrl": process.env.NEXT_PUBLIC_SITE_URL+'/checkout/order-pay?orderid='+orderPostID+'&key='+order_key
 				},
-			"merchantReference": "OrderID "+orderId+" OrderPostID"+orderPostID,
+			"merchantReference": orderId,
 		});
 		const createCheckout = {
 			afterpay : 1,
@@ -366,7 +498,7 @@ export const createCheckoutAfterpayAndRedirect = async ( totalPriceDis,products,
 				  ],
 				  orderId : orderPostID
 			};
-			setIsProcessing( false );
+			
 			await axios.post( '/api/update-order', newOrderData )
 				.then( res => {
 	
@@ -375,6 +507,103 @@ export const createCheckoutAfterpayAndRedirect = async ( totalPriceDis,products,
 				.catch( err => {
 					//console.log('err UPDATE DATA ORDER',err);
 				} )
+
+			// cartCleared
+			if(checkOutOrderPay == 1)
+			{
+				const cartCleared = await clearCart( setCart, () => {
+				} );
+				if ( isEmpty( customerOrderData?.orderId ) || cartCleared?.error ) {
+					setRequestError( 'Clear cart failed' );
+					return null;
+				}
+				setIsProcessing( false );
+			}
 			window.location.href = createCheckoutRes?.redirectCheckoutUrl;
+		}
+};
+
+/**
+ * Create Checkout Laybuy and redirect.
+ * @param products
+ * @param input
+ * @param orderId
+ * @return {Promise<void>}
+ */
+ export const createCheckoutLaybuyAndRedirect = async ( 
+								totalPriceDis,
+								products, 
+								input, 
+								orderId,
+								orderPostID,
+								setIsProcessing,
+								order_key,
+								checkOutOrderPay,
+								setRequestError,
+								setCart,
+								customerOrderData
+								) => {
+	let laybuyOrderData = {
+				amount: totalPriceDis,
+				currency: 'AUD',
+				returnUrl: process.env.NEXT_PUBLIC_SITE_URL+'/thank-you/?orderPostnb='+window.btoa(orderPostID)+'&orderId='+orderId+'&key='+order_key,
+				merchantReference: orderId,
+				customer: {
+				firstName: input?.billing?.firstName ? input?.billing?.firstName : input?.billing?.first_name,
+				lastName: input?.billing?.lastName ? input?.billing?.lastName : input?.billing?.last_name,
+				email: input?.billing?.email,
+				phone: input?.billing?.phone,
+				}
+			}
+		const createCheckout = {
+			laybuy : 1,
+			laybuyOrderData: laybuyOrderData,
+		};
+		console.log('createCheckout',createCheckout);
+		var createCheckoutRes = '';
+		   await	axios.post( '/api/laybuy/create-checkout', createCheckout )
+			.then( res => {
+				if(res?.data.paymentUrl)
+				{
+					createCheckoutRes = res?.data;
+				}
+				//console.log('res ',res);
+			} )
+			.catch( err => {
+				console.log('err ',err);
+			} )
+		if(createCheckoutRes != '' && createCheckoutRes != undefined)
+		{
+			const newOrderData = {
+				meta_data: [
+					{
+					  "key": "_create_checkout_token",
+					  "value": JSON.stringify(createCheckoutRes)
+					}
+				  ],
+				  orderId : orderPostID
+			};
+			
+			await axios.post( '/api/update-order', newOrderData )
+				.then( res => {
+	
+					//console.log('res UPDATE DATA ORDER',res);
+				} )
+				.catch( err => {
+					//console.log('err UPDATE DATA ORDER',err);
+				} )
+				
+			// cartCleared
+			if(checkOutOrderPay == 1)
+			{
+				const cartCleared = await clearCart( setCart, () => {
+				} );
+				if ( isEmpty( customerOrderData?.orderId ) || cartCleared?.error ) {
+					setRequestError( 'Clear cart failed' );
+					return null;
+				}
+				setIsProcessing( false );
+			}
+			window.location.href = createCheckoutRes?.paymentUrl;
 		}
 };

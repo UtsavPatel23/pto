@@ -6,7 +6,7 @@ import { useState } from 'react';
 import CheckboxField from '../../../src/components/checkout/form-elements/checkbox-field';
 import PaymentModes from '../../../src/components/checkout/payment-modes';
 import validateAndSanitizeCheckoutForm from '../../../src/validator/checkout';
-import { createCheckoutAfterpayAndRedirect, createCheckoutSessionAndRedirect, handleAgreeTerms, handleBacsCheckout } from '../../../src/utils/checkout';
+import { createCheckoutAfterpayAndRedirect, createCheckoutLaybuyAndRedirect, createCheckoutSessionAndRedirect, handleAgreeTerms, handleBacsCheckout } from '../../../src/utils/checkout';
 import Router from 'next/router';
 import { useEffect } from 'react';
 import Cookies from 'js-cookie';
@@ -51,6 +51,7 @@ export default function Checkout({ headerFooter }) {
 	const [subtotal,setSubtotal] = useState(0);
 	const [tokenValid,setTokenValid] = useState(0);
 	const [totalPriceDis,setTotalPriceDis] = useState(0);
+	const [checkOutOrderPay,setCheckOutOrderPay] = useState(0);
 
 	var paymentModes = headerFooter?.footer?.options?.nj_payment_method ?? '';
 	const options = headerFooter?.footer?.options;
@@ -134,7 +135,19 @@ export default function Checkout({ headerFooter }) {
 		if ( 'stripe' === input.paymentMethod ) {
 			setIsOrderProcessing( true );
 			await paymentMethodUpdate( orderData?.id, input.paymentMethod);
-			await createCheckoutSessionAndRedirect( totalPriceDis,null, input, orderData?.number, orderData?.id,orderData.order_key);
+			await createCheckoutSessionAndRedirect( 
+					totalPriceDis,
+					null, // products
+					input, 
+					orderData?.number, 
+					orderData?.id,
+					setIsOrderProcessing,
+					orderData.order_key,
+					checkOutOrderPay,
+					null, //setRequestError
+					null, // setCart
+					null, // customerOrderData
+				);
 			return null;
 		}
 
@@ -153,14 +166,47 @@ export default function Checkout({ headerFooter }) {
 					console.log('err UPDATE DATA ORDER',err);
 				} )
 			await paymentMethodUpdate( orderData?.id, input.paymentMethod);
-			window.location.href = process.env.NEXT_PUBLIC_SITE_URL+'/thank-you/?orderPostnb='+window.btoa(orderData?.id)+'&orderId='+orderData?.number;
+			window.location.href = process.env.NEXT_PUBLIC_SITE_URL+'/thank-you/?orderPostnb='+window.btoa(orderData?.id)+'&orderId='+orderData?.number+'&status=SUCCESS';
 			return null;
 		}
 
 		// For Afterpay payment mode, handle the afterpay payment and thank you.
 		if ( 'afterpay' === input.paymentMethod ) {
+			setIsOrderProcessing( true );
 			await paymentMethodUpdate( orderData?.id, input.paymentMethod);
-			await createCheckoutAfterpayAndRedirect( totalPriceDis,null, input, orderData?.number, orderData?.id,setIsOrderProcessing,orderData.order_key);
+			await createCheckoutAfterpayAndRedirect( 
+					totalPriceDis,
+					null, // products
+					input, 
+					orderData?.number, 
+					orderData?.id,
+					setIsOrderProcessing,
+					orderData.order_key,
+					checkOutOrderPay,
+					null, //setRequestError
+					null, // setCart
+					null, // customerOrderData
+				);
+			return null;
+		}
+
+		// For Laybuy payment mode, handle the laybuy payment and thank you.
+		if ( 'laybuy' === input.paymentMethod ) {
+			setIsOrderProcessing( true );
+			await paymentMethodUpdate( orderData?.id, input.paymentMethod);
+			await createCheckoutLaybuyAndRedirect( 
+					totalPriceDis,
+					null, // products
+					input, 
+					orderData?.number, 
+					orderData?.id,
+					setIsOrderProcessing,
+					orderData.order_key,
+					checkOutOrderPay,
+					null, //setRequestError
+					null, // setCart
+					null, // customerOrderData
+				);
 			return null;
 		}
 	};
@@ -223,7 +269,7 @@ export default function Checkout({ headerFooter }) {
 							<OrderDetails orderData={orderData} subtotal={subtotal}/>
 
 							{/*Payment*/ }
-							<PaymentModes input={input}  handleOnChange={handleOnChange} paymentModes={paymentModes } />
+							<PaymentModes input={input}  handleOnChange={handleOnChange} paymentModes={paymentModes } totalPriceDis={totalPriceDis}/>
 							
 							{/* terms and conditions */ }
 							<CheckboxField

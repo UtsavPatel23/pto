@@ -12,7 +12,7 @@ import {
 	handleAgreeTerms,
 	handleBacsCheckout,
 	handleBillingDifferentThanShipping,
-	handleCreateAccount, handleOtherPaymentMethodCheckout, handleStripeCheckout,
+	handleCreateAccount, handleLaybuyCheckout, handleOtherPaymentMethodCheckout, handleStripeCheckout,
 	setStatesForCountry,
 } from '../../utils/checkout';
 import { useEffect } from 'react';
@@ -191,24 +191,95 @@ const CheckoutForm = ( { countriesData , paymentModes , options} ) => {
 		
 		// For stripe payment mode, handle the strip payment and thank you.
 		if ( 'stripe' === input.paymentMethod ) {
-			const createdOrderData = await handleStripeCheckout( shippingCost,couponName,totalPriceDis,input, cart?.cartItems, setRequestError, setCart, setIsOrderProcessing, setCreatedOrderData ,coutData,setCoutData,cartSubTotalDiscount);
+			const createdOrderData = await handleStripeCheckout( 
+				shippingCost,
+				couponName,
+				totalPriceDis,
+				input, 
+				cart?.cartItems, 
+				setRequestError, 
+				setCart, 
+				setIsOrderProcessing, 
+				setCreatedOrderData,
+				coutData,
+				setCoutData,
+				cartSubTotalDiscount
+				);
 			return null;
 		}
 
 		// For bacs payment mode, handle the bacs payment and thank you.
 		if ( 'bacs' === input.paymentMethod ) {
-			const createdOrderData = await handleBacsCheckout( shippingCost,couponName,totalPriceDis,input, cart?.cartItems, setRequestError, setCart, setIsOrderProcessing, setCreatedOrderData ,coutData,setCoutData,cartSubTotalDiscount);
+			const createdOrderData = await handleBacsCheckout( 
+				shippingCost,
+				couponName,
+				totalPriceDis,
+				input, 
+				cart?.cartItems, 
+				setRequestError, 
+				setCart, 
+				setIsOrderProcessing, 
+				setCreatedOrderData,
+				coutData,
+				setCoutData,
+				cartSubTotalDiscount
+				);
 			return null;
 		}
 
 		// For Afterpay payment mode, handle the afterpay payment and thank you.
 		if ( 'afterpay' === input.paymentMethod ) {
-			const createdOrderData = await handleAfterpayCheckout( shippingCost,couponName,totalPriceDis,input, cart?.cartItems, setRequestError, setCart, setIsOrderProcessing, setCreatedOrderData ,coutData,setCoutData,cartSubTotalDiscount);
+			const createdOrderData = await handleAfterpayCheckout( 
+				shippingCost,
+				couponName,
+				totalPriceDis,
+				input, 
+				cart?.cartItems, 
+				setRequestError, 
+				setCart, 
+				setIsOrderProcessing, 
+				setCreatedOrderData,
+				coutData,
+				setCoutData,
+				cartSubTotalDiscount
+				);
+			return null;
+		}
+
+		// For Laybuy payment mode, handle the laybuy payment and thank you.
+		if ( 'laybuy' === input.paymentMethod ) {
+			const createdOrderData = await handleLaybuyCheckout( 
+				shippingCost,
+				couponName,
+				totalPriceDis,
+				input, 
+				cart?.cartItems, 
+				setRequestError, 
+				setCart, 
+				setIsOrderProcessing, 
+				setCreatedOrderData,
+				coutData,
+				setCoutData,
+				cartSubTotalDiscount
+				);
 			return null;
 		}
 		
 		// For Any other payment mode, create the order and redirect the user to payment url.
-		const createdOrderData = await handleOtherPaymentMethodCheckout(shippingCost,couponName,totalPriceDis,input, cart?.cartItems, setRequestError, setCart, setIsOrderProcessing, setCreatedOrderData ,coutData,setCoutData,cartSubTotalDiscount);
+		const createdOrderData = await handleOtherPaymentMethodCheckout( 
+			shippingCost,
+			couponName,
+			totalPriceDis,
+			input, 
+			cart?.cartItems, 
+			setRequestError, 
+			setCart, 
+			setIsOrderProcessing, 
+			setCreatedOrderData,
+			coutData,
+			setCoutData,
+			cartSubTotalDiscount
+			);
 		
 		if ( createdOrderData.paymentUrl ) {
 			window.location.href = createdOrderData.paymentUrl;
@@ -662,7 +733,7 @@ const CheckoutForm = ( { countriesData , paymentModes , options} ) => {
 							<YourOrder cart={ cart } shippingCost={shippingCost} discoutDis={discoutDis} cartSubTotalDiscount={cartSubTotalDiscount} totalPriceDis={totalPriceDis} notice={notice} postcodedis={postcodedis} coutData={coutData}/>
 
 							{/*Payment*/ }
-							<PaymentModes input={input}  handleOnChange={handleOnChange} paymentModes={paymentModes } />
+							<PaymentModes input={input}  handleOnChange={handleOnChange} paymentModes={paymentModes } totalPriceDis={totalPriceDis}/>
 							
 							{/* terms and conditions */ }
 							<CheckboxField

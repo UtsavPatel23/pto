@@ -1,7 +1,7 @@
 import { isEmpty } from "lodash";
 import Error from "./error";
 
-const PaymentModes = ( { input, handleOnChange,paymentModes } ) => {
+const PaymentModes = ( { input, handleOnChange,paymentModes ,totalPriceDis} ) => {
 	
 	const { errors, paymentMethod } = input || {}
 	
@@ -10,6 +10,10 @@ const PaymentModes = ( { input, handleOnChange,paymentModes } ) => {
 			<Error errors={ errors } fieldName={ 'paymentMethod' }/>
 			{
 				paymentModes.map(function (d) {
+					if(d.method_key == 'afterpay' && (totalPriceDis < 1 || 2000 < totalPriceDis))
+					{
+						return (null);
+					}
 					return (
 						
 						<div className="form-check woo-next-payment-input-container mt-2">
