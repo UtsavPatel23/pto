@@ -12,7 +12,7 @@ const YourOrder = ( { cart,shippingCost,discoutDis,cartSubTotalDiscount,totalPri
 			{ cart ? (
 				<Fragment>
 					{/*Product Listing*/}
-					<table className="checkout-cart table table-hover w-full mb-10">
+					<table className="checkout-cart table table-hover w-full mb-10" id="yourorder_list">
 						<thead>
 						<tr className="woo-next-cart-head-container text-left">
 							<th className="woo-next-cart-heading-el" scope="col"/>

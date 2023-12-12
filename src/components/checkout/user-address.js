@@ -7,6 +7,15 @@ import SuburbSelection from './suburb-selection';
 const Address = ({suburbs,input, countries, states, handleOnChange, isFetchingStates, isShipping,isFetchingSuburb}) => {
 	
 	const {errors} = input || {};
+	if(!suburbs.length && input?.postcode)
+	{
+		if(isShipping)
+		{
+			document.getElementById("postcode_shipping").focus();
+		}else{
+			document.getElementById("postcode_billing").focus();		
+		}
+	}
 	return (
 		<>
 			<div className="flex flex-wrap overflow-hidden sm:-mx-3">

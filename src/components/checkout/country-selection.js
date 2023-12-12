@@ -7,7 +7,7 @@ const CountrySelection = ({input, handleOnChange, countries, isShipping}) => {
 	
 	const {country, errors} = input || {};
 	
-	const inputId = `country-${isShipping ? 'shipping' : 'billing'}`;
+	const inputId = `country_${isShipping ? 'shipping' : 'billing'}`;
 	
 	return (
 		<div className="mb-3">

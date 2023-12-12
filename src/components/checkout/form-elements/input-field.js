@@ -4,7 +4,7 @@ import Abbr from "./abbr";
 
 const InputField = ({ handleOnChange, inputValue, name, type, label, errors, placeholder, required, containerClassNames, isShipping ,readonly = false}) => {
 
-	const inputId = `${name}-${isShipping ? 'shipping' : ''}`;
+	const inputId = `${name}_${isShipping ? 'shipping' : 'billing'}`;
 
 	return (
 		<div className={containerClassNames}>

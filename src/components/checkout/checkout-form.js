@@ -26,6 +26,7 @@ import TextArea from './form-elements/textarea-field';
 import { handleCreateCustomer } from '../../utils/customer';
 import InputField from './form-elements/input-field';
 import LoginForm from '../my-account/login';
+import { fieldFocusSet } from './field-focus';
 
 // Use this for testing purposes, so you dont have to fill the checkout form over an over again.
 // const defaultCustomerInfo = {
@@ -149,6 +150,7 @@ const CheckoutForm = ( { countriesData , paymentModes , options} ) => {
 
 		// If there are any errors, return.
 		if ( ! shippingValidationResult.isValid || ! billingValidationResult.isValid || !ValidationResult.isValid) {
+			fieldFocusSet(billingValidationResult,shippingValidationResult,ValidationResult);
 			return null;
 		}
 
@@ -156,6 +158,8 @@ const CheckoutForm = ( { countriesData , paymentModes , options} ) => {
 		// cart shiiping cost error 
 		if(notice.length > 0)
 		{
+			var  el =  document.getElementById("yourorder_list");
+			if(el){el.scrollIntoView();}
 			return null;
 		}
 
@@ -384,6 +388,11 @@ const CheckoutForm = ( { countriesData , paymentModes , options} ) => {
 				setInput( newState );
 			}
 			
+		}else if(target.name == 'postcode' && target.value != '')
+		{
+			const newState = { ...input, shipping: { ...input?.shipping, [ target.name ]: target.value , city: '' } };
+			setInput( newState );
+			
 		}else{
 			const newState = { ...input, shipping: { ...input?.shipping, [ target.name ]: target.value } };
 			setInput( newState );
@@ -416,6 +425,11 @@ const CheckoutForm = ( { countriesData , paymentModes , options} ) => {
 				const newState = { ...input, billing: { ...input?.billing, [ target.name ]: target.value } };
 				setInput( newState );
 			}
+			
+		}else if(target.name == 'postcode' && target.value != '')
+		{
+			const newState = { ...input, billing: { ...input?.billing, [ target.name ]: target.value , city: '' } };
+			setInput( newState );
 			
 		}else{
 			const newState = { ...input, billing: { ...input?.billing, [ target.name ]: target.value } };

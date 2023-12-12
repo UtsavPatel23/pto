@@ -10,7 +10,7 @@ const SuburbSelection = ({handleOnChange, input, suburbs, isFetchingSuburb, isSh
 	
 	const {city, errors} = input || {};
 	
-	const inputId = `city-${isShipping ? 'shipping' : 'billing'}`;
+	const inputId = `city_${isShipping ? 'shipping' : 'billing'}`;
 	
 	if (isFetchingSuburb) {
 		// Show loading component.

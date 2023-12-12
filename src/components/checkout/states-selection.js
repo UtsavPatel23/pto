@@ -10,7 +10,7 @@ const StateSelection = ({handleOnChange, input, states, isFetchingStates, isShip
 	
 	const {state, errors} = input || {};
 	
-	const inputId = `state-${isShipping ? 'shipping' : 'billing'}`;
+	const inputId = `state_${isShipping ? 'shipping' : 'billing'}`;
 	
 	if (isFetchingStates) {
 		// Show loading component.
