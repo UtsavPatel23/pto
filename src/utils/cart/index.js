@@ -3,6 +3,7 @@ import { getApiCartConfig } from './api';
 import axios from 'axios';
 import { CART_ENDPOINT } from '../constants/endpoints';
 import { isEmpty, isArray } from 'lodash';
+import Cookies from 'js-cookie';
 
 /**
  * Add To Cart Request Handler.
@@ -121,7 +122,7 @@ export const clearCart = async ( setCart, setClearCartProcessing ) => {
 	setClearCartProcessing(true);
 	
 	const addOrViewCartConfig = getApiCartConfig();
-	
+	Cookies.set('coutData','');
 	try {
 		const response = await axios.delete( CART_ENDPOINT, addOrViewCartConfig );
 		viewCart( setCart, setClearCartProcessing );
