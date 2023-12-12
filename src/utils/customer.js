@@ -30,7 +30,7 @@ export const get_customer = async(arg_user_email,setCustomerData)=>
             }
 			//console.log('responseCus',loginFields.userEmail);
 			console.log('responseCus',responseCus);
-			
+			return responseCus.customers;
 		}
 
 export const handleCreateCustomer = async(input) => {

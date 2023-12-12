@@ -2,6 +2,7 @@ import { SHOP_SHIPPING_MULI } from "../constants/endpoints";
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import { isEmpty } from "lodash";
+import { get_customer } from "../customer";
 
 export function go_to_main_filter()
 {
@@ -621,4 +622,17 @@ export function exclude_category_for(data,exclude_category) {
               
             }
   return validProductDis;
+}
+
+export function get_customer_id()
+{
+  var  customer_id = '';
+  if(Cookies.get('customerData')) {
+    var customerDataTMP =  JSON.parse(Cookies.get('customerData'));
+    if(customerDataTMP != undefined && customerDataTMP != '')
+    {
+      customer_id = customerDataTMP.id;
+    }
+  }
+  return customer_id;
 }

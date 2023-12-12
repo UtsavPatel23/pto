@@ -23,7 +23,7 @@ import axios from 'axios';
 import { SUBURB_API_URL } from '../../utils/constants/endpoints';
 import { debounce, isEmpty } from 'lodash';
 import TextArea from './form-elements/textarea-field';
-import { handleCreateCustomer } from '../../utils/customer';
+import { get_customer, handleCreateCustomer } from '../../utils/customer';
 import InputField from './form-elements/input-field';
 import LoginForm from '../my-account/login';
 import { fieldFocusSet } from './field-focus';
@@ -120,7 +120,6 @@ const CheckoutForm = ( { countriesData , paymentModes , options} ) => {
 	 */
 	const handleFormSubmit = async ( event ) => {
 		event.preventDefault();
-
 		
 		/**
 		 * Validate Billing and Shipping Details
@@ -173,6 +172,30 @@ const CheckoutForm = ( { countriesData , paymentModes , options} ) => {
 			return null;
 		}
 
+		// redeemPrice
+		if(coutData.redeemPrice != undefined)
+		{
+			if(coutData?.redeemPrice > 0)
+			{
+				var customerDataTMPData = await get_customer(customerData?.email,setCustomerData);
+				//console.log('customerData call after readim',customerData);
+				var rewardPoints = get_points(customerDataTMPData);
+				//console.log('customerData call rewardPoints',rewardPoints);
+				if(rewardPoints < (coutData?.redeemPrice * 100))
+				{
+					setInput( {
+						...input,
+						errors: {rewardPoints:'Reward Points invalid. Please goto cat please check your point.'}
+					} );
+					setCoutData( {
+						...coutData,
+						"redeemPrice":''}
+						);
+					return null;
+				}
+			}
+		}
+		
 		// Create account 
 		if(input.createAccount)
 		{
@@ -442,9 +465,11 @@ const CheckoutForm = ( { countriesData , paymentModes , options} ) => {
 		//await setStatesForCountry( target, setTheBillingStates, setIsFetchingBillingStates );
 	};
 	console.log('input',input);
+	console.log('customerData',customerData);
 	useEffect(() => {
         if(Cookies.get('customerData')) {
 			var customerDataTMP =  JSON.parse(Cookies.get('customerData'));
+			setCustomerData(customerDataTMP);
 			console.log('customerDataTMP',customerDataTMP);
 			if(customerDataTMP != undefined && customerDataTMP != '')
 			{
@@ -650,6 +675,7 @@ const CheckoutForm = ( { countriesData , paymentModes , options} ) => {
 			
 		}
 	}
+
 	console.log('paymentMethodDiscount',paymentMethodDiscount);
 	console.log('cartSubTotalDiscount',cartSubTotalDiscount);
 	return (
@@ -759,8 +785,8 @@ const CheckoutForm = ( { countriesData , paymentModes , options} ) => {
 								containerClassNames="mb-4 pt-4"
 								errors = {input?.errors ? input.errors : null}
 							/>
-							{input?.errors ?
-							<div className="invalid-feedback d-block text-red-500">{ input?.errors['shippingCost'] }</div>:null}
+							{input?.errors ?<div className="invalid-feedback d-block text-red-500">{ input?.errors['shippingCost'] } { input?.errors['rewardPoints'] }</div>:null}
+							
 							<div className="woo-next-place-order-btn-wrap mt-5">
 								<button
 									disabled={ isOrderProcessing }

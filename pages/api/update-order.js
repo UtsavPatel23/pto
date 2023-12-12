@@ -50,7 +50,7 @@ export default async function handler( req, res ) {
 	}else if(req.body?.bacs == 1)
 	{
 		newOrderData = {
-			status: 'on-hold'
+			status: 'on-hold',
 		}
 		noteMessage = 'Awaiting BACS payment Order status changed from Pending payment to On hold.';
 	}else if(req.body?.orderStausAfterpay == 1)
@@ -83,7 +83,11 @@ export default async function handler( req, res ) {
 		}
 	}
 	
-	
+	if(req.body?.customer_id != '')
+		{
+			newOrderData = {...newOrderData,customer_id : req.body?.customer_id}
+		}
+		
 	if(noteMessage != '')
 	{
 		const noteData = {

@@ -23,6 +23,12 @@ const RedeemPoints = ({customerData,setCoutData,totalPrice,coutData,redeem_your_
 			setMessageRyp(response);
 			return ;
 		}
+        if(rewardPoints < 100)
+		{
+			response.error = "You must have at least 100 points in your to apply rewards";
+			setMessageRyp(response);
+			return ;
+		}
         var redeemPrice = parseInt(redeem_your_pointsText)/100;
         if(parseInt(redeem_your_pointsText) > rewardPoints || ( redeemPrice > (totalPrice)))
 		{
