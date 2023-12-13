@@ -673,7 +673,7 @@ const CheckoutForm = ( { countriesData , paymentModes , options} ) => {
 	const shippingCalculation = async(postcode) => {
 		setPostcodedis(postcode);
 		console.log('postcode shipping',postcode);
-		if(postcode.length == 4 && (cart?.cartItems.length > 0))
+		if(postcode.length == 4 && (cart?.cartItems?.length > 0))
 		{
 			
 			const  shippingData  = await getShipping(postcode,cart?.cartItems);

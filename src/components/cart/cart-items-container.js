@@ -86,6 +86,11 @@ const CartItemsContainer = ({options}) => {
 			if(shippingData.notice.length > 0)
 			{
 				setCart( { ...cart, shippingCost: -1} );
+				var catItemId = document.getElementById('pro_'+shippingData.notice[0]?.replaceAll("-","_"));
+				if(catItemId)
+				{
+					catItemId.focus();
+				}
 			}else{
 				setCart( { ...cart, shippingCost: shippingData.shippingTotal} );
 			}
@@ -324,7 +329,12 @@ const CartItemsContainer = ({options}) => {
 		{
 			if(coutData?.redeemPrice > 0)
 			{
-				totalPriceSum = totalPriceSum - coutData.redeemPrice;
+				if(totalPriceSum >= coutData.redeemPrice)
+				{
+					totalPriceSum = totalPriceSum - coutData.redeemPrice;
+				}else{
+					removeRedeemPrice();
+				}
 			}
 		}
 		
@@ -350,18 +360,22 @@ const CartItemsContainer = ({options}) => {
 	
 	//console.log('coutData in',coutData);
 	//console.log('shippingCost',shippingCost);
-	//console.log('notice',notice);
+	console.log('notice',notice);
 	//console.log('cart',cart);
 	console.log('cartItems',cartItems);
 	
 	const cartSubmit = async() => {
 		if(!isEmpty(notice))
 		{
-			console.log('note eror');
+			var catItemId = document.getElementById('pro_'+notice[0]?.replaceAll("-","_"));
+				if(catItemId)
+				{
+					catItemId.focus();
+				}
 			return null;
 		}
 		//  redeemPrice
-		if(coutData.redeemPrice != undefined)
+		/*if(coutData.redeemPrice != undefined)
 		{
 			if(coutData?.redeemPrice > 0)
 			{
@@ -373,9 +387,29 @@ const CartItemsContainer = ({options}) => {
 				}
 			}
 		}
-		setCartError({...cartError,redeemPrice:""});
+		setCartError({...cartError,redeemPrice:""});*/
 		Router.push("/checkout/");
 	}
+	if (typeof window !== "undefined") {
+		const input_product_code = document.getElementById('input_product_code');
+		if(input_product_code)
+		{
+			document.getElementById('input_product_code').addEventListener('keydown', function(event) {
+				// Allow numeric keys, backspace, and arrow keys
+				if ((event.keyCode >= 48 && event.keyCode <= 57) || // 0-9
+					(event.keyCode >= 96 && event.keyCode <= 105) || // Numeric keypad
+					event.keyCode === 8 || // Backspace
+					(event.keyCode >= 37 && event.keyCode <= 40) // Arrow keys
+					) {
+				  // Allow the keypress
+				} else {
+				  // Prevent the keypress
+				  event.preventDefault();
+				}
+			  });
+		}
+		
+	  }
 	
 	return (
 		<div className="content-wrap-cart">
@@ -407,7 +441,7 @@ const CartItemsContainer = ({options}) => {
 						) ) }
 						<div key="calculat-shipping">
 							<h5>Calculate Shipping Charge</h5>
-							<input type="number" onChange={inputShipping}  size="4" value={product_code}  name="product_code" placeholder="POSTCODE"  disabled={inputshipdisabled} /> 
+							<input type="number" onChange={inputShipping}  size="4" id="input_product_code" value={product_code}  name="product_code" placeholder="POSTCODE"  disabled={inputshipdisabled} /> 
 							<button onClick={shippingCalculation}>Calculate</button>
 						</div>
 						<div key="coupon">

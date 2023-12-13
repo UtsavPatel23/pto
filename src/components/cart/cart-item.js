@@ -116,7 +116,7 @@ const CartItem = ( {
 		maxQty = false;
 	}
 	return (
-		<div className="cart-item-wrap grid grid-cols-3 gap-6 mb-5 border border-brand-bright-grey p-5">
+		<div id={'pro_'+item?.product_id} className="cart-item-wrap grid grid-cols-3 gap-6 mb-5 border border-brand-bright-grey p-5">
 			<div className="col-span-1 cart-left-col">
 				<figure >
 					<Image
@@ -128,13 +128,20 @@ const CartItem = ( {
 				</figure>
 			</div>
 			
-			<div className="col-span-2 cart-right-col">
+			<div className="col-span-2 cart-right-col ">
 				<div className="flex justify-between flex-col h-full">
 					<div className="cart-product-title-wrap relative">
 					<Link href={'/product/'+item?.data?.slug}>
 						<h5 className="cart-product-title text-brand-orange">{ item?.data?.name }</h5>
 					</Link>	
-					{notice?<span className='invalid-feedback d-block text-red-500'>Sorry please remove this product Undeliverable at {postcodedis}.</span>:null}
+					<span key='notefocus'>
+							<input type='text' className='focusbox' readOnly="readOnly" id={'pro_'+item?.data?.sku?.replaceAll("-","_")}/>
+						</span>
+					{notice?
+					<div key='notebox'>
+						<span className='invalid-feedback d-block text-red-500'>Sorry please remove this product Undeliverable at {postcodedis}.</span>
+					</div>
+					:null}
 					{itemNote != ''? 
 					<div key="purchase_note"
 						dangerouslySetInnerHTML={ {
@@ -168,6 +175,7 @@ const CartItem = ( {
 								value={ productCount }
 								onChange={ ( event ) => handleQtyChange( event, item?.cartKey, '' ) }
 								readonly='readonly'
+								id={'qty_pro_'+item?.product_id} 
 							/>
 							<button className={` increment-btn text-20px `} disabled={maxQty} onClick={( event ) => handleQtyChange( event, item?.cartKey, 'increment' )}>+</button>
 						</div>

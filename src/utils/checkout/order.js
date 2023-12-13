@@ -6,6 +6,7 @@
  * @returns {*[]|*} Line items, Array of objects.
  */
 import { isArray, isEmpty } from 'lodash';
+import { get_customer_id } from '../customjs/custome';
 
 export const getCreateOrderLineItems = ( products ) => {
 	
@@ -34,8 +35,10 @@ export const getCreateOrderLineItems = ( products ) => {
 export const getCreateOrderData = ( shippingCost,couponName,order, products ,coutData,cartSubTotalDiscount) => {
 	// Set the billing Data to shipping, if applicable.
 	const shippingData = order.billingDifferentThanShipping ? order.shipping : order.billing;
-	
+	var customer_id =  get_customer_id();	
+	if(customer_id == ''){customer_id = 0;}
 	var tmpOrderData = {
+		customer_id : customer_id,
 		billing: {
 			first_name: order?.billing?.firstName,
 			last_name: order?.billing?.lastName,

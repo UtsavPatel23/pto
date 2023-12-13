@@ -30,7 +30,7 @@ const RedeemPoints = ({customerData,setCoutData,totalPrice,coutData,redeem_your_
 			return ;
 		}
         var redeemPrice = parseInt(redeem_your_pointsText)/100;
-        if(parseInt(redeem_your_pointsText) > rewardPoints)
+        if(parseInt(redeem_your_pointsText) > rewardPoints || parseInt(redeem_your_pointsText) < 1)
 		{
             response.error = "Please enter valid point.";
 			setMessageRyp(response);

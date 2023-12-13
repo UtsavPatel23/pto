@@ -5,8 +5,7 @@ import { createTheOrder, getCreateOrderData } from './order';
 import { clearCart } from '../cart';
 import axios from 'axios';
 import { WOOCOMMERCE_STATES_ENDPOINT } from '../constants/endpoints';
-import Router from "next/router";
-import { get_customer_id } from '../customjs/custome';
+
 
 /**
  * Handle Other Payment Method checkout.
@@ -121,11 +120,9 @@ export const handleStripeCheckout = async (
 	console.log('input orderData',orderData);
 	const customerOrderData = await createTheOrder( orderData, setRequestError, '' );
 	console.log('customerOrderData',customerOrderData);
-	var customer_id =  get_customer_id();					
 	const newOrderData = {
 		bacs : 1,
 		orderId: customerOrderData?.orderPostID,
-		customer_id: customer_id,
 	};
    	await	axios.post( '/api/update-order', newOrderData )
 		.then( res => {
@@ -510,7 +507,6 @@ export const createCheckoutAfterpayAndRedirect = async (
 			} )
 		if(createCheckoutRes != '' && createCheckoutRes != undefined)
 		{
-			var customer_id =  get_customer_id();	
 			const newOrderData = {
 				meta_data: [
 					{
@@ -519,7 +515,6 @@ export const createCheckoutAfterpayAndRedirect = async (
 					}
 				  ],
 				  orderId : orderPostID,
-				  customer_id : customer_id
 			};
 			
 			await axios.post( '/api/update-order', newOrderData )
@@ -613,7 +608,6 @@ export const createCheckoutAfterpayAndRedirect = async (
 		{
 			if(createCheckoutRes.result == 'SUCCESS')
 			{
-				var customer_id =  get_customer_id();
 				const newOrderData = {
 					meta_data: [
 						{
@@ -622,7 +616,6 @@ export const createCheckoutAfterpayAndRedirect = async (
 						}
 					  ],
 					  orderId : orderPostID,
-					  customer_id : customer_id
 				};
 				
 				await axios.post( '/api/update-order', newOrderData )
