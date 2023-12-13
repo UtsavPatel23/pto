@@ -196,6 +196,19 @@ const CheckoutForm = ( { countriesData , paymentModes , options} ) => {
 			}
 		}
 		
+		// totalPriceDis validation 
+		if(totalPriceDis != undefined)
+		{
+			if(totalPriceDis < 0)
+			{
+				setInput( {
+					...input,
+					errors: {totalPriceDis:'Invalid Amount.'}
+				} );
+				return null;
+			}
+		}
+		
 		// Create account 
 		if(input.createAccount)
 		{
@@ -785,7 +798,11 @@ const CheckoutForm = ( { countriesData , paymentModes , options} ) => {
 								containerClassNames="mb-4 pt-4"
 								errors = {input?.errors ? input.errors : null}
 							/>
-							{input?.errors ?<div className="invalid-feedback d-block text-red-500">{ input?.errors['shippingCost'] } { input?.errors['rewardPoints'] }</div>:null}
+							{input?.errors ?<div className="invalid-feedback d-block text-red-500">
+								{ input?.errors['shippingCost'] } 
+								{ input?.errors['rewardPoints'] }
+								{ input?.errors['totalPriceDis'] }
+							</div>:null}
 							
 							<div className="woo-next-place-order-btn-wrap mt-5">
 								<button

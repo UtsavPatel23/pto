@@ -30,9 +30,15 @@ const RedeemPoints = ({customerData,setCoutData,totalPrice,coutData,redeem_your_
 			return ;
 		}
         var redeemPrice = parseInt(redeem_your_pointsText)/100;
-        if(parseInt(redeem_your_pointsText) > rewardPoints || ( redeemPrice > (totalPrice)))
+        if(parseInt(redeem_your_pointsText) > rewardPoints)
 		{
-            response.error = "Please enter valid ponints";
+            response.error = "Please enter valid point.";
+			setMessageRyp(response);
+			return ;
+		}
+        if( redeemPrice > (totalPrice))
+		{
+            response.error = "You can`t Redeem more Points than order subtotal, Please enter Right Value.";
 			setMessageRyp(response);
 			return ;
 		}

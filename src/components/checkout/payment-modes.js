@@ -10,7 +10,11 @@ const PaymentModes = ( { input, handleOnChange,paymentModes ,totalPriceDis} ) =>
 			<Error errors={ errors } fieldName={ 'paymentMethod' }/>
 			{
 				paymentModes.map(function (d) {
-					if(d.method_key == 'afterpay' && (totalPriceDis < 1 || 2000 < totalPriceDis))
+					if(d.method_key == 'afterpay' && (totalPriceDis < 10 || 2000 < totalPriceDis))
+					{
+						return (null);
+					}
+					if(d.method_key != 'bacs' && (totalPriceDis < 5 ))
 					{
 						return (null);
 					}
@@ -26,10 +30,6 @@ const PaymentModes = ( { input, handleOnChange,paymentModes ,totalPriceDis} ) =>
 					)	
 				})
 			}
-			{/*}
-			<div className="form-checkwoo-next-payment-input-containermt-2">
-		<label className="form-check-label"> <input onChange={handleOnChange} value="stripe" className="form-check-inputmr-3" name="paymentMethod" type="radio" checked={'stripe'===paymentMethod}/><span className="woo-next-payment-content">Stripe</span></label></div>{*/}
-			
 			{/*	Payment Instructions*/}
 			<div className="woo-next-checkout-payment-instructions mt-2">
 				Please send a check to Store Name, Store Street, Store Town, Store State / County, Store Postcode.

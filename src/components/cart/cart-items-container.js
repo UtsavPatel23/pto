@@ -11,6 +11,7 @@ import Cookies from 'js-cookie';
 import { isEmpty } from 'lodash';
 import RedeemPoints from './redeem-points';
 import LoginForm from '../my-account/login';
+import Router from "next/router";
 
 
 const CartItemsContainer = ({options}) => {
@@ -23,8 +24,8 @@ const CartItemsContainer = ({options}) => {
 	const [notice,setNotice] = useState('');
 	const [postcodedis,setPostcodedis] = useState('');
 	const [product_code,setProduct_code] = useState('');
-	const [cartBtnDisabled,setCartBtnDisabled] = useState(false);
-
+	const [cartError,setCartError] = useState('');
+	
 	// Coupon
 	const [couponCodeText, setCouponCodeText] = useState('');
     const [couponCodeResTmp, setCouponCodeResTmp] = useState('');
@@ -344,14 +345,6 @@ const CartItemsContainer = ({options}) => {
 		
     }, [totalPrice,shippingCost,coutData,tokenValid]);
 	
-	useEffect(() => {
-        if(!isEmpty(notice))
-		{
-			setCartBtnDisabled(true);
-		}else{
-			setCartBtnDisabled(false);
-		}
-    }, [notice]);
 	
 	console.log('cartSubTotalDiscount',cartSubTotalDiscount);
 	
@@ -361,6 +354,28 @@ const CartItemsContainer = ({options}) => {
 	//console.log('cart',cart);
 	console.log('cartItems',cartItems);
 	
+	const cartSubmit = async() => {
+		if(!isEmpty(notice))
+		{
+			console.log('note eror');
+			return null;
+		}
+		//  redeemPrice
+		if(coutData.redeemPrice != undefined)
+		{
+			if(coutData?.redeemPrice > 0)
+			{
+				if(totalPrice < coutData.redeemPrice)
+				{
+					setCartError({...cartError,redeemPrice:"You can`t Redeem more Points than order subtotal, Please enter Right Value."});
+					removeRedeemPrice();
+					return null;
+				}
+			}
+		}
+		setCartError({...cartError,redeemPrice:""});
+		Router.push("/checkout/");
+	}
 	
 	return (
 		<div className="content-wrap-cart">
@@ -501,6 +516,7 @@ const CartItemsContainer = ({options}) => {
 							<p className="col-span-1 p-2 mb-0">{cartItems?.[0]?.currency ?? ''}{parseFloat(totalPriceDis).toFixed(2)}</p>
 						</div>
 						
+						{cartError?.redeemPrice ?<div className="invalid-feedback d-block text-red-500">{ cartError.redeemPrice }</div>:null}
 						<div className="flex justify-between">
 							{/*Clear entire cart*/}
 							<div className="clear-cart">
@@ -513,14 +529,14 @@ const CartItemsContainer = ({options}) => {
 								</button>
 							</div>
 							{/*Checkout*/}
-							<Link href="/checkout">
-							 <button className="text-white duration-500 bg-brand-orange hover:bg-brand-royal-blue focus:ring-4 focus:text-white font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 dark:focus:ring-yellow-900" disabled={cartBtnDisabled}>
+							{/*}<Link href="/checkout">{*/}
+							 <button onClick={cartSubmit} className="text-white duration-500 bg-brand-orange hover:bg-brand-royal-blue focus:ring-4 focus:text-white font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 dark:focus:ring-yellow-900">
 			                  <span className="woo-next-cart-checkout-txt">
 			                    Proceed to Checkout
 			                  </span>
 									<i className="fas fa-long-arrow-alt-right"/>
 								</button>
-							</Link>
+							{/*}</Link>{*/}
 						</div>
 					</div>
 				</div>
