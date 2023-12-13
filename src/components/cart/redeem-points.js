@@ -61,6 +61,25 @@ const RedeemPoints = ({customerData,setCoutData,totalPrice,coutData,redeem_your_
             setRedeem_your_pointsText(e.target.value);
         }
     }
+    if (typeof window !== "undefined") {
+		const input_redeem_your_points = document.getElementById('redeem_your_points');
+		if(input_redeem_your_points)
+		{
+			document.getElementById('redeem_your_points').addEventListener('keydown', function(event) {
+				// Allow numeric keys, backspace, and arrow keys
+				if ((event.keyCode >= 48 && event.keyCode <= 57) || // 0-9
+					(event.keyCode >= 96 && event.keyCode <= 105) || // Numeric keypad
+					event.keyCode === 8 || // Backspace
+					(event.keyCode >= 37 && event.keyCode <= 40) // Arrow keys
+					) {
+				  // Allow the keypress
+				} else {
+				  // Prevent the keypress
+				  event.preventDefault();
+				}
+			  });
+		}
+	  }
 	return (
 		<>
         <div key="redeem_your_points">

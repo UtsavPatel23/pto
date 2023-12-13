@@ -408,7 +408,6 @@ const CartItemsContainer = ({options}) => {
 				}
 			  });
 		}
-		
 	  }
 	
 	return (
