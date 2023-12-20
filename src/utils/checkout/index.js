@@ -247,6 +247,55 @@ export const handleStripeCheckout = async (
 };
 
 /**
+ * Handle Laybuy  checkout.
+ *
+ * 1. Create Formatted Order data.
+ * 2. Create Order using Next.js create-order endpoint.
+ * 3. Clear the cart session.
+ * 
+ */
+ export const handlePaypalCheckout = async (
+					shippingCost,
+					couponName,
+					totalPriceDis, 
+					input, 
+					products, 
+					setRequestError, 
+					setCart, 
+					setIsProcessing, 
+					setCreatedOrderData,
+					coutData,
+					setCoutData,
+					cartSubTotalDiscount
+					) => {
+	//console.log('input order ',input);
+	setIsProcessing( true );
+	const orderData = getCreateOrderData(shippingCost,couponName, input, products ,coutData,cartSubTotalDiscount);
+	console.log('input orderData',orderData);
+	const customerOrderData = await createTheOrder( orderData, setRequestError, '' );
+	console.log('customerOrderData',customerOrderData);
+	setCoutData('');
+	
+	// On success show stripe form.
+	setCreatedOrderData( customerOrderData );
+	await createCheckoutPaypalAndRedirect( 
+		totalPriceDis,
+		products, 
+		input, 
+		customerOrderData?.orderId,
+		customerOrderData?.orderPostID,
+		setIsProcessing,
+		customerOrderData?.order_key,
+		1, // checkOutOrderPay
+		setRequestError,
+		setCart,
+		customerOrderData
+		);
+	
+	return customerOrderData;
+};
+
+/**
  * Create Checkout Session and redirect.
  * @param products
  * @param input
@@ -656,4 +705,32 @@ export const createCheckoutAfterpayAndRedirect = async (
 			}
 			
 		}
+};
+
+/**
+ * Create Checkout Paypal and redirect.
+ * @param products
+ * @param input
+ * @param orderId
+ * @return {Promise<void>}
+ */
+ export const createCheckoutPaypalAndRedirect = async ( 
+								totalPriceDis,
+								products, 
+								input, 
+								orderId,
+								orderPostID,
+								setIsProcessing,
+								order_key,
+								checkOutOrderPay,
+								setRequestError,
+								setCart,
+								customerOrderData
+								) => {
+				// cartCleared
+				if(checkOutOrderPay == 1)
+				{
+					setIsProcessing( false );
+				}
+		
 };

@@ -65,6 +65,18 @@ export default async function handler( req, res ) {
 			status: 'snv'
 		}
 		noteMessage = 'Order charge successful in '+req.body?.payment_method+'. Token : ' +req.body?.token+ "  Order no : "+req.body?.orderno;
+	}else if(req.body?.paypal == 1)
+	{
+		newOrderData = {
+			status: 'snv',
+			meta_data: [
+				{
+				  "key": "_create_checkout_token",
+				  "value": req.body?.token
+				}
+				],
+		}
+		noteMessage = 'Order charge successful in '+req.body?.payment_method+'. Token : ' +req.body?.token+ "  Order no : "+req.body?.orderno;
 	}else if(!isEmpty(req.body?.meta_data)){
 		newOrderData = {meta_data : req.body?.meta_data};
 	}else if(req.body?.paymentMethodUpdate == 1)

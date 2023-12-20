@@ -184,6 +184,7 @@ export const createTheOrder = async ( orderData, setOrderFailedError, previousRe
 		response.currency = result.currency ?? '';
 		response.paymentUrl = result.paymentUrl ?? '';
 		response.order_key = result.order_key ?? '';
+		response.allData = result.allData ?? '';
 		
 	} catch ( error ) {
 		// @TODO to be handled later.

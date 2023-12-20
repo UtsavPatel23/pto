@@ -12,7 +12,7 @@ import {
 	handleAgreeTerms,
 	handleBacsCheckout,
 	handleBillingDifferentThanShipping,
-	handleCreateAccount, handleLaybuyCheckout, handleOtherPaymentMethodCheckout, handleStripeCheckout,
+	handleCreateAccount, handleLaybuyCheckout, handleOtherPaymentMethodCheckout, handlePaypalCheckout, handleStripeCheckout,
 	setStatesForCountry,
 } from '../../utils/checkout';
 import { useEffect } from 'react';
@@ -27,6 +27,8 @@ import { get_customer, handleCreateCustomer } from '../../utils/customer';
 import InputField from './form-elements/input-field';
 import LoginForm from '../my-account/login';
 import { fieldFocusSet } from './field-focus';
+import PaypalButtonCheckout from './paypal/paypal-button';
+import CancelOrderButton from './cancel-order';
 
 // Use this for testing purposes, so you dont have to fill the checkout form over an over again.
 // const defaultCustomerInfo = {
@@ -110,7 +112,12 @@ const CheckoutForm = ( { countriesData , paymentModes , options} ) => {
 
 	const [paymentMethodDiscount , setPaymentMethodDiscount] = useState(0);
 	const [cartSubTotalDiscount,setCartSubTotalDiscount] = useState(null);
+	
+	// Paypal
+	const [paypalButtonBisible,setPaypalButtonBisible] = useState(false);
+	
 
+	
 	/**
 	 * Handle form submit.
 	 *
@@ -119,8 +126,8 @@ const CheckoutForm = ( { countriesData , paymentModes , options} ) => {
 	 * @return Null.
 	 */
 	const handleFormSubmit = async ( event ) => {
-		event.preventDefault();
-		
+		//console.log('event',event);
+		event?.preventDefault();
 		/**
 		 * Validate Billing and Shipping Details
 		 *
@@ -305,6 +312,24 @@ const CheckoutForm = ( { countriesData , paymentModes , options} ) => {
 			return null;
 		}
 		
+		// For Paypal payment mode, handle the paypal payment and thank you.
+		if ( 'ppcp-gateway' === input.paymentMethod ) {
+			const createdOrderData = await handlePaypalCheckout( 
+				shippingCost,
+				couponName,
+				totalPriceDis,
+				input, 
+				cart?.cartItems, 
+				setRequestError, 
+				setCart, 
+				setIsOrderProcessing, 
+				setCreatedOrderData,
+				coutData,
+				setCoutData,
+				cartSubTotalDiscount
+				);
+			return null;
+		}
 		// For Any other payment mode, create the order and redirect the user to payment url.
 		const createdOrderData = await handleOtherPaymentMethodCheckout( 
 			shippingCost,
@@ -358,6 +383,12 @@ const CheckoutForm = ( { countriesData , paymentModes , options} ) => {
 				setPaymentMethodDiscount(paymentModesDisSel[0]?.discount);
 			}else{
 				setPaymentMethodDiscount(0);
+			}
+			if(target.value == 'ppcp-gateway')
+			{
+				setPaypalButtonBisible(true);
+			}else{
+				setPaypalButtonBisible(false);
 			}
 		} 
 
@@ -584,14 +615,7 @@ const CheckoutForm = ( { countriesData , paymentModes , options} ) => {
 		}
 
 		
-		// discount_type_cart_quantity
-		var discount_type_cart_cal = 0;
-		discount_type_cart_cal = get_discount_type_cart(cart?.cartItems,options,setCartSubTotalDiscount,cartSubTotalDiscount,paymentMethodDiscount,totalPrice,tokenValid);
 		
-		if(discount_type_cart_cal != 0)
-		{
-			totalPriceSum = totalPriceSum - discount_type_cart_cal;
-		}
 
 		// redeemPrice
 		if(coutData.redeemPrice != undefined)
@@ -599,6 +623,20 @@ const CheckoutForm = ( { countriesData , paymentModes , options} ) => {
 			if(coutData?.redeemPrice > 0)
 			{
 				totalPriceSum = totalPriceSum - coutData.redeemPrice;
+			}
+		}
+
+		// discount_type_cart_quantity
+		var discount_type_cart_cal = 0;
+		discount_type_cart_cal = get_discount_type_cart(cart?.cartItems,options,setCartSubTotalDiscount,cartSubTotalDiscount,paymentMethodDiscount,totalPrice,tokenValid);
+		
+		if(discount_type_cart_cal != 0)
+		{
+			if(totalPriceSum >= discount_type_cart_cal)
+			{
+				totalPriceSum = totalPriceSum - discount_type_cart_cal;
+			}else{
+				totalPriceSum = totalPriceSum - totalPriceSum;
 			}
 		}
 		
@@ -691,12 +729,13 @@ const CheckoutForm = ( { countriesData , paymentModes , options} ) => {
 
 	console.log('paymentMethodDiscount',paymentMethodDiscount);
 	console.log('cartSubTotalDiscount',cartSubTotalDiscount);
+	console.log('createdOrderData',createdOrderData);
 	return (
 		<>
 		{ loading && <img className="loader" src={Loader.src} alt="Loader" width={50}/> }
 			{ cart ? (
 				<div key="check-outform">
-				<form onSubmit={ handleFormSubmit } className="woo-next-checkout-form">
+				<form onSubmit={ handleFormSubmit } id="checkout_form" className="woo-next-checkout-form">
 					<div className="grid grid-cols-1 md:grid-cols-2 gap-20">
 						<div>
 							{/*Billing Details*/ }
@@ -785,6 +824,8 @@ const CheckoutForm = ( { countriesData , paymentModes , options} ) => {
 							<h2 className="text-xl font-medium mb-4">Your Order</h2>
 							<YourOrder cart={ cart } shippingCost={shippingCost} discoutDis={discoutDis} cartSubTotalDiscount={cartSubTotalDiscount} totalPriceDis={totalPriceDis} notice={notice} postcodedis={postcodedis} coutData={coutData}/>
 
+							{createdOrderData?.allData?.payment_method == 'ppcp-gateway' && paypalButtonBisible ?<></>:
+							<>
 							{/*Payment*/ }
 							<PaymentModes input={input}  handleOnChange={handleOnChange} paymentModes={paymentModes } totalPriceDis={totalPriceDis}/>
 							
@@ -798,13 +839,22 @@ const CheckoutForm = ( { countriesData , paymentModes , options} ) => {
 								containerClassNames="mb-4 pt-4"
 								errors = {input?.errors ? input.errors : null}
 							/>
+							</>}
 							{input?.errors ?<div className="invalid-feedback d-block text-red-500">
 								{ input?.errors['shippingCost'] } 
 								{ input?.errors['rewardPoints'] }
 								{ input?.errors['totalPriceDis'] }
 							</div>:null}
 							
-							<div className="woo-next-place-order-btn-wrap mt-5">
+							{createdOrderData?.allData?.payment_method == 'ppcp-gateway' && paypalButtonBisible ? <>
+							<PaypalButtonCheckout 
+								createdOrderData={createdOrderData} 
+							/>
+							<CancelOrderButton
+								createdOrderData={createdOrderData}
+							/>
+							</>:
+							<div id='checkoutbtn' className="woo-next-place-order-btn-wrap mt-5">
 								<button
 									disabled={ isOrderProcessing }
 									className={ cx(
@@ -816,6 +866,7 @@ const CheckoutForm = ( { countriesData , paymentModes , options} ) => {
 									Place Order
 								</button>
 							</div>
+							}
 
 							{/* Checkout Loading*/ }
 							{ isOrderProcessing && <p>Processing Order...</p> }

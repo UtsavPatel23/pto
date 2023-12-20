@@ -45,7 +45,7 @@ const YourOrder = ( { cart,shippingCost,discoutDis,cartSubTotalDiscount,totalPri
 								return (
 									<tr className="">
 										<td className=""/>
-										<td className="woo-next-checkout-total font-normal text-xl">Discout</td>
+										<td className="woo-next-checkout-total font-normal text-xl">Discount</td>
 										<td className="woo-next-checkout-total  text-xl">-{ cart?.cartItems?.[ 0 ]?.currency ?? '' }{ discoutDis ?? '' }</td>
 									</tr>
 									)	

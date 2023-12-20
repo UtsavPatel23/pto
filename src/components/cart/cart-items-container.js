@@ -232,7 +232,7 @@ const CartItemsContainer = ({options}) => {
 		}
 	
 		const handleCouponCodeVariable = (e) => {
-		setCouponCodeText(e.target.value);
+		setCouponCodeText(e.target.value.trim());
 	  }
 	/* Remove coupon  */
 	const removeCouponCode = ()=>{
@@ -245,15 +245,24 @@ const CartItemsContainer = ({options}) => {
 	}
 
 	/* Remove coupon  */
-	const removeRedeemPrice = ()=>{
+	const removeRedeemPrice = (errorMsg)=>{
 		setCoutData( {
 			...coutData,
 			"redeemPrice":''}
 			);
-		setMessageRyp({
-				success: false,
-				error: '',
-			})
+			if(errorMsg)
+			{
+				setMessageRyp({
+					success: false,
+					error: errorMsg,
+				})
+			}else{
+				setMessageRyp({
+					success: false,
+					error: '',
+				})
+			}
+		
 		setRedeem_your_pointsText('');
 	}
 
@@ -279,7 +288,7 @@ const CartItemsContainer = ({options}) => {
     useEffect(() => {
 		if(coutData.CouponApply != undefined && coutData.CouponApply != '' && coutData.CouponApply.couponData != null)
 		{
-			if(parseFloat(coutData.CouponApply.couponData.minimum_amount) >	cart.totalPrice && coutData.CouponApply.couponData.minimum_amount != 0)
+			if(parseFloat(coutData.CouponApply.couponData.minimum_amount) >	cart?.totalPrice && coutData.CouponApply.couponData.minimum_amount != 0)
 			{
 				setCoutData( {
 					...coutData,
@@ -311,16 +320,32 @@ const CartItemsContainer = ({options}) => {
 		{
 			if(CouponApply.success)
 			{
-			if(CouponApply.couponData.discount_type == "fixed_cart")
-			{
-				discount_cal = parseFloat(CouponApply.couponData.amount);
-				
-			}
-			if(CouponApply.couponData.discount_type == "percent")
-			{
-				discount_cal = ((totalPrice*parseFloat(CouponApply.couponData.amount))/100);
-			}
-			totalPriceSum = totalPriceSum - discount_cal;
+				if(CouponApply.couponData.discount_type == "fixed_cart")
+				{
+					discount_cal = parseFloat(CouponApply.couponData.amount);
+					
+				}
+				if(CouponApply.couponData.discount_type == "percent")
+				{
+					discount_cal = ((totalPrice*parseFloat(CouponApply.couponData.amount))/100);
+				}
+				if(totalPrice >= discount_cal)
+				{
+					totalPriceSum = totalPriceSum - discount_cal;
+				}else{
+					let response = {
+						success: false,
+						couponId: null,
+						couponData: null,
+						error: 'You can`t Coupon more Dicount than order subtotal.',
+					};
+					setCouponCodeResTmp(response);
+					setCoutData( {
+						...coutData,
+						"CouponApply":''}
+						);
+					setCouponCodeText('');
+				}
 			}
 		}
 		setDiscoutDis(discount_cal);
@@ -332,8 +357,17 @@ const CartItemsContainer = ({options}) => {
 				if(totalPriceSum >= coutData.redeemPrice)
 				{
 					totalPriceSum = totalPriceSum - coutData.redeemPrice;
+					setMessageRyp({...messageRyp,error: '',})
 				}else{
-					removeRedeemPrice();
+					var errorMsg = '';
+					if(totalPrice == totalPriceSum)
+					{
+						 errorMsg = "You can`t Redeem more Points than order subtotal, Please enter Right Value.";
+					}else{
+						errorMsg = "Please enter Right Value.";
+
+					}
+					removeRedeemPrice(errorMsg);
 				}
 			}
 		}
@@ -505,13 +539,13 @@ const CartItemsContainer = ({options}) => {
 							})()} 
 						</div>
 						{(() => {
-							if(coutData.CouponApply != undefined) 
+							if(coutData?.CouponApply != undefined) 
 							{
-								if(coutData.CouponApply.success)
+								if(coutData?.CouponApply?.success)
 								{
 									return (
 										<div className="flex grid grid-cols-3 bg-gray-100 mb-4">
-											<p className="col-span-2 p-2 mb-0">Discount <button onClick={removeCouponCode}>Remove</button></p>
+											<p className="col-span-2 p-2 mb-0">Discount : {coutData?.CouponApply?.couponData?.code} <button onClick={removeCouponCode}>Remove</button></p>
 											<p className="col-span-1 p-2 mb-0">-{cartItems?.[0]?.currency ?? ''}{ discoutDis }</p>
 										</div>
 										)

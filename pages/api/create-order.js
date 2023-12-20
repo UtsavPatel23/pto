@@ -53,6 +53,7 @@ export default async function handler( req, res ) {
 		responseData.currency = data.currency;
 		responseData.paymentUrl = data.payment_url;
 		responseData.order_key = data.order_key;
+		responseData.allData = data;
 		
 		console.log("Create responseData", responseData);
 

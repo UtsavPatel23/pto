@@ -11,6 +11,7 @@ import Router from 'next/router';
 import { useEffect } from 'react';
 import Cookies from 'js-cookie';
 import OrderDetails from '../../../src/components/thank-you/order-details';
+import PaypalButtonCheckout from '../../../src/components/checkout/paypal/paypal-button';
 const defaultCustomerInfo = {
 	firstName: '',
 	lastName: '',
@@ -54,6 +55,12 @@ export default function Checkout({ headerFooter }) {
 	const [tokenValid,setTokenValid] = useState(0);
 	const [totalPriceDis,setTotalPriceDis] = useState(0);
 	const [checkOutOrderPay,setCheckOutOrderPay] = useState(0);
+	
+	// Paypal
+	const [paypalButtonBisible,setPaypalButtonBisible] = useState(false);
+	const [createdOrderData,setCreatedOrderData] = useState(null);
+	
+	
 
 	var paymentModes = headerFooter?.footer?.options?.nj_payment_method ?? '';
 	const options = headerFooter?.footer?.options;
@@ -124,6 +131,7 @@ export default function Checkout({ headerFooter }) {
 					console.log('err UPDATE DATA ORDER Note ',err);
 				} )
 		}
+		setCreatedOrderData({allData:orderData});
 		
 	}, [ orderData ] );
 	/**
@@ -230,6 +238,14 @@ export default function Checkout({ headerFooter }) {
 				);
 			return null;
 		}
+
+		// For Laybuy payment mode, handle the laybuy payment and thank you.
+		if ( 'ppcp-gateway' === input.paymentMethod ) {
+			//setIsOrderProcessing( true );
+			await paymentMethodUpdate( orderData?.id, input.paymentMethod);
+			setPaypalButtonBisible(true);
+			return null;
+		}
 	};
 
 	const paymentMethodUpdate = async ( orderId, paymentMethodName) =>
@@ -267,11 +283,22 @@ export default function Checkout({ headerFooter }) {
 			const newState = { ...input, [ target.name ]: target.value };
 			setInput( newState );
 		}
+		if(target.name == 'paymentMethod')
+		{
+			if(target.value == 'ppcp-gateway')
+			{
+				//setPaypalButtonBisible(true);
+			}else{
+				setPaypalButtonBisible(false);
+			}
+		}
+		
 		SetLoading(false);
 	};
 	console.log('input',input);
 	console.log('orderData',orderData);
 	console.log('wc_order_key',wc_order_key);
+	console.log('createdOrderData',createdOrderData);
 	if(orderData?.order_key == undefined)
 	{
 		return(<div>Loading...</div>);
@@ -304,7 +331,12 @@ export default function Checkout({ headerFooter }) {
 							/>
 							{input?.errors ?
 							<div className="invalid-feedback d-block text-red-500">{ input?.errors['shippingCost'] }</div>:null}
-							<div className="woo-next-place-order-btn-wrap mt-5">
+							{paypalButtonBisible && createdOrderData != null?<>
+								<PaypalButtonCheckout 
+								createdOrderData={createdOrderData} 
+								/>
+							</>:
+							<div id='checkoutbtn'  className="woo-next-place-order-btn-wrap mt-5">
 								<button
 									disabled={ isOrderProcessing }
 									className={ cx(
@@ -316,6 +348,8 @@ export default function Checkout({ headerFooter }) {
 									Place Order
 								</button>
 							</div>
+							}
+							
 
 							{/* Checkout Loading*/ }
 							{ isOrderProcessing && <p>Processing Order...</p> }

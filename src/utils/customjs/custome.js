@@ -3,6 +3,7 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 import { isEmpty } from "lodash";
 import { get_customer } from "../customer";
+import { clearCart } from "../cart";
 
 export function go_to_main_filter()
 {
@@ -219,7 +220,7 @@ export   function localstorage_cookiesClear(){
           Cookies.remove("user_lgdt");
           Cookies.remove('customerData');
           Cookies.remove('coutData');
-
+          clearCart(null,false);
           
         }
 		localStorage.clear()
