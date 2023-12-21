@@ -294,7 +294,7 @@ const CartItemsContainer = ({options}) => {
 					...coutData,
 					"CouponApply":''}
 					);
-			}else if(parseFloat(coutData.CouponApply.couponData.maximum_amount) <	cart.totalPrice && coutData.CouponApply.couponData.maximum_amount != 0)
+			}else if(parseFloat(coutData.CouponApply.couponData.maximum_amount) <	cart?.totalPrice && coutData.CouponApply.couponData.maximum_amount != 0)
 			{
 				setCoutData( {
 					...coutData,
