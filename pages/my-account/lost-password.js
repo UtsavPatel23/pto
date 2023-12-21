@@ -9,6 +9,8 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
 import { useRouter } from 'next/router';
+import GotoLoginBtn from '../../src/components/cart/goto-login-btn';
+
 
 
 
@@ -236,7 +238,10 @@ export default function lostPassword ({headerFooter}){
 						<div className='shadow-md p-4'>
 							<h4 className="mb-4">Lost password</h4>
 							{ lostError && <div className="alert alert-danger  d-block text-red-500" dangerouslySetInnerHTML={ createMarkup( lostError ) }/> }
-							{ lostSuccess && <div className="alert alert-success" dangerouslySetInnerHTML={ createMarkup( lostSuccess ) }/> }
+							{ lostSuccess ? 
+							<>
+								<div className="alert alert-success" dangerouslySetInnerHTML={ createMarkup( lostSuccess ) }/> 
+							</>: 
 							<form onSubmit={handleSubmit_l(onFormSubmitLostPassword)   }>
 								<label className="form-group">
 									<div className="form-group col">
@@ -248,6 +253,8 @@ export default function lostPassword ({headerFooter}){
 								<button className=" mb-3 border bg-green-500" type="submit">Reset password</button>
 								{ loading && <img className="loader" src={Loader.src} alt="Loader"/> }
 							</form>
+							}
+							
 						</div>
 					</React.Fragment>
 				</div>
@@ -263,7 +270,12 @@ export default function lostPassword ({headerFooter}){
 							<h4 className="mb-4">Enter a new password below.</h4>
 							
 							{ regisFields.regis_error && <div className="alert alert-danger d-block text-red-500" dangerouslySetInnerHTML={ createMarkup( regisFields.regis_error ) }/> }
-							{ regisFields.regis_success && <div className="alert alert-success" dangerouslySetInnerHTML={ createMarkup( regisFields.regis_success ) }/> }
+							{ regisFields.regis_success ?
+							<>
+							 <div className="alert alert-success" dangerouslySetInnerHTML={ createMarkup( regisFields.regis_success ) }/> 
+							 <GotoLoginBtn></GotoLoginBtn>
+							</>
+							:
 							<form onSubmit={handleSubmit(onFormSubmitForgot)  }>
 								<div className="form-row">
 									<div className="form-group col">
@@ -281,6 +293,7 @@ export default function lostPassword ({headerFooter}){
 								<button className="btn btn-primary mb-3 border bg-green-500" type="submit">Save</button>
 								{ regis_loading && <img className="loader" src={Loader.src} alt="Loader"/> }
 							</form>
+							}
 						</div>
 					</React.Fragment>
 				</div>
