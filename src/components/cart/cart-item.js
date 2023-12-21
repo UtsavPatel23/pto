@@ -159,7 +159,8 @@ const CartItem = ( {
 					
 					<footer className="cart-product-footer flex justify-between p-4 border-t border-brand-bright-grey">
 						<div className="">
-							<span className="cart-total-price">{item?.currency}{item?.line_subtotal.toFixed(2)}</span>
+							<span className="cart-item-price">Price {item?.currency}{parseFloat(item?.data?.price).toFixed(2)}</span>
+							<span className="cart-total-price">Subtotal {item?.currency}{item?.line_subtotal.toFixed(2)}</span>
 						</div>
 						{ updatingProduct ? <img className="woo-next-cart-item-spinner" width="24" src="/cart-spinner.gif"  alt="spinner"/> : null }
 						{/*Qty*/}

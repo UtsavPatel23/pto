@@ -152,7 +152,7 @@ const CartItemsContainer = ({options}) => {
 					const date_expires = new Date(result.couponData.date_expires);
 					var used_byMsg = false;
 					var used_login = false;
-					if(!isEmpty(result.couponData.used_by))
+					if(!isEmpty(result.couponData.used_by) && result.couponData.usage_limit_per_user)
 					{
 						var customerDatastring = Cookies.get('customerData')
 						var customerData = {};
