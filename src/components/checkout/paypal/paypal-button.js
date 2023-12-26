@@ -113,7 +113,7 @@ function PaypalButtonCheckout({createdOrderData}) {
                         orderno : reference_id,
                     };
                     
-                    await axios.post( '/api/update-order', newOrderData )
+                    await axios.post( '/api/order/update-order', newOrderData )
                       .then( res => {
                         window.location.href =  process.env.NEXT_PUBLIC_SITE_URL+'/thank-you/?orderPostnb='+window.btoa(reference_id)+'&status=SUCCESS';
                         console.log('res UPDATE DATA ORDER',res);

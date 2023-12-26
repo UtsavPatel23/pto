@@ -164,7 +164,7 @@ export const createTheOrder = async ( orderData, setOrderFailedError, previousRe
 	setOrderFailedError( '' );
 	
 	try {
-		const request = await fetch( '/api/create-order', {
+		const request = await fetch( '/api/order/create-order', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',

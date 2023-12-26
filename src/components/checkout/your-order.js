@@ -110,7 +110,7 @@ const YourOrder = ( { cart,shippingCost,discoutDis,cartSubTotalDiscount,totalPri
 						<tr className="bg-gray-200">
 							<td className=""/>
 							<td className="woo-next-checkout-total font-normal text-xl">Total</td>
-							<td className="woo-next-checkout-total font-bold text-xl">{ cart?.cartItems?.[ 0 ]?.currency ?? '' }{ parseFloat(totalPriceDis).toFixed(2) ?? '' }</td>
+							<td className="woo-next-checkout-total font-bold text-xl">{ cart?.cartItems?.[ 0 ]?.currency ?? '' }{ parseFloat(totalPriceDis).toFixed(2) ?? '' } (Includes GST)</td>
 						</tr>
 						</tbody>
 					</table>

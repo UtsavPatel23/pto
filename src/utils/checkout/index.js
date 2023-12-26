@@ -124,7 +124,7 @@ export const handleStripeCheckout = async (
 		bacs : 1,
 		orderId: customerOrderData?.orderPostID,
 	};
-   	await	axios.post( '/api/update-order', newOrderData )
+   	await	axios.post( '/api/order/update-order', newOrderData )
 		.then( res => {
 			console.log('res UPDATE DATA ORDER',res);
 		} )
@@ -369,7 +369,7 @@ export const createCheckoutSessionAndRedirect = async (
 			orderId: orderPostID,
 			noteMessage: 'Error : session not created.'
 		};
-		axios.post( '/api/update-order-notes', newOrderNote )
+		axios.post( '/api/order/update-order-notes', newOrderNote )
 			.then( res => {
 					console.log('res UPDATE DATA ORDER Note',res);
 			} )
@@ -566,7 +566,7 @@ export const createCheckoutAfterpayAndRedirect = async (
 				  orderId : orderPostID,
 			};
 			
-			await axios.post( '/api/update-order', newOrderData )
+			await axios.post( '/api/order/update-order', newOrderData )
 				.then( res => {
 	
 					//console.log('res UPDATE DATA ORDER',res);
@@ -592,7 +592,7 @@ export const createCheckoutAfterpayAndRedirect = async (
 				orderId: orderPostID,
 				noteMessage: 'Error :'+ createCheckoutRes?.message
 			};
-			axios.post( '/api/update-order-notes', newOrderNote )
+			axios.post( '/api/order/update-order-notes', newOrderNote )
 				.then( res => {
 						console.log('res UPDATE DATA ORDER Note',res);
 				} )
@@ -667,7 +667,7 @@ export const createCheckoutAfterpayAndRedirect = async (
 					  orderId : orderPostID,
 				};
 				
-				await axios.post( '/api/update-order', newOrderData )
+				await axios.post( '/api/order/update-order', newOrderData )
 					.then( res => {
 		
 						//console.log('res UPDATE DATA ORDER',res);
@@ -693,7 +693,7 @@ export const createCheckoutAfterpayAndRedirect = async (
                     orderId: orderPostID,
                     noteMessage: 'Error :'+ createCheckoutRes?.error
                 };
-                axios.post( '/api/update-order-notes', newOrderNote )
+                axios.post( '/api/order/update-order-notes', newOrderNote )
                     .then( res => {
                             console.log('res UPDATE DATA ORDER Note',res);
                     } )

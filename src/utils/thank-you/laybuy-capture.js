@@ -23,7 +23,7 @@ export function payment_capture_laybuy(token,orderData) {
                     orderno : data?.orderId,
 
                 };
-                axios.post( '/api/update-order', newOrderData )
+                axios.post( '/api/order/update-order', newOrderData )
                     .then( res => {
         
                         //console.log('res UPDATE DATA ORDER',res);
@@ -36,7 +36,7 @@ export function payment_capture_laybuy(token,orderData) {
                     orderId: orderData?.id,
                     noteMessage: 'Error :'+ data?.error
                 };
-                axios.post( '/api/update-order-notes', newOrderNote )
+                axios.post( '/api/order/update-order-notes', newOrderNote )
                     .then( res => {
                             console.log('res UPDATE DATA ORDER Note',res);
                     } )

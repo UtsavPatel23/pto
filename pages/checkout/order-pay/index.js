@@ -87,7 +87,7 @@ export default function Checkout({ headerFooter }) {
 			let config = {
 					method: 'post',
 					maxBodyLength: Infinity,
-					url: '/api/get-order?id='+orderid,
+					url: '/api/order/get-order?id='+orderid,
 					headers: { }
 					};
 			axios.request(config)
@@ -123,7 +123,7 @@ export default function Checkout({ headerFooter }) {
 				orderId: orderData?.id,
 				noteMessage: 'PAYMENT STASUS CANCELLED Token : '+orderToken
 			};
-			axios.post( '/api/update-order-notes', newOrderNote )
+			axios.post( '/api/order/update-order-notes', newOrderNote )
 				.then( res => {
 						console.log('res UPDATE DATA ORDER Note',res);
 				} )
@@ -187,7 +187,7 @@ export default function Checkout({ headerFooter }) {
 				bacs : 1,
 				orderId: orderData?.id,
 			};
-			   await	axios.post( '/api/update-order', newOrderData )
+			   await	axios.post( '/api/order/update-order', newOrderData )
 				.then( res => {
 					console.log('res UPDATE DATA ORDER',res);
 				} )
@@ -255,7 +255,7 @@ export default function Checkout({ headerFooter }) {
 			paymentMethodUpdate: 1,
 			paymentMethodName: paymentMethodName,
 		};
-		axios.post( '/api/update-order', newOrderData )
+		axios.post( '/api/order/update-order', newOrderData )
 			.then( res => {
 
 				console.log('res UPDATE DATA ORDER',res);

@@ -20,7 +20,7 @@ function Sidebar({setTokenValid}) {
         }
 	};
     return (
-        <sidebar>
+        <div key='sidebar'>
 			<ul>
             <li>
                 <Link href="/my-account/">
@@ -74,7 +74,7 @@ function Sidebar({setTokenValid}) {
 				<button onClick={logoutHanlder}>logout</button>
 			</li>
 	    </ul>
-		</sidebar>
+		</div>
     )
 }
 

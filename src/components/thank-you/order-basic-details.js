@@ -1,12 +1,22 @@
 import React from 'react'
 import Bag from '../icons/Bag';
-function orderBasicDetails({orderData,sessionData}) {
-   
+function orderBasicDetails({orderData,sessionData,viewOrderUse = false}) {
+	var date_created = new Date(orderData?.date_created);
+	const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+	var datedis = months[date_created.getMonth()]+' '+date_created.getDate()+', '+date_created.getFullYear();
     return (
-        <>
-            <h2 className="mb-6 text-xl"><Bag className="inline-block mr-1"/> <span>Thank you for placing the order.</span>
+        <>		
+						{viewOrderUse?
+						<p>
+							Order #{orderData?.number} was placed on {datedis} and is currently {orderData?.status}.
+						</p>
+						:
+						<>
+            			<h2 className="mb-6 text-xl">
+							<Bag className="inline-block mr-1"/> <span>Thank you for placing the order.</span>
 						</h2>
 						<p>Your payment is successful and your order details are: </p>
+						</>}
 						<table className="table-auto w-full text-left whitespace-no-wrap mb-8">
 							<thead>
 							<tr>

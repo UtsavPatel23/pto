@@ -84,7 +84,7 @@ console.log('sessionData',sessionData);
 		let config = {
 				method: 'post',
 				maxBodyLength: Infinity,
-				url: '/api/get-order?id='+id,
+				url: '/api/order/get-order?id='+id,
 				headers: { },
 				data : data
 				};
@@ -147,7 +147,7 @@ console.log('sessionData',sessionData);
 					orderId: orderData?.id,
 					redeem: 1,
 				};
-				axios.post( '/api/update-order', newOrderData )
+				axios.post( '/api/order/update-order', newOrderData )
 					.then( res => {
 		
 						console.log('res UPDATE DATA ORDER',res);
