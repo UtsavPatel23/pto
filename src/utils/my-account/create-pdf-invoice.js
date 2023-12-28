@@ -1,6 +1,6 @@
 import React from 'react'
 import { PDFDocument, StandardFonts, rgb } from 'pdf-lib'
-import { get_date_formate, get_stateFullName_by_short_name } from '../customjs/custome';
+import { capitalizeFirstLetter, get_date_formate, get_stateFullName_by_short_name } from '../customjs/custome';
 import { useState } from 'react';
 
 export const create_invoice_pdf = async (userOrder,header,states) => {
@@ -80,11 +80,13 @@ export const create_invoice_pdf = async (userOrder,header,states) => {
         });
         
         var rightBox = 0
+        var payment_status = capitalizeFirstLetter(userOrder?.status.replaceAll('-', ' '));
         const rightDetails = [
           { key: 'Invoice Date :' ,value: get_date_formate(userOrder?.date_modified)},
           { key: 'Order Number :' ,value:userOrder?.number},
           { key: 'Order Date :' ,value:get_date_formate(userOrder?.date_created)},
           { key: 'Payment Method :' ,value:userOrder?.payment_method},
+          { key: 'Payment Status :' ,value:payment_status},
         ];
         rightDetails.forEach((rightDetail, index) => {
           rightBox = rightBox + 15;
