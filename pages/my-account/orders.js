@@ -40,7 +40,7 @@ export default function orders ({headerFooter,states}){
 		const {header} = headerFooter;
         
     // Cancel order by customer  
-	const	cancelOrderClick = async(orderid) =>  {
+	const	cancelOrderClick = async(orderid,number) =>  {
 			setLoading(true);
 			const newOrderData = {
 				orderCancelledByCustomer : 1,
@@ -50,7 +50,7 @@ export default function orders ({headerFooter,states}){
 				.then( res => {
 					console.log('res UPDATE DATA ORDER',res);
 					get_orders(customerData?.id);
-					setCancelStatus({'yes':'Your order has been cancelled : '+ orderid+'.'});
+					setCancelStatus({'yes':'Your order has been cancelled : '+ number+'.'});
 				} )
 				.catch( err => {
 					console.log('err UPDATE DATA ORDER',err);
@@ -58,14 +58,14 @@ export default function orders ({headerFooter,states}){
 				} )
 		}
 		// Get order by customer id 
-		const confirmAlertClick = (orderid) => {
+		const confirmAlertClick = (orderid,number) => {
 			confirmAlert({
 			//  title: 'Cancel Order',
 			  message: 'Are you sure to do cancel order.',
 			  buttons: [
 				{
 				  label: 'Yes',
-				  onClick: () => cancelOrderClick(orderid)
+				  onClick: () => cancelOrderClick(orderid,number)
 				},
 				{
 				  label: 'No',
@@ -194,7 +194,7 @@ export default function orders ({headerFooter,states}){
 											</Link>
 											{userOrder?.status == 'pending'?
 											<button value={userOrder?.id} onClick={cancelOrder => {
-												confirmAlertClick(userOrder?.id);
+												confirmAlertClick(userOrder?.id,userOrder?.number);
 											}} className={'bg-purple-600 text-white px-3 py-1 m-px rounded-sm w-auto '}>
 													Cancel
 											</button>
