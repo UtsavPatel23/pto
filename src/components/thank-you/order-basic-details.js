@@ -1,9 +1,8 @@
 import React from 'react'
+import { get_date_formate } from '../../utils/customjs/custome';
 import Bag from '../icons/Bag';
 function orderBasicDetails({orderData,sessionData,viewOrderUse = false}) {
-	var date_created = new Date(orderData?.date_created);
-	const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-	var datedis = months[date_created.getMonth()]+' '+date_created.getDate()+', '+date_created.getFullYear();
+	var datedis = get_date_formate(orderData?.date_created);
     return (
         <>		
 						{viewOrderUse?

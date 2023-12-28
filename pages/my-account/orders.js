@@ -10,11 +10,15 @@ import Loader from "./../../public/loader.gif";
 import Router from "next/router";
 import Sidebar from '../../src/components/my-account/sidebar';
 import { get_points } from '../../src/utils/customjs/custome';
+import { confirmAlert } from 'react-confirm-alert'; // Import
+import 'react-confirm-alert/src/react-confirm-alert.css'; // Import css
+import {create_invoice_pdf} from '../../src/utils/my-account/create-pdf-invoice'
+import { getStates } from '../../src/utils/checkout';
 
 
 
 
-export default function orders ({headerFooter}){
+export default function orders ({headerFooter,states}){
         const seo = {
             title: 'Next JS WooCommerce REST API',
             description: 'Next JS WooCommerce Theme',
@@ -31,7 +35,9 @@ export default function orders ({headerFooter}){
         const [userOrders, setUserOrders] = useState(null);
         const [rewardPoints, setRewardPoints] = useState(0);
         const [loading, setLoading] = useState(true);
+        const [cancelStatus, setCancelStatus] = useState('');
 		const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+		const {header} = headerFooter;
         
     // Cancel order by customer  
 	const	cancelOrderClick = async(orderid) =>  {
@@ -44,11 +50,31 @@ export default function orders ({headerFooter}){
 				.then( res => {
 					console.log('res UPDATE DATA ORDER',res);
 					get_orders(customerData?.id);
+					setCancelStatus({'yes':'Your order has been cancelled : '+ orderid+'.'});
 				} )
 				.catch( err => {
 					console.log('err UPDATE DATA ORDER',err);
+					setCancelStatus({no:'Something went wrong!.'});
 				} )
 		}
+		// Get order by customer id 
+		const confirmAlertClick = (orderid) => {
+			confirmAlert({
+			//  title: 'Cancel Order',
+			  message: 'Are you sure to do cancel order.',
+			  buttons: [
+				{
+				  label: 'Yes',
+				  onClick: () => cancelOrderClick(orderid)
+				},
+				{
+				  label: 'No',
+				  onClick: () => ''
+				}
+			  ]
+			});
+		  };
+
 	// Get order by customer id 
 	function get_orders(customer_id)
 	{
@@ -100,7 +126,7 @@ export default function orders ({headerFooter}){
 		}
 	
 	}, [tokenValid]);
-        
+	console.log('states',states);
         if(tokenValid)
         {
 			return(
@@ -126,6 +152,8 @@ export default function orders ({headerFooter}){
 									<Link href="/rewards-program/">Click Here<i className="fa fa-arrow-right"></i></Link>
 								</div>
 							{ loading && <img className="loader" src={Loader.src} alt="Loader"/> }
+							{ cancelStatus?.yes && <div className="alert text-green-700" >{cancelStatus?.yes}</div> }
+							{ cancelStatus?.no && <div className="alert text-red-700">{cancelStatus?.no}</div> }
 							</div>
 							{userOrders != null?
 							<table className="border-collapse border border-slate-500 ..." width='100%'>
@@ -166,9 +194,16 @@ export default function orders ({headerFooter}){
 											</Link>
 											{userOrder?.status == 'pending'?
 											<button value={userOrder?.id} onClick={cancelOrder => {
-												cancelOrderClick(userOrder?.id);
+												confirmAlertClick(userOrder?.id);
 											}} className={'bg-purple-600 text-white px-3 py-1 m-px rounded-sm w-auto '}>
 													Cancel
+											</button>
+											:null}
+											{userOrder?.status == 'on-hold'?
+											<button onClick={invoice_pdf => {
+												create_invoice_pdf(userOrder,header,states);
+											}} className={'bg-purple-600 text-white px-3 py-1 m-px rounded-sm w-auto '}>
+													Invoice
 											</button>
 											:null}
 											</td>
@@ -193,10 +228,12 @@ export default function orders ({headerFooter}){
 export async function getStaticProps() {
 	
 	const { data: headerFooterData } = await axios.get( HEADER_FOOTER_ENDPOINT );
+	const states = await getStates('au');
 	
 	return {
 		props: {
 			headerFooter: headerFooterData?.data ?? {},
+			states: states ?? {},
 		},
 		
 		/**

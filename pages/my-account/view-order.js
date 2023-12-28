@@ -14,11 +14,12 @@ import Bacs from '../../src/components/thank-you/bacs';
 import OrderBasicDetails from '../../src/components/thank-you/order-basic-details';
 import OrderDetails from '../../src/components/thank-you/order-details';
 import OrderAddress from '../../src/components/thank-you/order-address';
+import { getStates } from '../../src/utils/checkout';
 
 
 
 
-export default function viewOrder ({headerFooter}){
+export default function viewOrder ({headerFooter,states}){
         const seo = {
             title: 'Next JS WooCommerce REST API',
             description: 'Next JS WooCommerce Theme',
@@ -124,7 +125,7 @@ export default function viewOrder ({headerFooter}){
 						<Link href="/shop/">
 							<div className="bg-purple-600 text-white px-5 py-3 rounded-sm w-auto">Shop more</div>
 						</Link>
-						<OrderAddress orderData={orderData}/>
+						<OrderAddress orderData={orderData} states={states}/>
 						</>:null}	
 						</div>
 						
@@ -138,10 +139,11 @@ export default function viewOrder ({headerFooter}){
 export async function getStaticProps() {
 	
 	const { data: headerFooterData } = await axios.get( HEADER_FOOTER_ENDPOINT );
-	
+	const states = await getStates('au');
 	return {
 		props: {
 			headerFooter: headerFooterData?.data ?? {},
+			states: states ?? {},
 		},
 		
 		/**

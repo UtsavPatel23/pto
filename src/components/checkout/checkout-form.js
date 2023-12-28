@@ -469,7 +469,7 @@ const CheckoutForm = ( { countriesData , paymentModes , options} ) => {
 		{
 			getAuspost(target.value,false);
 		}
-		//await setStatesForCountry( target, setTheShippingStates, setIsFetchingShippingStates );
+		await setStatesForCountry( target, setTheShippingStates, setIsFetchingShippingStates );
 	};
 	/* change event for billng  */
 	const handleBillingChange = async ( target ) => {

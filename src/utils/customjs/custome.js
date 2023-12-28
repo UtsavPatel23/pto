@@ -637,3 +637,22 @@ export function get_customer_id()
   }
   return customer_id;
 }
+
+export function get_stateFullName_by_short_name(state,states)
+{
+  if(states)
+  {
+    const result = states.find(({ stateCode }) => stateCode === state);
+    return result?.stateName ?? null;
+  }else{
+    return null;
+  }
+}
+
+export function get_date_formate(date)
+{
+  var date_created = new Date(date);
+	const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+	return  months[date_created.getMonth()]+' '+date_created.getDate()+', '+date_created.getFullYear();
+  
+}

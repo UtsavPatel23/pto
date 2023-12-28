@@ -27,19 +27,22 @@ function orderDetails({orderData,subtotal}) {
 								<td className="px-4 py-3">{orderData?.currency_symbol} { parseFloat(subtotal).toFixed(2) }</td>
 							</tr>
 							
-							{orderData?.discount_total > 0? <tr>
-								<td className="px-4 py-3">Discount:</td>
-								<td className="px-4 py-3">{orderData?.currency_symbol} { orderData?.discount_total }</td>
-							</tr>: null}
+							
 							{ orderData?.fee_lines &&
 								orderData?.fee_lines.map( ( item ) => {
 									if(item.total != 0)
 								return (
 								<tr>
 									<td className="px-4 py-3">{item.name}</td>
-									<td className="px-4 py-3">{orderData?.currency_symbol} { item.total }</td>
+									<td className="px-4 py-3">{item.name == 'Shipping:'?'+':'-'}{orderData?.currency_symbol}{ item.total.replaceAll('-', '') }</td>
 								</tr>
 							)} ) }
+							
+							{orderData?.discount_total > 0? <tr>
+								<td className="px-4 py-3">Discount:</td>
+								<td className="px-4 py-3">-{orderData?.currency_symbol}{ orderData?.discount_total }</td>
+							</tr>: null}
+
 							<tr>
 								<td className="px-4 py-3">Total</td>
 								<td className="px-4 py-3">{orderData?.currency_symbol} { orderData?.total }</td>

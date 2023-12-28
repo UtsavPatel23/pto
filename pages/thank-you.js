@@ -14,9 +14,10 @@ import OrderDetails from './../src/components/thank-you/order-details';
 import OrderAddress from './../src/components/thank-you/order-address';
 import { payment_capture_afterpay } from '../src/utils/thank-you/afterpay-capture';
 import { payment_capture_laybuy } from '../src/utils/thank-you/laybuy-capture';
+import { getStates } from '../src/utils/checkout';
 
 
-const ThankYouContent = ({headerFooter}) => {
+const ThankYouContent = ({headerFooter,states}) => {
 	const [ cart, setCart ] = useContext( AppContext );
 	const [ isSessionFetching, setSessionFetching ] = useState( false );
 	const [ sessionData, setSessionData ] = useState( {} );
@@ -198,6 +199,7 @@ console.log('sessionData',sessionData);
 
 		
 	},[orderData]);
+	console.log('states',states);
 	if(status != 'SUCCESS')
 			{
 				return (<></>);
@@ -219,7 +221,7 @@ console.log('sessionData',sessionData);
 						<Link href="/shop/">
 							<div className="bg-purple-600 text-white px-5 py-3 rounded-sm w-auto">Shop more</div>
 						</Link>
-						<OrderAddress orderData={orderData}/>
+						<OrderAddress orderData={orderData} states={states}/>
 					</>
 				) }
 			</div>
@@ -227,10 +229,10 @@ console.log('sessionData',sessionData);
 	);
 };
 
-export default function ThankYou( { headerFooter } ) {
+export default function ThankYou( { headerFooter ,states} ) {
 	return (
 		<Layout headerFooter={ headerFooter || {} }>
-			<ThankYouContent headerFooter={ headerFooter || {} }/>
+			<ThankYouContent headerFooter={ headerFooter || {} } states={states}/>
 		</Layout>
 	);
 };
@@ -238,10 +240,12 @@ export default function ThankYou( { headerFooter } ) {
 export async function getStaticProps() {
 	
 	const { data: headerFooterData } = await axios.get( HEADER_FOOTER_ENDPOINT );
+	const states = await getStates('au');
 	
 	return {
 		props: {
 			headerFooter: headerFooterData?.data ?? {},
+			states: states ?? {},
 		},
 		
 		/**
