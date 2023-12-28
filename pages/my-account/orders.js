@@ -9,7 +9,7 @@ import Link from 'next/link';
 import Loader from "./../../public/loader.gif";
 import Router from "next/router";
 import Sidebar from '../../src/components/my-account/sidebar';
-import { get_points } from '../../src/utils/customjs/custome';
+import { capitalizeFirstLetter, get_points } from '../../src/utils/customjs/custome';
 import { confirmAlert } from 'react-confirm-alert'; // Import
 import 'react-confirm-alert/src/react-confirm-alert.css'; // Import css
 import {create_invoice_pdf} from '../../src/utils/my-account/create-pdf-invoice'
@@ -179,7 +179,7 @@ export default function orders ({headerFooter,states}){
 										<tr className='bg-gray-300'>
 											<td className="border border-slate-700 ">{userOrder?.number}</td>
 											<td className="border border-slate-700 ">{datedis}</td>
-											<td className="border border-slate-700 ">{userOrder?.status}</td>
+											<td className="border border-slate-700 ">{capitalizeFirstLetter(userOrder?.status.replaceAll('-', ' '))}</td>
 											<td className="border border-slate-700 ">
 												{userOrder?.currency_symbol}
 												{userOrder?.total} for {item} {item>1?'items':'item'}</td>

@@ -656,3 +656,7 @@ export function get_date_formate(date)
 	return  months[date_created.getMonth()]+' '+date_created.getDate()+', '+date_created.getFullYear();
   
 }
+
+export function capitalizeFirstLetter(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}

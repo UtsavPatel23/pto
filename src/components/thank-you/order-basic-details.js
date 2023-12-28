@@ -1,5 +1,5 @@
 import React from 'react'
-import { get_date_formate } from '../../utils/customjs/custome';
+import {  get_date_formate } from '../../utils/customjs/custome';
 import Bag from '../icons/Bag';
 function orderBasicDetails({orderData,sessionData,viewOrderUse = false}) {
 	var datedis = get_date_formate(orderData?.date_created);
@@ -7,14 +7,14 @@ function orderBasicDetails({orderData,sessionData,viewOrderUse = false}) {
         <>		
 						{viewOrderUse?
 						<p>
-							Order #{orderData?.number} was placed on {datedis} and is currently {orderData?.status}.
+							Order #{orderData?.number} was placed on {datedis} and is currently {orderData?.status.replaceAll('-', ' ')}.
 						</p>
 						:
 						<>
             			<h2 className="mb-6 text-xl">
 							<Bag className="inline-block mr-1"/> <span>Thank you for placing the order.</span>
 						</h2>
-						<p>Your payment is successful and your order details are: </p>
+						<p>Your {orderData?.payment_method_title == 'bacs'?'order':'payment'} is successful and your order details are: </p>
 						</>}
 						<table className="table-auto w-full text-left whitespace-no-wrap mb-8">
 							<thead>
