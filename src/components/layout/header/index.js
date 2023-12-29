@@ -67,8 +67,9 @@ const Header = ( { header } ) => {
 								<div href="#responsive-header"
 								   className="flex mt-4 lg:inline-block lg:mt-0 text-black hover:text-black mr-10">
 									<span className="flex flex-row items-center lg:flex-col">
-										<Wishlist className="mr-1 lg:mr-0"/>
+									<Link href="/wishlist"><Wishlist className="mr-1 lg:mr-0"/>
 										Wishlist
+									</Link>
 									</span>
 								</div>
 								<Link href="/cart">

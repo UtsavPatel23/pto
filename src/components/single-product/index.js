@@ -218,13 +218,15 @@ import WishlistButton from '../wishlist/wishlistbutton'
 					{(() => {
 						if ((product.type == 'simple') && (product.price > 0)) 
 						{
-							return (
+							var offpride = Math.round(((product.regular_price-product.price)*100)/product.regular_price);
+							if(offpride > 0){
+								return (
 									<>
-									{
-									Math.round(((product.regular_price-product.price)*100)/product.regular_price)
-									}%Off
+									{offpride}%Off
 									</>
-								)	
+								)
+							}
+								
 						} 
 					})()} 
 					</div>
@@ -441,7 +443,7 @@ import WishlistButton from '../wishlist/wishlistbutton'
 														Membersonly = getMemberOnlyProduct(options,product,messageText);
 													}
 												return (
-													<Product key={ product?.id } product={product}  Membersonly={Membersonly}/>
+													<Product key={ product?.id } product={product}  Membersonly={Membersonly}   tokenValid={tokenValid} options={options} customerData={customerData} setCustomerData={setCustomerData}/>
 												)
 										})
 									}
@@ -475,7 +477,7 @@ import WishlistButton from '../wishlist/wishlistbutton'
 														Membersonly = getMemberOnlyProduct(options,yourBrowsingHistory[key],messageText);
 													}
 												return (
-													<Product key={ yourBrowsingHistory[key]?.id } product={yourBrowsingHistory[key]} Membersonly={Membersonly}/>
+													<Product key={ yourBrowsingHistory[key]?.id } product={yourBrowsingHistory[key]} Membersonly={Membersonly} tokenValid={tokenValid} options={options} customerData={customerData} setCustomerData={setCustomerData}/>
 												)
 											}
 										})

@@ -2,10 +2,14 @@ import React from 'react'
 import { useEffect } from 'react';
 import { useState } from 'react';
 import { addWishlist, removeWishlist } from '../../utils/wishlist';
+import {useRouter} from 'next/router'; 
 
 function wishlistButton({customerData,setCustomerData,product,tokenValid}) {
+    
     const [wishlist, setWishlist] = useState(0);
-		 const [wishlistLoding,setWishlistLoding] = useState(false);
+    const router = useRouter();
+	const [wishlistLoding,setWishlistLoding] = useState(false);
+
     const removeWishlistPro = () => {
         removeWishlist(customerData,setCustomerData,product,setWishlistLoding,setWishlist);
    }
@@ -17,7 +21,7 @@ function wishlistButton({customerData,setCustomerData,product,tokenValid}) {
         if(tokenValid == 1 && customerData?.wishlist != '')
         {
             
-            const wishlistValue =	customerData?.wishlist ?	customerData?.wishlist.find(function (element) {
+            const wishlistValue =	customerData?.wishlist && (customerData?.wishlist != 0) ?	customerData?.wishlist.find(function (element) {
                 return element == product?.id;
             }) : null 
 
@@ -30,11 +34,14 @@ function wishlistButton({customerData,setCustomerData,product,tokenValid}) {
 }, [tokenValid]);
     return (
         <div key='wishlist'>
-			Wishlist : {wishlist == '1'?
-			<span><button onClick={removeWishlistPro}>Remove</button></span>
-			:
-			<span><button onClick={addWishlistPro}>Add</button></span>
-			}
+			Wishlist : 
+             {router?.pathname != '/wishlist' ?
+                <>{wishlist == '1'?
+                <button onClick={removeWishlistPro}>Remove</button>
+                :
+                <button onClick={addWishlistPro}>Add</button>
+                }</>
+                :  <button onClick={removeWishlistPro}>Remove</button>}
 			{wishlistLoding?'Loding':null}
 		</div>
     )
