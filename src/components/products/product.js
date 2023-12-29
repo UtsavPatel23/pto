@@ -7,15 +7,17 @@ import ExternalLink from './external-link';
 import { getMemberOnlyProduct, getNewProductTag } from '../../utils/customjs/custome';
 import { get_coupon_box, get_custom_badge, get_gridtimer } from '../../utils/shop/shop-box';
 import Gridtimer from './gridtimer';
+import WishlistButton from '../wishlist/wishlistbutton'
 
-const Product = ( { product , tokenValid ,options} ) => {
+const Product = ( { product , tokenValid ,options,customerData,setCustomerData} ) => {
 	if ( isEmpty( product ) ) {
 		return null;
 	}
 	
+	
 	const img = product?.images?.[0] ?? {};
 	const productType = product?.type ?? '';
-	// member only 
+	// member only  
 	var Membersonly  = '';
 	if(tokenValid == 1 && options?.discount_type_3 == 1)
 		{
@@ -30,6 +32,8 @@ const Product = ( { product , tokenValid ,options} ) => {
 
 	// All skus grid timer
 	var gridtimer = get_gridtimer(options,product);
+
+
 	return (
 		<div className="h-fit">
 			<Link href={ `/product/${ product?.slug }`} legacyBehavior>
@@ -195,7 +199,8 @@ const Product = ( { product , tokenValid ,options} ) => {
 					</Link>)
 				} 
 			})()} 
-			
+
+			<WishlistButton customerData={customerData} setCustomerData={setCustomerData} product={product} tokenValid={tokenValid}/>
 			
 			{
 				'external' === productType ?

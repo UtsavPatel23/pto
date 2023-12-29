@@ -42,3 +42,6 @@ export const USER_ORDER_TRACKING = `${ process.env.NEXT_PUBLIC_WORDPRESS_SITE_UR
 
 // Re captach 
 export const CAPTCHA_SITE_KEY = '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI';
+
+// Wishlist
+export const WISHLIST_URL = `${process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL}/wp-json/shop-nj/v1/wishlist`;

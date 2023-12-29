@@ -73,6 +73,8 @@ export default function Login ({headerFooter}){
 				<div className="col-span-8 ">
 					{customerData?.first_name?<p>User name: {customerData?.first_name}</p>:null }
 					{rewardPoints>0?<p>Points: {rewardPoints}</p>:null }
+					{customerData?.meta_data?.membership_level?<p>Membership Level: {customerData?.meta_data?.membership_level}</p>:null }
+					
 				</div>
 				</div>
 			</Layout>

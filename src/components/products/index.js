@@ -11,6 +11,7 @@ import * as React from 'react';
 import Slider from '@mui/material/Slider';
 import Router, { useRouter } from 'next/router';
 import { get_count_total_discount, go_to_main_filter, selectattributdefault} from '../../utils/customjs/custome';
+import Cookies from 'js-cookie';
 
 
 const Products = ({ products , options ,  tokenValid }) => {
@@ -48,6 +49,14 @@ const Products = ({ products , options ,  tokenValid }) => {
 	const [priceValue, setPriceValue] = React.useState([minPrice, maxPrice]);
 	const [priceValueTMP, setPriceValueTMP] = React.useState([minPrice, maxPrice]);
 	const [searchBoxText,setSearchBoxText] = useState('');
+	const [customerData,setCustomerData] = useState(0);
+
+	useEffect(() => {
+		if(Cookies.get('token')) {
+			var customerDataTMP =  JSON.parse(Cookies.get('customerData'));
+			setCustomerData(customerDataTMP);
+		}
+	}, []);
 
 	useEffect(() => {
 		if (router.query.productsearch) {
@@ -367,6 +376,7 @@ const max_num_pages = Math.ceil(ProductsTmp.length / itemsPerPage);
 	
 	const currentProduct = ProductsTmp.slice(itemOffset, endOffset);
 	console.log('currentProduct',currentProduct);
+	console.log('customerData',customerData);
 // ************* ********************************  ************************ 
 // ************* Set url with parameter ************************************* 
 // ************* ********************************  ************************ 
@@ -933,7 +943,7 @@ const encodeDataToURL = (data) => {
 					{
 						currentProduct.map( product => {
 								return (
-									<Product key={ product?.id } product={product} tokenValid={tokenValid} options={options}/>
+									<Product key={ product?.id } product={product} tokenValid={tokenValid} options={options}  customerData={customerData} setCustomerData={setCustomerData}/>
 								)
 						})
 					}

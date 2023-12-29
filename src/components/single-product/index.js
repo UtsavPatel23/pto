@@ -6,7 +6,7 @@
  import ExternalLink from '../products/external-link';
  import ProductGallery from './product-gallery';
  import axios from 'axios';
- import { SHOP_SHIPPING_SINGLE } from '../../utils/constants/endpoints';
+ import { SHOP_SHIPPING_SINGLE} from '../../utils/constants/endpoints';
  import Link from 'next/link';
  import jQuery, { queue } from "jquery";
 import { useEffect } from 'react';
@@ -17,11 +17,11 @@ import Product from '../products/product';
 import Review from './../review/Review';
 import { isEmpty } from 'lodash';
 import { getMemberOnlyProduct, getNewProductTag, storeYourBrowsingHistory } from '../../utils/customjs/custome';
-import { Router } from 'next/router';
 import BuyNow from '../cart/buy-now';
 import InputQty from '../single-product/input-qty';
 import Cookies from 'js-cookie';
 import { get_coupon_box } from '../../utils/shop/shop-box';
+import WishlistButton from '../wishlist/wishlistbutton'
 
  const SingleProduct = ( { product,reviews,options} ) => {
 		 const paymentOptions = options?.payments;
@@ -32,6 +32,7 @@ import { get_coupon_box } from '../../utils/shop/shop-box';
 
 		 const [tokenValid,setTokenValid]=useState(0);
 		 const [membersonly,setMembersonly]=useState('');
+		 const [customerData,setCustomerData] = useState(0);
 
 		 const [productCountQty, setProductCountQty] = useState(1);
 
@@ -171,6 +172,8 @@ import { get_coupon_box } from '../../utils/shop/shop-box';
 		useEffect(() => {
 			if(Cookies.get('token')) {
 				setTokenValid(1);
+				var customerDataTMP =  JSON.parse(Cookies.get('customerData'));
+				setCustomerData(customerDataTMP);
 			}
 		}, []);
 		useEffect(() => {
@@ -183,7 +186,6 @@ import { get_coupon_box } from '../../utils/shop/shop-box';
 
 		// Coupon box
 		var coupon_box = get_coupon_box(options,product.sku);
-
 	 return Object.keys( product ).length ? (
 		 <div className="single-product container mx-auto my-32 px-4 xl:px-0">
 			 <div key="section1" className="grid md:grid-cols-2 gap-4">
@@ -278,6 +280,7 @@ import { get_coupon_box } from '../../utils/shop/shop-box';
 						<BuyNow  product={ product } productCountQty={productCountQty}/>
 						</> : null }
 					</div>
+					<WishlistButton customerData={customerData} setCustomerData={setCustomerData} product={product} tokenValid={tokenValid}/>
 					<div key="reward-wrapper">
 						<div key="reward-inner">
 							<div key="top_smooth" >
