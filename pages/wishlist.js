@@ -13,14 +13,16 @@
  import Cookies from 'js-cookie';
 import { isEmpty } from 'lodash';
 import Link from 'next/link';
+import Loader from "./../public/loader.gif";
  
  export default function Home({ headerFooter}) {
      
      const options = headerFooter?.footer?.options;
      const [tokenValid,setTokenValid]=useState(0);
      const [customerData,setCustomerData] = useState(0);
-     const [products,setProducts] = useState(null);
+     const [wishlistProducts,setWishlistProducts] = useState(null);
      const customerWishlist  = customerData?.wishlist;
+     const [loading, setLoading] = useState(false);
      //debugger;
      const seo = {
          title: 'Wishlist',
@@ -44,28 +46,28 @@ import Link from 'next/link';
         if(customerWishlist)
         {
         (async () => {
+            setLoading(true);
             const res1 = await fetch(SHOP_PRODUCTLIST);
             let products1 = await res1.json();
-            setProducts(products1);
+            setWishlistProducts(products1.filter(obj => {
+                return (customerWishlist && (customerWishlist != 0))?customerWishlist.find(function (element) {
+                    return parseInt(element) == obj['id'];
+                   }):null;
+                   
+               }));
+            setLoading(false);
         })();
         }
         return () => {
           // this now gets called when the component unmounts
         };
       }, [customerWishlist]);
-     //console.log('customerWishlist',customerWishlist);
-     if(products)
-     {
-         const wishlistProducts = products.filter(obj => {
-             return (customerWishlist && (customerWishlist != 0))?customerWishlist.find(function (element) {
-                 return parseInt(element) == obj['id'];
-                }):null;
-                
-            });
-        //console.log('wishlistProducts',wishlistProducts);
+     
+    
         return (
             <Layout headerFooter={ headerFooter || {} } seo={ seo }>
                 <div className='grid grid-cols-4 gap-4'>
+                { loading && <img className="loader" src={Loader.src} alt="Loader"/> }
                 {wishlistProducts && !isEmpty(wishlistProducts)? wishlistProducts.map( product => {
                         return (
                            <Product  product={product}    tokenValid={tokenValid} options={options} customerData={customerData} setCustomerData={setCustomerData}/>
@@ -74,7 +76,9 @@ import Link from 'next/link';
                 </div>
             </Layout>
         )
-     }
+   
+        
+     
  }
  
  export async function getStaticProps() {

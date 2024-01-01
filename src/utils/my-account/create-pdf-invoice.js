@@ -5,7 +5,7 @@ import { useState } from 'react';
 
 export const create_invoice_pdf = async (userOrder,header,states) => {
         
-        const {siteLogoUrl} = header;
+        const {siteLogoUrl,siteTitle} = header;
         const {billing,shipping} = userOrder;
         const stateName =  get_stateFullName_by_short_name(shipping?.state,states);
         console.log('userOrder',userOrder)
@@ -20,14 +20,6 @@ export const create_invoice_pdf = async (userOrder,header,states) => {
         // Add a new page to the document
         //const page = pdfDoc.addPage([600, 400]);
         const page = pdfDoc.addPage();
-
-        // Logo
-        const emblemUrl = siteLogoUrl;
-        const pngImageBytes = await fetch(emblemUrl).then(res => res.arrayBuffer())
-        // Embed the JPG image bytes and PNG image bytes
-        const pngImage = await pdfDoc.embedPng(pngImageBytes)
-        // Get the width/height of the PNG image scaled down to 50% of its original size
-        const pngDims = pngImage.scale(0.5)
 
         
 
@@ -48,15 +40,31 @@ export const create_invoice_pdf = async (userOrder,header,states) => {
         const headerTextSize = 18;
         page.drawText('INVOICE', { x: 60, y: page.getHeight() - heightValue, font, size: headerTextSize, color: rgb(0, 0, 0) });
         
-        //page.drawText('Pool Table Offers', { x: 390, y: page.getHeight() - heightValue, font, size: headerTextSize, color: rgb(1, 1, 1) });
-
-        // Draw the PNG image near the lower right corner of the JPG image
-         page.drawImage(pngImage, {
-          x: 390,
-          y: page.getHeight() - (heightValue + 20) ,
-          width: pngDims.width,
-          height: pngDims.height,
-        })
+        
+        // Logo
+        const emblemUrl = siteLogoUrl;
+        const pngImageBytes = await fetch(emblemUrl)
+        .then(res => res.arrayBuffer())
+        .catch( err => {
+          console.log('err ',err);
+        } )
+        if(pngImageBytes)
+        {
+          // Embed the JPG image bytes and PNG image bytes
+          const pngImage = await pdfDoc.embedPng(pngImageBytes)
+          // Get the width/height of the PNG image scaled down to 50% of its original size
+          const pngDims = pngImage.scale(0.5)
+          // Draw the PNG image near the lower right corner of the JPG image
+          page.drawImage(pngImage, {
+            x: 390,
+            y: page.getHeight() - (heightValue + 20) ,
+            width: pngDims.width,
+            height: pngDims.height,
+          })
+        }else{
+        page.drawText(siteTitle, { x: 390, y: page.getHeight() - (heightValue), font, size: headerTextSize, color: rgb(0, 0, 0) });
+        }
+        
 
         // address and info
         heightValue = heightValue + 40;

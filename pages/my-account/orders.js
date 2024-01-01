@@ -14,6 +14,7 @@ import { confirmAlert } from 'react-confirm-alert'; // Import
 import 'react-confirm-alert/src/react-confirm-alert.css'; // Import css
 import {create_invoice_pdf} from '../../src/utils/my-account/create-pdf-invoice'
 import { getStates } from '../../src/utils/checkout';
+import ButtonOrderTracking from '../../src/components/my-account/button-order-tracking';
 
 
 
@@ -38,6 +39,7 @@ export default function orders ({headerFooter,states}){
         const [cancelStatus, setCancelStatus] = useState('');
 		const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 		const {header} = headerFooter;
+		const {options} = headerFooter?.footer;
         
     // Cancel order by customer  
 	const	cancelOrderClick = async(orderid,number) =>  {
@@ -127,6 +129,7 @@ export default function orders ({headerFooter,states}){
 	
 	}, [tokenValid]);
 	console.log('states',states);
+	console.log('userOrders',userOrders);
         if(tokenValid)
         {
 			return(
@@ -199,15 +202,17 @@ export default function orders ({headerFooter,states}){
 													Cancel
 											</button>
 											:null}
-											{userOrder?.status == 'on-hold'?
-											<button onClick={invoice_pdf => {
+											{userOrder?.status == 'pending' || userOrder?.status == 'cancelled'?
+											null
+											:<button onClick={invoice_pdf => {
 												create_invoice_pdf(userOrder,header,states);
 											}} className={'bg-purple-600 text-white px-3 py-1 m-px rounded-sm w-auto '}>
 													Invoice
-											</button>
-											:null}
+											</button>}
 											</td>
-											<td className="border border-slate-700 ">-</td>
+											<td className="border border-slate-700 ">
+												<ButtonOrderTracking options={options} meta_data={userOrder?.meta_data}/>
+											</td>
 										</tr>
 									);
 								})}
