@@ -1,7 +1,7 @@
 import React from 'react'
 
 const TrackOrder = ({orderTrack,trckorderid}) => {
-    console.log('orderTrack',orderTrack);
+    //console.log('orderTrack',orderTrack);
     return (
             <div className="entry-content container">
              <div className="woocommerce">
