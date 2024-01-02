@@ -23,6 +23,7 @@ function trackOrder({headerFooter}) {
 		__html: data
 	});
   const {options} = headerFooter?.footer;
+  var paymentModes = headerFooter?.footer?.options?.nj_payment_method ?? '';
   const [orderTrack, setOrderTrack] = useState('');
   const [ orderData, setOrderData ] = useState( {} );
 	const [subtotal,setSubtotal] = useState(0);
@@ -187,7 +188,7 @@ function trackOrder({headerFooter}) {
                 </table>
                 </>
                 :null}
-                <OrderDetails orderData={orderData} subtotal={subtotal}/>
+                <OrderDetails orderData={orderData} subtotal={subtotal} paymentModes={paymentModes}/>
                 <Link href={'/'}> Back to Home </Link> <button onClick={()=>{
                   setOrderData({});
                   setTrackFields( {
