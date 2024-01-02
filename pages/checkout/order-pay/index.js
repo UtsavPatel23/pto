@@ -314,7 +314,7 @@ export default function Checkout({ headerFooter }) {
 						{/* Order & Payments*/ }
 						<div className="your-orders">
 							{/*	Order*/ }
-							<OrderDetails orderData={orderData} subtotal={subtotal}/>
+							<OrderDetails orderData={orderData} subtotal={subtotal} paymentModes={paymentModes}/>
 
 							{/*Payment*/ }
 							<PaymentModes input={input}  handleOnChange={handleOnChange} paymentModes={paymentModes } totalPriceDis={totalPriceDis}/>

@@ -38,7 +38,7 @@ export default function viewOrder ({headerFooter,states}){
         const [ orderData, setOrderData ] = useState(null);
 		const [subtotal,setSubtotal] = useState(0);
 		const orderid = process.browser ? Router.query.orderid : null;
-		var paymentModes = headerFooter?.footer?.options?.nj_payment_method ?? '';
+		const paymentModes = headerFooter?.footer?.options?.nj_payment_method ?? '';
 		
     
 	// Get order 

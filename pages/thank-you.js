@@ -29,7 +29,7 @@ const ThankYouContent = ({headerFooter,states}) => {
 	const order_key = process.browser ? Router.query.key : null;
 	const [ orderData, setOrderData ] = useState( {} );
 	const [subtotal,setSubtotal] = useState(0);
-	var paymentModes = headerFooter?.footer?.options?.nj_payment_method ?? '';
+	const paymentModes = headerFooter?.footer?.options?.nj_payment_method ?? '';
 	
 	// stripe
 	useEffect( () => {

@@ -187,7 +187,7 @@ function trackOrder({headerFooter}) {
                 </tbody>
                 </table>
                 </>
-                :null}
+                :<p>Tracking information not available.</p>}
                 <OrderDetails orderData={orderData} subtotal={subtotal} paymentModes={paymentModes}/>
                 <Link href={'/'}> Back to Home </Link> <button onClick={()=>{
                   setOrderData({});
