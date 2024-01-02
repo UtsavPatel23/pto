@@ -209,14 +209,14 @@ console.log('sessionData',sessionData);
 			<div className="w-600px mt-10 m-auto">
 				{ isSessionFetching ? <Loading/> : (
 					<>
-						<OrderBasicDetails orderData={orderData} sessionData={sessionData} />
+						<OrderBasicDetails orderData={orderData} sessionData={sessionData} paymentModes={paymentModes}/>
 						
 						{orderData?.payment_method_title == 'bacs'? <>
 						<Bacs paymentModes={paymentModes}></Bacs>
 						</> : null}
 
 						{orderData != undefined?
-						<OrderDetails orderData={orderData} subtotal={subtotal}/>
+						<OrderDetails orderData={orderData} subtotal={subtotal} paymentModes={paymentModes}/>
 						:null}
 						<Link href="/shop/">
 							<div className="bg-purple-600 text-white px-5 py-3 rounded-sm w-auto">Shop more</div>

@@ -1,8 +1,15 @@
 import React from 'react'
 import {  get_date_formate } from '../../utils/customjs/custome';
 import Bag from '../icons/Bag';
-function orderBasicDetails({orderData,sessionData,viewOrderUse = false}) {
+function orderBasicDetails({orderData,sessionData,viewOrderUse = false,paymentModes}) {
 	var datedis = get_date_formate(orderData?.date_created);
+	paymentModes = paymentModes.filter(obj => 
+		{
+		if (obj.method_key == orderData?.payment_method_title) {
+			return true;
+		}
+	});
+	console.log('paymentModes',paymentModes);
     return (
         <>		
 						{viewOrderUse?
@@ -38,7 +45,7 @@ function orderBasicDetails({orderData,sessionData,viewOrderUse = false}) {
 							</tr>
 							<tr>
 								<td className="px-4 py-3">PAYMENT METHOD</td>
-								<td className="px-4 py-3">{ orderData?.payment_method_title }</td>
+								<td className="px-4 py-3">{ paymentModes[0]?.method_title }</td>
 							</tr>
 							</tbody>
 						</table>

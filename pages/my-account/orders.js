@@ -40,6 +40,7 @@ export default function orders ({headerFooter,states}){
 		const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 		const {header} = headerFooter;
 		const {options} = headerFooter?.footer;
+		var paymentModes = headerFooter?.footer?.options?.nj_payment_method ?? '';
         
     // Cancel order by customer  
 	const	cancelOrderClick = async(orderid,number) =>  {
@@ -205,7 +206,7 @@ export default function orders ({headerFooter,states}){
 											{userOrder?.status == 'pending' || userOrder?.status == 'cancelled'?
 											null
 											:<button onClick={invoice_pdf => {
-												create_invoice_pdf(userOrder,header,states);
+												create_invoice_pdf(userOrder,header,states,paymentModes);
 											}} className={'bg-purple-600 text-white px-3 py-1 m-px rounded-sm w-auto '}>
 													Invoice
 											</button>}

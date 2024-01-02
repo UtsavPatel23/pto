@@ -113,14 +113,14 @@ export default function viewOrder ({headerFooter,states}){
 						<div className="col-span-8 ">
 						{ loading && <img className="loader" src={Loader.src} alt="Loader"/> }
 						{orderData?.customer_id == customerData?.id ?<>
-							<OrderBasicDetails orderData={orderData} sessionData={null} viewOrderUse={true}/>
+							<OrderBasicDetails orderData={orderData} sessionData={null} viewOrderUse={true} paymentModes={paymentModes}/>
 						
 						{orderData?.payment_method_title == 'bacs'? <>
 						<Bacs paymentModes={paymentModes}></Bacs>
 						</> : null}
 
 						{orderData != undefined?
-						<OrderDetails orderData={orderData} subtotal={subtotal}/>
+						<OrderDetails orderData={orderData} subtotal={subtotal} paymentModes={paymentModes}/>
 						:null}
 						<Link href="/shop/">
 							<div className="bg-purple-600 text-white px-5 py-3 rounded-sm w-auto">Shop more</div>

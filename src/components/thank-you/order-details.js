@@ -1,6 +1,11 @@
 import React from 'react'
-function orderDetails({orderData,subtotal}) {
-   
+function orderDetails({orderData,subtotal,paymentModes}) {
+	paymentModes = paymentModes.filter(obj => 
+		{
+		if (obj.method_key == orderData?.payment_method_title) {
+			return true;
+		}
+	});
     return (
         <>
            <div key='Order-details'>
@@ -49,7 +54,7 @@ function orderDetails({orderData,subtotal}) {
 							</tr>
 							<tr>
 								<td className="px-4 py-3">PAYMENT METHOD</td>
-								<td className="px-4 py-3">{ orderData?.payment_method_title }</td>
+								<td className="px-4 py-3">{ paymentModes[0]?.method_title }</td>
 							</tr>
 							{orderData?.customer_note ? <tr>
 								<td className="px-4 py-3">Note:</td>

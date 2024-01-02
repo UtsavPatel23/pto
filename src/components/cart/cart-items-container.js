@@ -250,18 +250,13 @@ const CartItemsContainer = ({options}) => {
 			...coutData,
 			"redeemPrice":''}
 			);
-			if(errorMsg)
+			/*if(errorMsg)
 			{
-				setMessageRyp({
-					success: false,
-					error: errorMsg,
-				})
+				setMessageRyp({...messageRyp,error: errorMsg,success: false})
+				
 			}else{
-				setMessageRyp({
-					success: false,
-					error: '',
-				})
-			}
+				setMessageRyp({...messageRyp,error: '',success: false})
+			}*/
 		
 		setRedeem_your_pointsText('');
 	}

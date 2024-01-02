@@ -3,7 +3,7 @@ import { PDFDocument, StandardFonts, rgb } from 'pdf-lib'
 import { capitalizeFirstLetter, get_date_formate, get_stateFullName_by_short_name } from '../customjs/custome';
 import { useState } from 'react';
 
-export const create_invoice_pdf = async (userOrder,header,states) => {
+export const create_invoice_pdf = async (userOrder,header,states,paymentModes) => {
         
         const {siteLogoUrl,siteTitle} = header;
         const {billing,shipping} = userOrder;
@@ -11,7 +11,13 @@ export const create_invoice_pdf = async (userOrder,header,states) => {
         console.log('userOrder',userOrder)
         console.log('stateName',stateName)
         //return '';
-        
+        paymentModes = paymentModes.filter(obj => 
+          {
+          if (obj.method_key == userOrder?.payment_method) {
+            return true;
+          }
+        });
+
         // Create a new PDFDocument
         const pdfDoc = await PDFDocument.create()
 
@@ -93,7 +99,7 @@ export const create_invoice_pdf = async (userOrder,header,states) => {
           { key: 'Invoice Date :' ,value: get_date_formate(userOrder?.date_modified)},
           { key: 'Order Number :' ,value:userOrder?.number},
           { key: 'Order Date :' ,value:get_date_formate(userOrder?.date_created)},
-          { key: 'Payment Method :' ,value:userOrder?.payment_method},
+          { key: 'Payment Method :' ,value:paymentModes[0]?.method_title},
           { key: 'Payment Status :' ,value:payment_status},
         ];
         rightDetails.forEach((rightDetail, index) => {
