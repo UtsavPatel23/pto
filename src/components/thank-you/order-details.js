@@ -5,7 +5,7 @@ function orderDetails({orderData,subtotal}) {
         <>
            <div key='Order-details'>
 							
-							Order details
+						Order details
 						<table className="table-auto w-full text-left whitespace-no-wrap mb-8">
 							<thead>
 							<tr>

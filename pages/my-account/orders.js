@@ -50,7 +50,7 @@ export default function orders ({headerFooter,states}){
 			};
 			 await	axios.post( '/api/order/update-order', newOrderData )
 				.then( res => {
-					console.log('res UPDATE DATA ORDER',res);
+					//console.log('res UPDATE DATA ORDER',res);
 					get_orders(customerData?.id);
 					setCancelStatus({'yes':'Your order has been cancelled : '+ number+'.'});
 				} )
@@ -88,7 +88,7 @@ export default function orders ({headerFooter,states}){
 			axios.post('/api/order/get-orders',
 			 orderReq
 			).then((response) => {
-				console.log(response);
+				//console.log(response);
 				if(response?.data?.orderData != '')
 				{
 					setUserOrders(response?.data?.orderData);
@@ -108,7 +108,7 @@ export default function orders ({headerFooter,states}){
 		{
        		if(Cookies.get('customerData')) {
 				var customerDataTMP =  JSON.parse(Cookies.get('customerData'));
-				console.log('customerDataTMP',customerDataTMP);
+				//console.log('customerDataTMP',customerDataTMP);
 				if(customerDataTMP?.id != '')
 				{
 					setRewardPoints(get_points(customerDataTMP));
@@ -128,8 +128,8 @@ export default function orders ({headerFooter,states}){
 		}
 	
 	}, [tokenValid]);
-	console.log('states',states);
-	console.log('userOrders',userOrders);
+	//console.log('states',states);
+	//console.log('userOrders',userOrders);
         if(tokenValid)
         {
 			return(

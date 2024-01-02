@@ -62,7 +62,7 @@ function trackOrder({headerFooter}) {
         setTrackFields( { ...trackFields, loading: true,orderid:event.orderid } );
         await axios.post( GETORDERID, trackData )
             .then( res => {
-              console.log('data',res.data);
+              //console.log('data',res.data);
                 if ( '101' === res.data.code ) {
                     setTrackFields( {
                         ...trackFields,
@@ -71,7 +71,7 @@ function trackOrder({headerFooter}) {
                         );
                 }else{
                   const orderid = res.data?.orderid;
-                  console.log('orderid',orderid);
+                  //console.log('orderid',orderid);
                   if(orderid)
                   {
                     var tmpsubtotal = 0;
@@ -137,11 +137,11 @@ function trackOrder({headerFooter}) {
     }
   }, [orderData]); 
 
-	console.log('trackFields',trackFields);
-	console.log('orderData',orderData);
-	console.log('subtotal',subtotal);
-	console.log('subtotal',subtotal);
-	console.log('buttonsList',buttonsList);
+	//console.log('trackFields',trackFields);
+	//console.log('orderData',orderData);
+	//console.log('subtotal',subtotal);
+	//console.log('subtotal',subtotal);
+	//console.log('buttonsList',buttonsList);
  
   
 
@@ -156,6 +156,8 @@ function trackOrder({headerFooter}) {
               <>
                 <p>Order #{orderData?.number} was placed on {datedis} and is currently {orderData?.status.replaceAll('-', ' ')}.</p>
                 {!isEmpty(buttonsList)? 
+                <>
+                <h5>Track details</h5>
                 <table className="border-collapse border border-slate-500 ..." width='100%'>
 								<thead>
 									<tr className='bg-gray-400'>
@@ -183,6 +185,7 @@ function trackOrder({headerFooter}) {
                   
                 </tbody>
                 </table>
+                </>
                 :null}
                 <OrderDetails orderData={orderData} subtotal={subtotal}/>
                 <Link href={'/'}> Back to Home </Link> <button onClick={()=>{
