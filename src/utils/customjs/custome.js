@@ -1,7 +1,7 @@
 import { SHOP_SHIPPING_MULI } from "../constants/endpoints";
 import axios from 'axios';
 import Cookies from 'js-cookie';
-import { isEmpty } from "lodash";
+import { constant, isEmpty } from "lodash";
 import { get_customer } from "../customer";
 import { clearCart } from "../cart";
 
@@ -659,4 +659,32 @@ export function get_date_formate(date)
 
 export function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+export function getPriceRemoveDiscount(product)
+{
+  console.log(product.meta_data.product_discount);
+  var product_discount =  product.meta_data.find((element) => element.key == 'product_discount')?.value || '';
+  var product_start_date =  product.meta_data.find((element) => element.key == 'product_start_date')?.value || '';
+  var product_end_date =  product.meta_data.find((element) => element.key == 'product_end_date')?.value || '';
+  if(product_start_date.search("-") < 0 && product_start_date != '')
+  {
+    product_start_date = product_start_date.substring(0,4)+'-'+product_start_date.substring(4,6)+'-'+product_start_date.substring(6,8);
+  }
+  if(product_end_date.search("-") < 0 && product_end_date != '')
+  {
+    product_end_date = product_end_date.substring(0,4)+'-'+product_end_date.substring(4,6)+'-'+product_end_date.substring(6,8);
+  }
+  
+  if ((product_discount != '') && product_discount != undefined) 
+			{
+				const toDay = new Date();
+				product_start_date = new Date(product_start_date+' 00:00:00');
+				product_end_date = new Date(product_end_date+' 23:59:59');
+				if (product_start_date <= toDay && toDay <= product_end_date) 
+				{
+            return (product.price - (product_discount * product.price) / 100);
+        }
+      }
+    return product.price;
 }

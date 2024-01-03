@@ -3,6 +3,7 @@ import {isEmpty} from "lodash";
 import Image from '../image';
 import { deleteCartItem, updateCart } from '../../utils/cart';
 import Link from 'next/link';
+import { getPriceRemoveDiscount } from '../../utils/customjs/custome';
 
 const CartItem = ( {
 	                   item,
@@ -115,6 +116,7 @@ const CartItem = ( {
 	{
 		maxQty = false;
 	}
+	const productPrice = getPriceRemoveDiscount(item?.data);
 	return (
 		<div id={'pro_'+item?.product_id} className="cart-item-wrap grid grid-cols-3 gap-6 mb-5 border border-brand-bright-grey p-5">
 			<div className="col-span-1 cart-left-col">
@@ -159,7 +161,7 @@ const CartItem = ( {
 					
 					<footer className="cart-product-footer flex justify-between p-4 border-t border-brand-bright-grey">
 						<div className="">
-							<span className="cart-item-price">Price {item?.currency}{parseFloat(item?.data?.price).toFixed(2)}</span>
+							<span className="cart-item-price">Price {item?.currency}{parseFloat(productPrice).toFixed(2)}</span>
 							<span className="cart-total-price">Subtotal {item?.currency}{item?.line_subtotal.toFixed(2)}</span>
 						</div>
 						{ updatingProduct ? <img className="woo-next-cart-item-spinner" width="24" src="/cart-spinner.gif"  alt="spinner"/> : null }

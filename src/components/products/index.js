@@ -646,7 +646,7 @@ const encodeDataToURL = (data) => {
 					min={minPrice}
 					step={10}
 				/>
-				<div onClick={handleFilterPrice}>Filter</div>
+				<div onClick={handleFilterPrice}>Price Filter</div>
 				</div>: null}
 				{ /* *************** Category ************** */}
 				<div><b>Categories</b></div>	

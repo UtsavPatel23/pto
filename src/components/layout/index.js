@@ -48,7 +48,7 @@ console.log('headerFooter',headerFooter);
 				<Breadcrumbs pageData={pageData}></Breadcrumbs>
 					{children}
 				</main>
-				<Footer footer={footer}/>
+				<Footer footer={footer} header={header}/>
 			</div>
 		</AppProvider>
 	)

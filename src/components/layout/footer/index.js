@@ -11,9 +11,10 @@ import { isEmpty, isArray } from 'lodash';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
-const Footer = ( { footer } ) => {
+const Footer = ( { footer , header} ) => {
 	
 	const { copyrightText, footerMenuItems, sidebarOne, sidebarTwo, socialLinks } = footer || {};
+	const {siteTitle } = header || {};
 	const [ isMounted, setMount ] = useState( false );
 	const paymentOptions = footer?.options?.payments;
 	
@@ -57,7 +58,7 @@ const Footer = ( { footer } ) => {
 				<div className="mb-8 mt-8 w-full flex flex-wrap">
 					{/*Copyright Text*/ }
 					<div className="w-full md:w-1/2 lg:w-1/4 text-white">
-						{ copyrightText ? copyrightText : '© Codeytek Academy 2021' }
+						<p>Copyright {new Date().getFullYear()} <Link href='/'>{siteTitle}</Link> - © All rights reserved</p>
 					</div>
 					<div className="w-full lg:w-3/4 flex justify-end">
 						{ ! isEmpty( socialLinks ) && isArray( socialLinks ) ? (

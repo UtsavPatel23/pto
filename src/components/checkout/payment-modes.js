@@ -32,7 +32,7 @@ const PaymentModes = ( { input, handleOnChange,paymentModes ,totalPriceDis} ) =>
 			}
 			{/*	Payment Instructions*/}
 			<div className="woo-next-checkout-payment-instructions mt-2">
-				Please send a check to Store Name, Store Street, Store Town, Store State / County, Store Postcode.
+				Please send a check to Store Name, Store Street, Store Town, Store State / Country, Store Postcode.
 			</div>
 		</div>
 	);

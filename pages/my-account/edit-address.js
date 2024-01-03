@@ -95,6 +95,18 @@ export default function editAddress ({headerFooter,countriesData}){
             SetLoading(false);
         };
         
+		// Coppy billing detail to shipping detail
+		const handleOnChangeCopy = (event) => {
+			const { target } = event || {};
+			if(target.checked)
+			{
+				setInput({ ...input, shipping:input.billing});
+				
+			}else{
+				setInput({ ...input, shipping:{...defaultCustomerInfo}});
+			}
+		}
+
         /* change event for shipping  */
 	const handleShippingChange = async ( target ) => {
 		if(target.name == 'postcode' && target.value != '')
@@ -359,7 +371,7 @@ export default function editAddress ({headerFooter,countriesData}){
 		}
 	}, [tokenValid]);
 
-        //console.log('input',input);
+        console.log('input',input);
        
         if(tokenValid)
         {
@@ -391,6 +403,8 @@ export default function editAddress ({headerFooter,countriesData}){
 								isBillingOrShipping
 							/>
 						</div>
+						<input type="checkbox" id="copy_details" onClick={handleOnChangeCopy} name="copy_details" value={1}/>
+					     <label for="copy_details">Fill  Billing Details to Shipping Ditails </label>
                         {/*Shipping Details*/ }
                         <div className="billing-details">
 									<h2 className="text-xl font-medium mb-4">Shipping Details</h2>

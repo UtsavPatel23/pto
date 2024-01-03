@@ -17,7 +17,7 @@ const StateSelection = ({handleOnChange, input, states, isFetchingStates, isShip
 		return (
 			<div className="mb-3">
 				<label className="leading-7 text-sm text-gray-700">
-					State/County
+					State/Country
 					<Abbr required/>
 				</label>
 				<div className="relative w-full border-none">

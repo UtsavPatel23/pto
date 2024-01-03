@@ -17,7 +17,7 @@ function orderAddress({orderData,states}) {
 								{orderData?.billing?.postcode ? <p>{orderData?.billing?.postcode} </p>:null}
 								{orderData?.billing?.state ? <p>{get_stateFullName_by_short_name(orderData?.billing?.state,states)} </p>:null}
 
-								<h4>Sipping address</h4>
+								<h4>Shipping address</h4>
 								{orderData?.shipping?.first_name ? <p>{orderData?.shipping?.first_name} </p>:null}
 								{orderData?.shipping?.last_name ? <p>{orderData?.shipping?.last_name}</p>:null}
 								{orderData?.shipping?.address_1 ? <p>{orderData?.shipping?.address_1}</p>:null}
