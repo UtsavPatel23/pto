@@ -21,7 +21,7 @@ function CancelOrderButton({createdOrderData}) {
   } 
   return (
     <div className="App">
-        <span onClick={cancelOrder}>Cancel Order</span>
+        <span onClick={cancelOrder}>Change payment method</span>
     </div>
   );
 }

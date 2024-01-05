@@ -172,8 +172,10 @@ import WishlistButton from '../wishlist/wishlistbutton'
 		useEffect(() => {
 			if(Cookies.get('token')) {
 				setTokenValid(1);
+				if(Cookies.get('customerData')) {
 				var customerDataTMP =  JSON.parse(Cookies.get('customerData'));
 				setCustomerData(customerDataTMP);
+				}
 			}
 		}, []);
 		useEffect(() => {

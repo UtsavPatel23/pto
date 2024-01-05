@@ -37,8 +37,10 @@ import Loader from "./../public/loader.gif";
      useEffect(() => {
          if(Cookies.get('token')) {
              setTokenValid(1);
+			 if(Cookies.get('customerData')) {
              var customerDataTMP =  JSON.parse(Cookies.get('customerData'));
 			 setCustomerData(customerDataTMP);
+			 }
          }
      }, []);
 
@@ -100,7 +102,7 @@ import Loader from "./../public/loader.gif";
           * if the data is changed, if it is changed then it will update the
           * static file inside .next folder with the new data, so that any 'SUBSEQUENT' requests should have updated data.
           */
-         revalidate: 1,
+         
      };
  }
  

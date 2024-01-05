@@ -253,6 +253,6 @@ export async function getStaticProps() {
 		 * if the data is changed, if it is changed then it will update the
 		 * static file inside .next folder with the new data, so that any 'SUBSEQUENT' requests should have updated data.
 		 */
-		revalidate: 1,
+		
 	};
 }

@@ -47,7 +47,7 @@ export async function getStaticProps( { params } ) {
 			product: product.length ? product[ 0 ] : {},
 			reviews: reviews.length ? reviews : {},
 		},
-		revalidate: 1,
+		
 	};
 }
 

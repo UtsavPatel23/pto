@@ -53,8 +53,10 @@ const Products = ({ products , options ,  tokenValid }) => {
 
 	useEffect(() => {
 		if(Cookies.get('token')) {
+			if(Cookies.get('customerData')) {
 			var customerDataTMP =  JSON.parse(Cookies.get('customerData'));
 			setCustomerData(customerDataTMP);
+			}
 		}
 	}, []);
 
@@ -939,7 +941,7 @@ const encodeDataToURL = (data) => {
 				{
 				currentProduct.length ? 
 					<>
-					<div className='grid grid-cols-4 gap-4'>
+					<div className='grid md:grid-cols-4 gap-4'>
 					{
 						currentProduct.map( product => {
 								return (

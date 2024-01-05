@@ -306,7 +306,7 @@ export default function Checkout({ headerFooter }) {
 	return (
 		<Layout headerFooter={headerFooter || {}}>
 			<h1>Pay for order</h1>
-			{wc_order_key == orderData.order_key && tokenValid &&  orderData.status  == 'pending' ? 
+			{wc_order_key == orderData.order_key  &&  orderData.status  == 'pending' ? 
 			<>
 			<div key="check-outform">
 				<form onSubmit={ handleFormSubmit } className="woo-next-checkout-form">
@@ -383,6 +383,6 @@ export async function getStaticProps() {
 		 * if the data is changed, if it is changed then it will update the
 		 * static file inside .next folder with the new data, so that any 'SUBSEQUENT' requests should have updated data.
 		 */
-		revalidate: 1,
+		
 	};
 }
