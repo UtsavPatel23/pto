@@ -18,17 +18,13 @@ module.exports = {
 	},
 	trailingSlash: false,
 	webpack5: true,
-	webpack: (config, { isServer }) => {
+	webpack: config => {
 		config.watchOptions = {
 			poll: 10000,
 			aggregateTimeout: 3000
 		}
 		config.resolve.fallback = { fs: false };
-		if (!isServer) {
-            config.node = {
-                net: 'empty'
-            };
-        }
+		
 		return config
 	},
 	sassOptions: {
