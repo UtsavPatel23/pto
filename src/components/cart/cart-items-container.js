@@ -12,6 +12,7 @@ import { isEmpty } from 'lodash';
 import RedeemPoints from './redeem-points';
 import LoginForm from '../my-account/login';
 import Router from "next/router";
+import { NEXT_PUBLIC_SITE_API_URL } from '../../utils/constants/endpoints';
 
 
 const CartItemsContainer = ({options}) => {
@@ -128,7 +129,7 @@ const CartItemsContainer = ({options}) => {
 				};
 				
 				try {
-					const request = await fetch( '/api/valid-coupon', {
+					const request = await fetch( NEXT_PUBLIC_SITE_API_URL +'/api/valid-coupon', {
 						method: 'POST',
 						headers: {
 							'Content-Type': 'application/json',

@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import axios from "axios";
 import { clearCart } from "../../../utils/cart";
+import { NEXT_PUBLIC_SITE_API_URL } from "../../../utils/constants/endpoints";
+import  Router  from "express";
 
 // Renders errors or successfull transactions on the screen.
 function Message({ content }) {
@@ -69,7 +71,7 @@ function PaypalButtonCheckout({createdOrderData}) {
           onApprove={async (data, actions) => {
             try {
               const response = await fetch(
-                `/api/paypal/capture`,
+                NEXT_PUBLIC_SITE_API_URL +`/api/paypal/capture`,
                 {
                   method: "POST",
                   headers: {
@@ -113,9 +115,10 @@ function PaypalButtonCheckout({createdOrderData}) {
                         orderno : reference_id,
                     };
                     
-                    await axios.post( '/api/order/update-order', newOrderData )
+                    await axios.post( NEXT_PUBLIC_SITE_API_URL +'/api/order/update-order', newOrderData )
                       .then( res => {
-                        window.location.href =  process.env.NEXT_PUBLIC_SITE_URL+'/thank-you/?orderPostnb='+window.btoa(reference_id)+'&status=SUCCESS';
+                        const redirecturl =  '/thank-you/?orderPostnb='+window.btoa(reference_id)+'&status=SUCCESS';
+                        Router.push(redirecturl);
                         console.log('res UPDATE DATA ORDER',res);
                       } )
                       .catch( err => {

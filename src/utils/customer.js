@@ -1,6 +1,6 @@
 import axios from "axios";
 import Cookies from "js-cookie";
-
+import { NEXT_PUBLIC_SITE_API_URL } from "./constants/endpoints";
 /* Get customer data */
 export const get_customer = async(arg_user_email,setCustomerData)=>
 		{
@@ -10,7 +10,7 @@ export const get_customer = async(arg_user_email,setCustomerData)=>
                 error: '',
             };
 			try {
-                const {data:resultCus} = await axios.get( '/api/customer/get-customers?email='+arg_user_email);
+                const {data:resultCus} = await axios.get( NEXT_PUBLIC_SITE_API_URL +'/api/customer/get-customers?email='+arg_user_email);
                 
                 if ( resultCus.error ) {
                     responseCus.error = resultCus.error;
@@ -51,7 +51,7 @@ export const handleCreateCustomer = async(input) => {
 				shipping:input.shipping 
 			  };
 			  console.log('userData',userData);
-			await axios.post('/api/customer/create-customers/',
+			await axios.post(NEXT_PUBLIC_SITE_API_URL +'/api/customer/create-customers/',
 			userData
 			).then((response) => {
 				console.log(response.data);

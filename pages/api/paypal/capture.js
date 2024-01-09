@@ -62,7 +62,7 @@ const generateAccessToken = async () => {
 
 /**
  * Capture payment for the created order to complete the transaction.
- * @see https://developer.paypal.com/docs/api/orders/v2/#orders_capture
+ * @see https://developer.paypal.com/docs /api/orders/v2/#orders_capture
  */
 const captureOrder = async (orderID) => {
   const accessToken = await generateAccessToken();

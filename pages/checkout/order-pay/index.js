@@ -12,6 +12,7 @@ import { useEffect } from 'react';
 import Cookies from 'js-cookie';
 import OrderDetails from '../../../src/components/thank-you/order-details';
 import PaypalButtonCheckout from '../../../src/components/checkout/paypal/paypal-button';
+import { NEXT_PUBLIC_SITE_API_URL } from '../../../src/utils/constants/endpoints';
 const defaultCustomerInfo = {
 	firstName: '',
 	lastName: '',
@@ -87,7 +88,7 @@ export default function Checkout({ headerFooter }) {
 			let config = {
 					method: 'post',
 					maxBodyLength: Infinity,
-					url: '/api/order/get-order?id='+orderid,
+					url: NEXT_PUBLIC_SITE_API_URL +'/api/order/get-order?id='+orderid,
 					headers: { }
 					};
 			axios.request(config)
@@ -123,7 +124,7 @@ export default function Checkout({ headerFooter }) {
 				orderId: orderData?.id,
 				noteMessage: 'PAYMENT STASUS CANCELLED Token : '+orderToken
 			};
-			axios.post( '/api/order/update-order-notes', newOrderNote )
+			axios.post( NEXT_PUBLIC_SITE_API_URL +'/api/order/update-order-notes', newOrderNote )
 				.then( res => {
 						console.log('res UPDATE DATA ORDER Note',res);
 				} )
@@ -187,7 +188,7 @@ export default function Checkout({ headerFooter }) {
 				bacs : 1,
 				orderId: orderData?.id,
 			};
-			   await	axios.post( '/api/order/update-order', newOrderData )
+			   await	axios.post( NEXT_PUBLIC_SITE_API_URL +'/api/order/update-order', newOrderData )
 				.then( res => {
 					console.log('res UPDATE DATA ORDER',res);
 				} )
@@ -195,7 +196,8 @@ export default function Checkout({ headerFooter }) {
 					console.log('err UPDATE DATA ORDER',err);
 				} )
 			await paymentMethodUpdate( orderData?.id, input.paymentMethod);
-			window.location.href = process.env.NEXT_PUBLIC_SITE_URL+'/thank-you/?orderPostnb='+window.btoa(orderData?.id)+'&orderId='+orderData?.number+'&status=SUCCESS';
+			const redirecturl = '/thank-you/?orderPostnb='+window.btoa(orderData?.id)+'&orderId='+orderData?.number+'&status=SUCCESS';
+			Router.push(redirecturl);
 			return null;
 		}
 
@@ -255,7 +257,7 @@ export default function Checkout({ headerFooter }) {
 			paymentMethodUpdate: 1,
 			paymentMethodName: paymentMethodName,
 		};
-		axios.post( '/api/order/update-order', newOrderData )
+		axios.post( NEXT_PUBLIC_SITE_API_URL +'/api/order/update-order', newOrderData )
 			.then( res => {
 
 				console.log('res UPDATE DATA ORDER',res);

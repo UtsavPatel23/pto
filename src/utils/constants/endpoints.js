@@ -46,3 +46,6 @@ export const CAPTCHA_SITE_KEY = '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI';
 
 // Wishlist
 export const WISHLIST_URL = `${process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL}/wp-json/shop-nj/v1/wishlist`;
+
+// Local API url
+export const NEXT_PUBLIC_SITE_API_URL='https://pto-plum.vercel.app'

@@ -5,7 +5,7 @@ import axios from 'axios';
 import Layout from '../src/components/layout';
 import Loading from '../src/components/icons/Loading';
 import { AppContext } from '../src/components/context';
-import { HEADER_FOOTER_ENDPOINT, USER_LOGIN } from '../src/utils/constants/endpoints';
+import { HEADER_FOOTER_ENDPOINT, NEXT_PUBLIC_SITE_API_URL, USER_LOGIN } from '../src/utils/constants/endpoints';
 import { isEmpty } from 'lodash';
 import Cookies from 'js-cookie';
 import Bacs from './../src/components/thank-you/bacs';
@@ -39,7 +39,7 @@ const ThankYouContent = ({headerFooter,states}) => {
 			setCart( null );
 			
 			if ( session_id ) {
-				axios.get( `/api/get-stripe-session/?session_id=${ session_id }` )
+				axios.get( NEXT_PUBLIC_SITE_API_URL +`/api/get-stripe-session/?session_id=${ session_id }` )
 				.then( ( response ) => {
 					setSessionData( response?.data ?? {} );
 					getOrderData(response?.data?.metadata?.orderPostID);
@@ -85,7 +85,7 @@ console.log('sessionData',sessionData);
 		let config = {
 				method: 'post',
 				maxBodyLength: Infinity,
-				url: '/api/order/get-order?id='+id,
+				url: NEXT_PUBLIC_SITE_API_URL + '/api/order/get-order?id='+id,
 				headers: { },
 				data : data
 				};
@@ -148,7 +148,7 @@ console.log('sessionData',sessionData);
 					orderId: orderData?.id,
 					redeem: 1,
 				};
-				axios.post( '/api/order/update-order', newOrderData )
+				axios.post( NEXT_PUBLIC_SITE_API_URL +'/api/order/update-order', newOrderData )
 					.then( res => {
 		
 						console.log('res UPDATE DATA ORDER',res);
@@ -173,7 +173,7 @@ console.log('sessionData',sessionData);
 					message: '',
 					error: '',
 				};
-				axios.post('/api/customer/update-customers/',
+				axios.post(NEXT_PUBLIC_SITE_API_URL +'/api/customer/update-customers/',
 				userData
 				).then((response) => {
 					console.log(response.data);

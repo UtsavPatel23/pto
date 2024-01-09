@@ -4,7 +4,8 @@ import { loadStripe } from '@stripe/stripe-js';
 import { createTheOrder, getCreateOrderData } from './order';
 import { clearCart } from '../cart';
 import axios from 'axios';
-import { WOOCOMMERCE_STATES_ENDPOINT } from '../constants/endpoints';
+import { NEXT_PUBLIC_SITE_API_URL, WOOCOMMERCE_STATES_ENDPOINT } from '../constants/endpoints';
+import Router from "next/router";
 
 
 /**
@@ -124,7 +125,7 @@ export const handleStripeCheckout = async (
 		bacs : 1,
 		orderId: customerOrderData?.orderPostID,
 	};
-   	await	axios.post( '/api/order/update-order', newOrderData )
+   	await	axios.post( NEXT_PUBLIC_SITE_API_URL +'/api/order/update-order', newOrderData )
 		.then( res => {
 			console.log('res UPDATE DATA ORDER',res);
 		} )
@@ -142,7 +143,8 @@ export const handleStripeCheckout = async (
 		return null;
 	}
 	
-	window.location.href = process.env.NEXT_PUBLIC_SITE_URL+'/thank-you/?orderPostnb='+window.btoa(customerOrderData?.orderPostID)+'&orderId='+customerOrderData?.orderId+'&status=SUCCESS';
+	const redirecturl = '/thank-you/?orderPostnb='+window.btoa(customerOrderData?.orderPostID)+'&orderId='+customerOrderData?.orderId+'&status=SUCCESS';
+	Router.push(redirecturl);
 	// On success show stripe form.
 	setCreatedOrderData( customerOrderData );
 	
@@ -369,7 +371,7 @@ export const createCheckoutSessionAndRedirect = async (
 			orderId: orderPostID,
 			noteMessage: 'Error : session not created.'
 		};
-		axios.post( '/api/order/update-order-notes', newOrderNote )
+		axios.post( NEXT_PUBLIC_SITE_API_URL +'/api/order/update-order-notes', newOrderNote )
 			.then( res => {
 					console.log('res UPDATE DATA ORDER Note',res);
 			} )
@@ -543,7 +545,7 @@ export const createCheckoutAfterpayAndRedirect = async (
 			afterpayOrderData: afterpayOrderData,
 		};
 		var createCheckoutRes = '';
-		   await	axios.post( '/api/afterpay/create-checkout', createCheckout )
+		   await	axios.post( NEXT_PUBLIC_SITE_API_URL +'/api/afterpay/create-checkout', createCheckout )
 			.then( res => {
 				if(res?.data.redirectCheckoutUrl)
 				{
@@ -566,7 +568,7 @@ export const createCheckoutAfterpayAndRedirect = async (
 				  orderId : orderPostID,
 			};
 			
-			await axios.post( '/api/order/update-order', newOrderData )
+			await axios.post( NEXT_PUBLIC_SITE_API_URL +'/api/order/update-order', newOrderData )
 				.then( res => {
 	
 					//console.log('res UPDATE DATA ORDER',res);
@@ -586,13 +588,15 @@ export const createCheckoutAfterpayAndRedirect = async (
 				}
 				setIsProcessing( false );
 			}
-			window.location.href = createCheckoutRes?.redirectCheckoutUrl;
+			//window.location.href = createCheckoutRes?.redirectCheckoutUrl;
+			Router.push(createCheckoutRes?.redirectCheckoutUrl);
+			
 		}else{
 			const newOrderNote = {
 				orderId: orderPostID,
 				noteMessage: 'Error :'+ createCheckoutRes?.message
 			};
-			axios.post( '/api/order/update-order-notes', newOrderNote )
+			axios.post( NEXT_PUBLIC_SITE_API_URL +'/api/order/update-order-notes', newOrderNote )
 				.then( res => {
 						console.log('res UPDATE DATA ORDER Note',res);
 				} )
@@ -642,7 +646,7 @@ export const createCheckoutAfterpayAndRedirect = async (
 		};
 		console.log('createCheckout',createCheckout);
 		var createCheckoutRes = '';
-		   await	axios.post( '/api/laybuy/create-checkout', createCheckout )
+		   await	axios.post( NEXT_PUBLIC_SITE_API_URL +'/api/laybuy/create-checkout', createCheckout )
 			.then( res => {
 				//if(res?.data.paymentUrl)
 				//{
@@ -667,7 +671,7 @@ export const createCheckoutAfterpayAndRedirect = async (
 					  orderId : orderPostID,
 				};
 				
-				await axios.post( '/api/order/update-order', newOrderData )
+				await axios.post( NEXT_PUBLIC_SITE_API_URL +'/api/order/update-order', newOrderData )
 					.then( res => {
 		
 						//console.log('res UPDATE DATA ORDER',res);
@@ -687,13 +691,14 @@ export const createCheckoutAfterpayAndRedirect = async (
 					}
 					setIsProcessing( false );
 				}
-				window.location.href = createCheckoutRes?.paymentUrl;
+				//window.location.href = createCheckoutRes?.paymentUrl;
+				Router.push(createCheckoutRes?.paymentUrl);
 			}else{
 				const newOrderNote = {
                     orderId: orderPostID,
                     noteMessage: 'Error :'+ createCheckoutRes?.error
                 };
-                axios.post( '/api/order/update-order-notes', newOrderNote )
+                axios.post( NEXT_PUBLIC_SITE_API_URL +'/api/order/update-order-notes', newOrderNote )
                     .then( res => {
                             console.log('res UPDATE DATA ORDER Note',res);
                     } )

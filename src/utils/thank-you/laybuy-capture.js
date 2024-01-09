@@ -1,4 +1,5 @@
 import axios from "axios";
+import { NEXT_PUBLIC_SITE_API_URL } from "../constants/endpoints";
 
 export function payment_capture_laybuy(token,orderData) {
     let laybuyCapture = JSON.stringify({
@@ -9,7 +10,7 @@ export function payment_capture_laybuy(token,orderData) {
         laybuyCapture: laybuyCapture,
     };
     //console.log('createCapture',createCapture)
-    axios.post( '/api/laybuy/payment-check', createCapture )
+    axios.post( NEXT_PUBLIC_SITE_API_URL +'/api/laybuy/payment-check', createCapture )
         .then( res => {
             console.log('res ',res);
             var data = res?.data;
@@ -23,7 +24,7 @@ export function payment_capture_laybuy(token,orderData) {
                     orderno : data?.orderId,
 
                 };
-                axios.post( '/api/order/update-order', newOrderData )
+                axios.post( NEXT_PUBLIC_SITE_API_URL +'/api/order/update-order', newOrderData )
                     .then( res => {
         
                         //console.log('res UPDATE DATA ORDER',res);
@@ -36,7 +37,7 @@ export function payment_capture_laybuy(token,orderData) {
                     orderId: orderData?.id,
                     noteMessage: 'Error :'+ data?.error
                 };
-                axios.post( '/api/order/update-order-notes', newOrderNote )
+                axios.post( NEXT_PUBLIC_SITE_API_URL +'/api/order/update-order-notes', newOrderNote )
                     .then( res => {
                             console.log('res UPDATE DATA ORDER Note',res);
                     } )

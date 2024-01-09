@@ -1,6 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-import { HEADER_FOOTER_ENDPOINT } from '../../src/utils/constants/endpoints';
+import { HEADER_FOOTER_ENDPOINT, NEXT_PUBLIC_SITE_API_URL } from '../../src/utils/constants/endpoints';
 import Layout from '../../src/components/layout';
 import { useEffect } from 'react';
 import Cookies from 'js-cookie';
@@ -49,7 +49,7 @@ export default function orders ({headerFooter,states}){
 				orderCancelledByCustomer : 1,
 				orderId: orderid,
 			};
-			 await	axios.post( '/api/order/update-order', newOrderData )
+			 await	axios.post( NEXT_PUBLIC_SITE_API_URL +'/api/order/update-order', newOrderData )
 				.then( res => {
 					//console.log('res UPDATE DATA ORDER',res);
 					get_orders(customerData?.id);
@@ -86,7 +86,7 @@ export default function orders ({headerFooter,states}){
 			const orderReq = {
 				customer_id:customer_id,
 			  };
-			axios.post('/api/order/get-orders',
+			axios.post(NEXT_PUBLIC_SITE_API_URL +'/api/order/get-orders',
 			 orderReq
 			).then((response) => {
 				//console.log(response);

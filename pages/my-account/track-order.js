@@ -6,7 +6,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
 import axios from 'axios';
 import TrackOrder from '../../src/components/track-order';
-import { GETORDERID, HEADER_FOOTER_ENDPOINT, USER_ORDER_TRACKING } from '../../src/utils/constants/endpoints';
+import { GETORDERID, HEADER_FOOTER_ENDPOINT, NEXT_PUBLIC_SITE_API_URL, USER_ORDER_TRACKING } from '../../src/utils/constants/endpoints';
 import Layout from '../../src/components/layout';
 import OrderDetails from '../../src/components/thank-you/order-details';
 import { get_date_formate } from '../../src/utils/customjs/custome';
@@ -79,7 +79,7 @@ function trackOrder({headerFooter}) {
                     let config = {
                         method: 'post',
                         maxBodyLength: Infinity,
-                        url: '/api/order/get-order?id='+orderid,
+                        url: NEXT_PUBLIC_SITE_API_URL +'/api/order/get-order?id='+orderid,
                         headers: { },
                         };
                     axios.request(config)

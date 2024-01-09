@@ -1,7 +1,7 @@
 
 import React from 'react';
 import axios from 'axios';
-import { HEADER_FOOTER_ENDPOINT, SUBURB_API_URL } from '../../src/utils/constants/endpoints';
+import { HEADER_FOOTER_ENDPOINT, NEXT_PUBLIC_SITE_API_URL, SUBURB_API_URL } from '../../src/utils/constants/endpoints';
 import Layout from '../../src/components/layout';
 import { useEffect } from 'react';
 import Cookies from 'js-cookie';
@@ -296,7 +296,7 @@ export default function editAddress ({headerFooter,countriesData}){
 			};
 		  //console.log('userData 1',userData);
 		
-		await axios.post('/api/customer/update-customers/',
+		await axios.post(NEXT_PUBLIC_SITE_API_URL +'/api/customer/update-customers/',
 		userData
 		).then((response) => {
 			//console.log(response.data);

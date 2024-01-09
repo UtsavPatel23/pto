@@ -6,6 +6,7 @@
  * @returns {*[]|*} Line items, Array of objects.
  */
 import { isArray, isEmpty } from 'lodash';
+import { NEXT_PUBLIC_SITE_API_URL } from '../constants/endpoints';
 import { get_customer_id } from '../customjs/custome';
 
 export const getCreateOrderLineItems = ( products ) => {
@@ -164,7 +165,7 @@ export const createTheOrder = async ( orderData, setOrderFailedError, previousRe
 	setOrderFailedError( '' );
 	
 	try {
-		const request = await fetch( '/api/order/create-order', {
+		const request = await fetch( NEXT_PUBLIC_SITE_API_URL +'/api/order/create-order', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
@@ -173,6 +174,8 @@ export const createTheOrder = async ( orderData, setOrderFailedError, previousRe
 		} );
 		
 		const result = await request.json();
+
+		
 		//console.log('c order',result);
 		if ( result.error ) {
 			response.error = result.error;
