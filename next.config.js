@@ -17,11 +17,13 @@ module.exports = {
 		]
 	},
 	trailingSlash: false,
+	webpack5: true,
 	webpack: config => {
 		config.watchOptions = {
 			poll: 10000,
 			aggregateTimeout: 3000
 		}
+		config.resolve.fallback = { fs: false };
 		
 		return config
 	},
