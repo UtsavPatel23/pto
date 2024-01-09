@@ -2,6 +2,7 @@ const path = require('path');
 const allowedImageWordPressDomain = new URL( process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL ).hostname;
 
 module.exports = {
+	//output: 'export',
 	async headers() {
 		return [
 			{
@@ -17,13 +18,11 @@ module.exports = {
 		]
 	},
 	trailingSlash: false,
-	webpack5: true,
 	webpack: config => {
 		config.watchOptions = {
-			poll: 10000,
-			aggregateTimeout: 3000
+			poll: 1000,
+			aggregateTimeout: 300
 		}
-		config.resolve.fallback = { fs: false };
 		
 		return config
 	},
@@ -37,5 +36,6 @@ module.exports = {
 	 */
 	images: {
 		domains: [ allowedImageWordPressDomain,'via.placeholder.com', 'pooltableoffers.com.au', 'secure.gravatar.com' ],
+		//unoptimized : true,
 	},
 }

@@ -129,7 +129,7 @@ const CartItemsContainer = ({options}) => {
 				};
 				
 				try {
-					const request = await fetch( NEXT_PUBLIC_SITE_API_URL +'/api/valid-coupon', {
+					const request = await fetch( NEXT_PUBLIC_SITE_API_URL + '/api/valid-coupon', {
 						method: 'POST',
 						headers: {
 							'Content-Type': 'application/json',

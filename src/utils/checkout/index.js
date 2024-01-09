@@ -5,8 +5,7 @@ import { createTheOrder, getCreateOrderData } from './order';
 import { clearCart } from '../cart';
 import axios from 'axios';
 import { NEXT_PUBLIC_SITE_API_URL, WOOCOMMERCE_STATES_ENDPOINT } from '../constants/endpoints';
-import Router from "next/router";
-
+import Router from 'next/router';
 
 /**
  * Handle Other Payment Method checkout.
@@ -143,8 +142,8 @@ export const handleStripeCheckout = async (
 		return null;
 	}
 	
-	const redirecturl = '/thank-you/?orderPostnb='+window.btoa(customerOrderData?.orderPostID)+'&orderId='+customerOrderData?.orderId+'&status=SUCCESS';
-	Router.push(redirecturl);
+	//window.location.href = process.env.NEXT_PUBLIC_SITE_URL+'/thank-you/?orderPostnb='+window.btoa(customerOrderData?.orderPostID)+'&orderId='+customerOrderData?.orderId+'&status=SUCCESS';
+	Router.push('/thank-you/?orderPostnb='+window.btoa(customerOrderData?.orderPostID)+'&orderId='+customerOrderData?.orderId+'&status=SUCCESS');
 	// On success show stripe form.
 	setCreatedOrderData( customerOrderData );
 	
@@ -545,7 +544,7 @@ export const createCheckoutAfterpayAndRedirect = async (
 			afterpayOrderData: afterpayOrderData,
 		};
 		var createCheckoutRes = '';
-		   await	axios.post( NEXT_PUBLIC_SITE_API_URL +'/api/afterpay/create-checkout', createCheckout )
+		   await	axios.post( NEXT_PUBLIC_SITE_API_URL + '/api/afterpay/create-checkout', createCheckout )
 			.then( res => {
 				if(res?.data.redirectCheckoutUrl)
 				{
@@ -590,7 +589,6 @@ export const createCheckoutAfterpayAndRedirect = async (
 			}
 			//window.location.href = createCheckoutRes?.redirectCheckoutUrl;
 			Router.push(createCheckoutRes?.redirectCheckoutUrl);
-			
 		}else{
 			const newOrderNote = {
 				orderId: orderPostID,

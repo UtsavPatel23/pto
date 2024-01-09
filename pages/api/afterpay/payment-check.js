@@ -1,4 +1,4 @@
-
+// pages/api/example.js
 import axios from 'axios';
 import Cors from 'cors';
 

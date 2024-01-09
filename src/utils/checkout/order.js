@@ -174,8 +174,6 @@ export const createTheOrder = async ( orderData, setOrderFailedError, previousRe
 		} );
 		
 		const result = await request.json();
-
-		
 		//console.log('c order',result);
 		if ( result.error ) {
 			response.error = result.error;

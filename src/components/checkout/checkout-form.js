@@ -29,7 +29,7 @@ import LoginForm from '../my-account/login';
 import { fieldFocusSet } from './field-focus';
 import PaypalButtonCheckout from './paypal/paypal-button';
 import CancelOrderButton from './cancel-order';
-import Router from 'express';
+import Router from 'next/router';
 
 // Use this for testing purposes, so you dont have to fill the checkout form over an over again.
 // const defaultCustomerInfo = {
@@ -349,7 +349,7 @@ const CheckoutForm = ( { countriesData , paymentModes , options} ) => {
 		
 		if ( createdOrderData.paymentUrl ) {
 			//window.location.href = createdOrderData.paymentUrl;
-			Router.push(createdOrderData.paymentUr);
+			Router.push(createdOrderData.paymentUrl)
 		}
 
 		setRequestError( null );

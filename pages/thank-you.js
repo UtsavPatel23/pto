@@ -39,7 +39,7 @@ const ThankYouContent = ({headerFooter,states}) => {
 			setCart( null );
 			
 			if ( session_id ) {
-				axios.get( NEXT_PUBLIC_SITE_API_URL +`/api/get-stripe-session/?session_id=${ session_id }` )
+				axios.get( NEXT_PUBLIC_SITE_API_URL + `/api/get-stripe-session/?session_id=${ session_id }` )
 				.then( ( response ) => {
 					setSessionData( response?.data ?? {} );
 					getOrderData(response?.data?.metadata?.orderPostID);

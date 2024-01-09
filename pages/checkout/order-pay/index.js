@@ -196,8 +196,8 @@ export default function Checkout({ headerFooter }) {
 					console.log('err UPDATE DATA ORDER',err);
 				} )
 			await paymentMethodUpdate( orderData?.id, input.paymentMethod);
-			const redirecturl = '/thank-you/?orderPostnb='+window.btoa(orderData?.id)+'&orderId='+orderData?.number+'&status=SUCCESS';
-			Router.push(redirecturl);
+			//window.location.href = process.env.NEXT_PUBLIC_SITE_URL+'/thank-you/?orderPostnb='+window.btoa(orderData?.id)+'&orderId='+orderData?.number+'&status=SUCCESS';
+			Router.push('/thank-you/?orderPostnb='+window.btoa(orderData?.id)+'&orderId='+orderData?.number+'&status=SUCCESS');
 			return null;
 		}
 
