@@ -2,6 +2,8 @@ const path = require('path');
 const allowedImageWordPressDomain = new URL( process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL ).hostname;
 
 module.exports = {
+	fs: false,
+	path: false,
 	async headers() {
 		return [
 			{
