@@ -2,8 +2,6 @@ const path = require('path');
 const allowedImageWordPressDomain = new URL( process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL ).hostname;
 
 module.exports = {
-	fs: false,
-	path: false,
 	async headers() {
 		return [
 			{
@@ -21,8 +19,8 @@ module.exports = {
 	trailingSlash: false,
 	webpack: config => {
 		config.watchOptions = {
-			poll: 1000,
-			aggregateTimeout: 300
+			poll: 10000,
+			aggregateTimeout: 3000
 		}
 		
 		return config
