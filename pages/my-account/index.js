@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useReducer, useState } from 'react';
 import axios from 'axios';
 import { HEADER_FOOTER_ENDPOINT} from '../../src/utils/constants/endpoints';
 import Layout from '../../src/components/layout';
-import Cookies from 'js-cookie';
+;
 
 
 import LoginForm from '../../src/components/my-account/login';
@@ -39,11 +39,11 @@ export default function Login ({headerFooter}){
 	//hook useEffect
     useEffect(() => {
         //check token
-        if(Cookies.get('token')) {
+        if(localStorage.getItem('token')) {
 			setTokenValid(1)
         }
-		if(Cookies.get('customerData')) {
-			setCustomerData(JSON.parse(Cookies.get('customerData')));
+		if(localStorage.getItem('customerData')) {
+			setCustomerData(JSON.parse(localStorage.getItem('customerData')));
 		}
     }, []);
 
@@ -54,7 +54,7 @@ export default function Login ({headerFooter}){
 			console.log('session',session);
 			if(session.user.email && (tokenValid == 0))
 			{
-				Cookies.set('token','logingoogle');
+				localStorage.setItem('token','logingoogle');
 				get_customer(session.user.email,setCustomerData);
 				setTokenValid(1);
 			}

@@ -9,10 +9,11 @@ import validateAndSanitizeCheckoutForm from '../../../src/validator/checkout';
 import { createCheckoutAfterpayAndRedirect, createCheckoutLaybuyAndRedirect, createCheckoutSessionAndRedirect, handleAgreeTerms, handleBacsCheckout } from '../../../src/utils/checkout';
 import Router from 'next/router';
 import { useEffect } from 'react';
-import Cookies from 'js-cookie';
+;
 import OrderDetails from '../../../src/components/thank-you/order-details';
 import PaypalButtonCheckout from '../../../src/components/checkout/paypal/paypal-button';
 import { NEXT_PUBLIC_SITE_API_URL } from '../../../src/utils/constants/endpoints';
+import { get_order, update_order, update_order_notes } from '../../../src/utils/apiFun/order';
 const defaultCustomerInfo = {
 	firstName: '',
 	lastName: '',
@@ -75,24 +76,21 @@ export default function Checkout({ headerFooter }) {
 	//hook useEffect
     useEffect(() => {
         //check token
-        if(Cookies.get('token')) {
+        if(localStorage.getItem('token')) {
 			setTokenValid(1)
         }
 	}, []);
 
 	// Get Order
 	useEffect( () => {
+		(async () => {
 		if(orderid)
 		{
 			var tmpsubtotal = 0;
-			let config = {
-					method: 'post',
-					maxBodyLength: Infinity,
-					url: NEXT_PUBLIC_SITE_API_URL +'/api/order/get-order?id='+orderid,
-					headers: { }
-					};
-			axios.request(config)
-			.then((response) => {
+			const response = await get_order(orderid);
+              if(response.success)
+              {
+			
 				setOrderData(response.data.orderData);
 				if(response.data.orderData.line_items != undefined)
 					{
@@ -108,12 +106,9 @@ export default function Checkout({ headerFooter }) {
 					billing: response.data.orderData.billing,
 					shipping: response.data.orderData.shipping,
 				} );
-			})
-			.catch((error) => {
-				console.log(error);
-			});
+			}
 		}
-		
+		})();
 	}, [ orderid ] );
 
 	// Get Order
@@ -124,13 +119,7 @@ export default function Checkout({ headerFooter }) {
 				orderId: orderData?.id,
 				noteMessage: 'PAYMENT STASUS CANCELLED Token : '+orderToken
 			};
-			axios.post( NEXT_PUBLIC_SITE_API_URL +'/api/order/update-order-notes', newOrderNote )
-				.then( res => {
-						console.log('res UPDATE DATA ORDER Note',res);
-				} )
-				.catch( err => {
-					console.log('err UPDATE DATA ORDER Note ',err);
-				} )
+			update_order_notes(newOrderNote);
 		}
 		setCreatedOrderData({allData:orderData});
 		
@@ -188,13 +177,7 @@ export default function Checkout({ headerFooter }) {
 				bacs : 1,
 				orderId: orderData?.id,
 			};
-			   await	axios.post( NEXT_PUBLIC_SITE_API_URL +'/api/order/update-order', newOrderData )
-				.then( res => {
-					console.log('res UPDATE DATA ORDER',res);
-				} )
-				.catch( err => {
-					console.log('err UPDATE DATA ORDER',err);
-				} )
+			await update_order(newOrderData);
 			await paymentMethodUpdate( orderData?.id, input.paymentMethod);
 			//window.location.href = process.env.NEXT_PUBLIC_SITE_URL+'/thank-you/?orderPostnb='+window.btoa(orderData?.id)+'&orderId='+orderData?.number+'&status=SUCCESS';
 			Router.push('/thank-you/?orderPostnb='+window.btoa(orderData?.id)+'&orderId='+orderData?.number+'&status=SUCCESS');
@@ -257,14 +240,7 @@ export default function Checkout({ headerFooter }) {
 			paymentMethodUpdate: 1,
 			paymentMethodName: paymentMethodName,
 		};
-		axios.post( NEXT_PUBLIC_SITE_API_URL +'/api/order/update-order', newOrderData )
-			.then( res => {
-
-				console.log('res UPDATE DATA ORDER',res);
-			} )
-			.catch( err => {
-				console.log('err UPDATE DATA ORDER',err);
-			} )
+		update_order(newOrderData);
 	}
 
 	/*

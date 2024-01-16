@@ -3,7 +3,7 @@ import { isEmpty } from "lodash";
 import { WISHLIST_URL } from "./constants/endpoints";
 import { confirmAlert } from 'react-confirm-alert'; // Import
 import 'react-confirm-alert/src/react-confirm-alert.css'; // Import css
-import Cookies from "js-cookie";
+
 import Router from "next/router";
 
 export const removeWishlist = async (customerData,setCustomerData,product,setWishlistLoding,setWishlist) => {
@@ -21,7 +21,7 @@ export const removeWishlist = async (customerData,setCustomerData,product,setWis
         if(!isEmpty(wishlistData?.result))
         {
             setCustomerData( { ...customerData, wishlist: wishlistData?.result } );
-            Cookies.set('customerData',JSON.stringify({ ...customerData, wishlist: wishlistData?.result } ));
+            localStorage.setItem('customerData',JSON.stringify({ ...customerData, wishlist: wishlistData?.result } ));
         }
         setWishlist(0);
     }
@@ -47,7 +47,7 @@ export const addWishlist = async (customerData,setCustomerData,product,setWishli
             {
                 setWishlist(1);
                 setCustomerData( { ...customerData, wishlist: wishlistData?.result } );
-                Cookies.set('customerData',JSON.stringify({ ...customerData, wishlist: wishlistData?.result } ));
+                localStorage.setItem('customerData',JSON.stringify({ ...customerData, wishlist: wishlistData?.result } ));
             }
         }
     }else{

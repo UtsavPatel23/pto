@@ -14,6 +14,7 @@ import Link from 'next/link';
 import { trackLinkList } from '../../src/utils/my-account/tracklinklist-order';
 import { useEffect } from 'react';
 import { isEmpty } from 'lodash';
+import { get_order } from '../../src/utils/apiFun/order';
 
 
 
@@ -55,7 +56,7 @@ function trackOrder({headerFooter}) {
  	//const { errorsTrack } = formState_l;
 	// user login 
 	const onFormSubmitLogin = async( event ) => {
-	
+        var orderid = '';
         const trackData = {
             orderno: event.orderid,
             order_email: event.order_email,
@@ -71,55 +72,8 @@ function trackOrder({headerFooter}) {
                         loading: false }
                         );
                 }else{
-                  const orderid = res.data?.orderid;
+                  orderid = res.data?.orderid;
                   //console.log('orderid',orderid);
-                  if(orderid)
-                  {
-                    var tmpsubtotal = 0;
-                    let config = {
-                        method: 'post',
-                        maxBodyLength: Infinity,
-                        url: NEXT_PUBLIC_SITE_API_URL +'/api/order/get-order?id='+orderid,
-                        headers: { },
-                        };
-                    axios.request(config)
-                    .then((response) => {
-                      setOrderData(response.data.orderData);
-                      if(response.data.orderData?.billing?.email != event.order_email)
-                      {
-                        setTrackFields( {
-                          ...trackFields,
-                          error: 'Something Went to Wrong.',
-                          loading: false }
-                          );
-                          return '';
-                        }
-                        if(response.data.orderData.line_items != undefined)
-                        {
-                          response.data.orderData?.line_items.map( ( item ) => {
-                            tmpsubtotal =tmpsubtotal+parseFloat(item.subtotal);
-                          }) 
-                        }
-                        setSubtotal(tmpsubtotal);
-                        setDatedis(get_date_formate(response.data.orderData?.date_created));
-                        reset_l();
-                        setTrackFields( {
-                          ...trackFields,
-                          error: '',
-                          loading: false,
-                          success: true }
-                          );
-                          })
-                    .catch((error) => {
-                    console.log(error);
-                    setTrackFields( {
-                      ...trackFields,
-                      error: 'Something Went to Wrong.',
-                      loading: false }
-                      );
-                    return '';
-                    });
-                  }
                 }
 
             } )
@@ -127,7 +81,47 @@ function trackOrder({headerFooter}) {
                 console.log('err',err);
                 setTrackFields( { ...trackFields, error: err?.response?.data?.message, loading: false } );
             } )
-          
+            if(orderid != '')
+            { 
+              const response = await get_order(orderid);
+              if(response.success)
+              {
+                var tmpsubtotal = 0;
+                setOrderData(response.data.orderData);
+                if(response.data.orderData?.billing?.email != event.order_email)
+                {
+                  setTrackFields( {
+                    ...trackFields,
+                    error: 'Something Went to Wrong.',
+                    loading: false }
+                    );
+                    return '';
+                  }
+                  if(response.data.orderData.line_items != undefined)
+                  {
+                    response.data.orderData?.line_items.map( ( item ) => {
+                      tmpsubtotal =tmpsubtotal+parseFloat(item.subtotal);
+                    }) 
+                  }
+                  setSubtotal(tmpsubtotal);
+                  setDatedis(get_date_formate(response.data.orderData?.date_created));
+                  reset_l();
+                  setTrackFields( {
+                    ...trackFields,
+                    error: '',
+                    loading: false,
+                    success: true }
+                    );
+              }else{
+                setTrackFields( {
+                  ...trackFields,
+                  error: 'Something Went to Wrong.',
+                  loading: false }
+                  );
+              }
+              return '';
+              
+            }
     };
 
   const { error, loading } = trackFields;

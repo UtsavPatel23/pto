@@ -11,7 +11,7 @@ import axios from 'axios';
 //import { getProductsData } from '../../src/utils/products'; // api default
 import Layout from '../../src/components/layout';
 import { useEffect, useState } from 'react';
-import Cookies from 'js-cookie';
+;
 
 export default function Home({ headerFooter, products }) {
 	console.log('products',products);
@@ -29,7 +29,7 @@ export default function Home({ headerFooter, products }) {
 		},
 	}
 	useEffect(() => {
-        if(Cookies.get('token')) {
+        if(localStorage.getItem('token')) {
 			setTokenValid(1);
         }
 	}, []);

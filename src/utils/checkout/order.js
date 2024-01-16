@@ -6,6 +6,7 @@
  * @returns {*[]|*} Line items, Array of objects.
  */
 import { isArray, isEmpty } from 'lodash';
+import { createOrderWC } from '../apiFun/order';
 import { NEXT_PUBLIC_SITE_API_URL } from '../constants/endpoints';
 import { get_customer_id } from '../customjs/custome';
 
@@ -163,34 +164,13 @@ export const createTheOrder = async ( orderData, setOrderFailedError, previousRe
 	}
 	
 	setOrderFailedError( '' );
-	
-	try {
-		const request = await fetch( NEXT_PUBLIC_SITE_API_URL +'/api/order/create-order', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify( orderData ),
-		} );
-		
-		const result = await request.json();
-		//console.log('c order',result);
-		if ( result.error ) {
-			response.error = result.error;
-			setOrderFailedError( 'Something went wrong. Order creation failed. Please try again' );
-		}
-		response.orderId = result?.orderId ?? '';
+	const  result = await createOrderWC(orderData);
+	response.orderId = result?.orderId ?? '';
 		response.orderPostID = result?.orderPostID ?? '';
 		response.total = result.total ?? '';
 		response.currency = result.currency ?? '';
 		response.paymentUrl = result.paymentUrl ?? '';
 		response.order_key = result.order_key ?? '';
 		response.allData = result.allData ?? '';
-		
-	} catch ( error ) {
-		// @TODO to be handled later.
-		console.warn( 'Handle create order error', error?.message );
-	}
-	
 	return response;
 };

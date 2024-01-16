@@ -1,4 +1,4 @@
-import Cookies from 'js-cookie';
+;
 import validator from 'validator';
 import isEmpty from './is-empty';
 
@@ -56,8 +56,8 @@ const validateAndSanitizeCheckoutFormCustomers = ( data) => {
 		}
 
 		if ( 'oldpassword' === type) {
-			if(Cookies.get('u8po1d')) {
-				if(Cookies.get('u8po1d') != (btoa(data['oldpassword'])))
+			if(localStorage.getItem('u8po1d')) {
+				if(localStorage.getItem('u8po1d') != (btoa(data['oldpassword'])))
 				{
 					errors['oldpassword'] = `${errorContent} is incorrect `;
 				}
@@ -85,7 +85,7 @@ const validateAndSanitizeCheckoutFormCustomers = ( data) => {
 	
 	if(data.oldpassword != '' || data.password != '' || data.confirmPassword != '')
 	{
-		if(Cookies.get('token') != 'loginphone')
+		if(localStorage.getItem('token') != 'loginphone')
 		{
 			addErrorAndSanitizedData( 'oldpassword', 'Old Password', 6, 60, 'oldpassword', true );
 		}

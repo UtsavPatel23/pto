@@ -10,7 +10,7 @@
  import axios from 'axios';
  import Layout from '../src/components/layout';
  import { useEffect, useState } from 'react';
- import Cookies from 'js-cookie';
+ ;
 import { isEmpty } from 'lodash';
 import Link from 'next/link';
 import Loader from "./../public/loader.gif";
@@ -35,10 +35,10 @@ import Loader from "./../public/loader.gif";
          },
      }
      useEffect(() => {
-         if(Cookies.get('token')) {
+         if(localStorage.getItem('token')) {
              setTokenValid(1);
-			 if(Cookies.get('customerData')) {
-             var customerDataTMP =  JSON.parse(Cookies.get('customerData'));
+			 if(localStorage.getItem('customerData')) {
+             var customerDataTMP =  JSON.parse(localStorage.getItem('customerData'));
 			 setCustomerData(customerDataTMP);
 			 }
          }

@@ -16,7 +16,7 @@ import {
 	setStatesForCountry,
 } from '../../utils/checkout';
 import { useEffect } from 'react';
-import Cookies from 'js-cookie';
+;
 import { getShipping, get_discount_type_cart, get_points, get_stateList } from '../../utils/customjs/custome';
 import Loader from "./../../../public/loader.gif";
 import axios from 'axios';
@@ -513,8 +513,8 @@ const CheckoutForm = ( { countriesData , paymentModes , options} ) => {
 	console.log('input',input);
 	console.log('customerData',customerData);
 	useEffect(() => {
-        if(Cookies.get('customerData')) {
-			var customerDataTMP =  JSON.parse(Cookies.get('customerData'));
+        if(localStorage.getItem('customerData')) {
+			var customerDataTMP =  JSON.parse(localStorage.getItem('customerData'));
 			setCustomerData(customerDataTMP);
 			console.log('customerDataTMP',customerDataTMP);
 			if(customerDataTMP != undefined && customerDataTMP != '')
@@ -564,12 +564,12 @@ const CheckoutForm = ( { countriesData , paymentModes , options} ) => {
 		}
 
 		//hook useEffect variable data set
-		if(Cookies.get('coutData')) {
-			setCoutData(JSON.parse(Cookies.get('coutData')));
+		if(localStorage.getItem('coutData')) {
+			setCoutData(JSON.parse(localStorage.getItem('coutData')));
 		}
 
 		//check token
-        if(Cookies.get('token')) {
+        if(localStorage.getItem('token')) {
 			setTokenValid(1)
         }
 	}, [tokenValid]);

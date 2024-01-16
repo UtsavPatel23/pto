@@ -7,7 +7,7 @@ import Loading from '../src/components/icons/Loading';
 import { AppContext } from '../src/components/context';
 import { HEADER_FOOTER_ENDPOINT, NEXT_PUBLIC_SITE_API_URL, USER_LOGIN } from '../src/utils/constants/endpoints';
 import { isEmpty } from 'lodash';
-import Cookies from 'js-cookie';
+;
 import Bacs from './../src/components/thank-you/bacs';
 import OrderBasicDetails from './../src/components/thank-you/order-basic-details';
 import OrderDetails from './../src/components/thank-you/order-details';
@@ -15,6 +15,8 @@ import OrderAddress from './../src/components/thank-you/order-address';
 import { payment_capture_afterpay } from '../src/utils/thank-you/afterpay-capture';
 import { payment_capture_laybuy } from '../src/utils/thank-you/laybuy-capture';
 import { getStates } from '../src/utils/checkout';
+import { get_order, update_order } from '../src/utils/apiFun/order';
+import { updateCustomers } from '../src/utils/apiFun/customer';
 
 
 const ThankYouContent = ({headerFooter,states}) => {
@@ -79,18 +81,12 @@ const ThankYouContent = ({headerFooter,states}) => {
 		
 	},[]);*/
 console.log('sessionData',sessionData);
-	const getOrderData = (id) => {
+	const getOrderData = async(id) => {
 		let data = '';
 		var tmpsubtotal = 0;
-		let config = {
-				method: 'post',
-				maxBodyLength: Infinity,
-				url: NEXT_PUBLIC_SITE_API_URL + '/api/order/get-order?id='+id,
-				headers: { },
-				data : data
-				};
-		axios.request(config)
-		.then((response) => {
+		const response = await get_order(id);
+		if(response.success)
+		{
 			if(status != 'SUCCESS')
 			{
 					Router.push('/checkout/order-pay?orderid='+response.data.orderData?.id+'&key='+order_key+'&status=CANCELLED&orderToken='+token);
@@ -105,11 +101,8 @@ console.log('sessionData',sessionData);
 				}
 				setSubtotal(tmpsubtotal);
 			}
+		}
 			
-		})
-		.catch((error) => {
-		console.log(error);
-		});
 	}
 	console.log('orderData',orderData);
 	console.log('orderToken',orderToken);
@@ -148,14 +141,7 @@ console.log('sessionData',sessionData);
 					orderId: orderData?.id,
 					redeem: 1,
 				};
-				axios.post( NEXT_PUBLIC_SITE_API_URL +'/api/order/update-order', newOrderData )
-					.then( res => {
-		
-						console.log('res UPDATE DATA ORDER',res);
-					} )
-					.catch( err => {
-						console.log('err UPDATE DATA ORDER',err);
-					} )
+				update_order(newOrderData);
 				//password
 				var userRedeemPoint = parseInt(findMeta_dataUserReedemData.value) + parseInt(newOrderData._redeemed_reward_points) ;
 				var userData = {
@@ -173,22 +159,20 @@ console.log('sessionData',sessionData);
 					message: '',
 					error: '',
 				};
-				axios.post(NEXT_PUBLIC_SITE_API_URL +'/api/customer/update-customers/',
-				userData
-				).then((response) => {
-					console.log(response.data);
+				(async () => {
+				const response =  await updateCustomers(userData);
+				if(response?.success)
+				{
 					responseCus.success = true;
-					responseCus.customers = response.data.customers;
-					responseCus.message = "User update successfully";
-					Cookies.set('customerData',JSON.stringify(responseCus.customers));
-					//res.json( responseCus );
-				})
-				.catch((error) => {
-					console.log('Err',error.response.data);
+							responseCus.customers = response.data.customers;
+							responseCus.message = "User update successfully";
+							localStorage.setItem('customerData',JSON.stringify(responseCus.customers));
+				}else{
 					responseCus.error = error.response.data.error;
 					responseCus.message = "Invalid data";
-					//res.status( 500 ).json( responseCus  );
-				});
+				}
+				})();
+
 			}else{
 				console.log('already user update redeem point');
 			}

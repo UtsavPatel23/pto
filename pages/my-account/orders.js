@@ -3,7 +3,7 @@ import axios from 'axios';
 import { HEADER_FOOTER_ENDPOINT, NEXT_PUBLIC_SITE_API_URL } from '../../src/utils/constants/endpoints';
 import Layout from '../../src/components/layout';
 import { useEffect } from 'react';
-import Cookies from 'js-cookie';
+;
 import { useState } from 'react';
 import Link from 'next/link';
 import Loader from "./../../public/loader.gif";
@@ -15,6 +15,7 @@ import 'react-confirm-alert/src/react-confirm-alert.css'; // Import css
 import {create_invoice_pdf} from '../../src/utils/my-account/create-pdf-invoice'
 import { getStates } from '../../src/utils/checkout';
 import ButtonOrderTracking from '../../src/components/my-account/button-order-tracking';
+import { get_orders, update_order } from '../../src/utils/apiFun/order';
 
 
 
@@ -49,16 +50,14 @@ export default function orders ({headerFooter,states}){
 				orderCancelledByCustomer : 1,
 				orderId: orderid,
 			};
-			 await	axios.post(NEXT_PUBLIC_SITE_API_URL + '/api/order/update-order', newOrderData )
-				.then( res => {
-					//console.log('res UPDATE DATA ORDER',res);
-					get_orders(customerData?.id);
-					setCancelStatus({'yes':'Your order has been cancelled : '+ number+'.'});
-				} )
-				.catch( err => {
-					console.log('err UPDATE DATA ORDER',err);
-					setCancelStatus({no:'Something went wrong!.'});
-				} )
+			const updateOrder =  await update_order(newOrderData);
+			if(updateOrder.success)
+			{
+				get_orders_Data(customerData?.id);
+				setCancelStatus({'yes':'Your order has been cancelled : '+ number+'.'});
+			}else{
+				setCancelStatus({no:'Something went wrong!.'});
+			}
 		}
 		// Get order by customer id 
 		const confirmAlertClick = (orderid,number) => {
@@ -79,27 +78,18 @@ export default function orders ({headerFooter,states}){
 		  };
 
 	// Get order by customer id 
-	function get_orders(customer_id)
-	{
+	const get_orders_Data = async(customer_id) => {
 		if(customer_id)
 		{
-			const orderReq = {
-				customer_id:customer_id,
-			  };
-			axios.post('/api/order/get-orders',
-			 orderReq
-			).then((response) => {
-				//console.log(response);
+			const response =  await get_orders(customer_id);
+			if(response.success)
+			{
 				if(response?.data?.orderData != '')
 				{
 					setUserOrders(response?.data?.orderData);
 				}
 				setLoading(false);
-			})
-			.catch((error) => {
-				console.log('Err',error.response);
-				setLoading(false);
-			});	
+			}
 		}
 	}
 		
@@ -107,23 +97,23 @@ export default function orders ({headerFooter,states}){
     useEffect(() => {
 		if(tokenValid)
 		{
-       		if(Cookies.get('customerData')) {
-				var customerDataTMP =  JSON.parse(Cookies.get('customerData'));
+       		if(localStorage.getItem('customerData')) {
+				var customerDataTMP =  JSON.parse(localStorage.getItem('customerData'));
 				//console.log('customerDataTMP',customerDataTMP);
 				if(customerDataTMP?.id != '')
 				{
 					setRewardPoints(get_points(customerDataTMP));
 					setCustomerData(customerDataTMP);
-					get_orders(customerDataTMP?.id);
+					get_orders_Data(customerDataTMP?.id);
 				}
 				
 			}
 		}
 
 		//check token
-        if(Cookies.get('token')) {
+        if(localStorage.getItem('token')) {
 			setTokenValid(1)
-			setToken(Cookies.get('token'));
+			setToken(localStorage.getItem('token'));
         }else{
 			Router.push("/my-account/");
 		}

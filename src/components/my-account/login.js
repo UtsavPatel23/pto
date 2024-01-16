@@ -7,7 +7,7 @@ import * as Yup from 'yup';
 import { get_customer } from '../../utils/customer';
 import axios from 'axios';
 import { USER_LOGIN } from '../../utils/constants/endpoints';
-import Cookies from 'js-cookie';
+;
 import { Link } from '@mui/material';
 import { CAPTCHA_SITE_KEY, USER_REGIS } from '../../utils/constants/endpoints';
 import ReCAPTCHA from "react-google-recaptcha"
@@ -77,9 +77,9 @@ function LoginForm({setTokenValid,tokenValid,setCustomerData}) {
             const { token, user_nicename, user_email,user_id } = loligRes;
             
             //set token on localStorage
-            Cookies.set('token',token);
-            Cookies.set('u8po1d',btoa(event.password));
-            Cookies.set('user_lgdt',JSON.stringify(loligRes));
+            localStorage.setItem('token',token);
+            localStorage.setItem('u8po1d',btoa(event.password));
+            localStorage.setItem('user_lgdt',JSON.stringify(loligRes));
             //redirect to dashboard
             await get_customer(user_email,setCustomerData);
             setLoginFields( {

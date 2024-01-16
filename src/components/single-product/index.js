@@ -19,7 +19,7 @@ import { isEmpty } from 'lodash';
 import { getMemberOnlyProduct, getNewProductTag, storeYourBrowsingHistory } from '../../utils/customjs/custome';
 import BuyNow from '../cart/buy-now';
 import InputQty from '../single-product/input-qty';
-import Cookies from 'js-cookie';
+;
 import { get_coupon_box } from '../../utils/shop/shop-box';
 import WishlistButton from '../wishlist/wishlistbutton'
 
@@ -170,10 +170,10 @@ import WishlistButton from '../wishlist/wishlistbutton'
 			}
 			
 		useEffect(() => {
-			if(Cookies.get('token')) {
+			if(localStorage.getItem('token')) {
 				setTokenValid(1);
-				if(Cookies.get('customerData')) {
-				var customerDataTMP =  JSON.parse(Cookies.get('customerData'));
+				if(localStorage.getItem('customerData')) {
+				var customerDataTMP =  JSON.parse(localStorage.getItem('customerData'));
 				setCustomerData(customerDataTMP);
 				}
 			}

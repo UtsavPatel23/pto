@@ -1,6 +1,5 @@
 import React from "react";
 import Router from 'next/router';
-import { clearCart } from "../../utils/cart";
 
 // Renders errors or successfull transactions on the screen.
 function Message({ content }) {
@@ -16,7 +15,6 @@ function CancelOrderButton({createdOrderData}) {
   }
   const cancelOrder = async ( event ) => 
   {
-    //await clearCart( null, () => {} );
     Router.push('/checkout/order-pay?orderid='+checkoutOrderData?.id+'&key='+checkoutOrderData?.order_key+'&status=CANCELLED');
   } 
   return (

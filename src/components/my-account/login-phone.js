@@ -6,7 +6,7 @@ import { USER_LOGINWITHPHONE } from '../../utils/constants/endpoints';
 import { auth } from '../../utils/firebase'
 import { RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth';
 import { get_customer } from '../../utils/customer';
-import Cookies from 'js-cookie';
+;
 
 
 function LoginPhone({setTokenValid,tokenValid,setCustomerData}) {
@@ -50,7 +50,7 @@ function LoginPhone({setTokenValid,tokenValid,setCustomerData}) {
 			.then( res => {
 				if(res.data)
 				{
-					Cookies.set('token','loginphone');
+					localStorage.setItem('token','loginphone');
 					get_customer(res.data,setCustomerData);
 					setTokenValid(1);
 				}else{

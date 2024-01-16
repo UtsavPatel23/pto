@@ -4,7 +4,7 @@ import axios from 'axios';
 import { HEADER_FOOTER_ENDPOINT, NEXT_PUBLIC_SITE_API_URL, SUBURB_API_URL } from '../../src/utils/constants/endpoints';
 import Layout from '../../src/components/layout';
 import { useEffect } from 'react';
-import Cookies from 'js-cookie';
+;
 import { useState } from 'react';
 import Link from 'next/link';
 import Address from '../../src/components/checkout/user-address';
@@ -15,6 +15,7 @@ import validateAndSanitizeCheckoutForm from '../../src/validator/checkout';
 import cx from 'classnames';
 import Router from "next/router";
 import Sidebar from '../../src/components/my-account/sidebar';
+import { updateCustomers } from '../../src/utils/apiFun/customer';
 
 const defaultCustomerInfo = {
 	firstName: '',
@@ -295,39 +296,33 @@ export default function editAddress ({headerFooter,countriesData}){
 			},
 			};
 		  //console.log('userData 1',userData);
-		
-		await axios.post(NEXT_PUBLIC_SITE_API_URL +'/api/customer/update-customers/',
-		userData
-		).then((response) => {
-			//console.log(response.data);
-			
-			Cookies.set('customerData',JSON.stringify(response.data.customers));
+		const response =  await updateCustomers(userData);
+		if(response?.success)
+		{
+			localStorage.setItem('customerData',JSON.stringify(response.data.customers));
 			setMessage({
 				...message,
 				success:true,
 				message: "User update successfully",
 				loading: false, 
 				});
-			//res.json( responseCus );
-		})
-		.catch((error) => {
-			//console.log('Err',error.response.data);
-			//res.status( 500 ).json( responseCus  );
+		}else{
 			setMessage({
 				...message,
 				success:false,
-				error:error.response.data.error,
+				error:response.data.error,
 				message: "Invalid data",
 				loading: false, 
 				});
-		});
+		}
+		
 		//console.log('responseCus',responseCus);
 	};
 
     // set defaulte user login data 
     useEffect(() => {
-        if(Cookies.get('customerData')) {
-			var customerDataTMP =  JSON.parse(Cookies.get('customerData'));
+        if(localStorage.getItem('customerData')) {
+			var customerDataTMP =  JSON.parse(localStorage.getItem('customerData'));
 			//console.log('customerDataTMP',customerDataTMP);
 			if(customerDataTMP != undefined && customerDataTMP != '')
 			{
@@ -364,7 +359,7 @@ export default function editAddress ({headerFooter,countriesData}){
 		}
 
 		//check token
-        if(Cookies.get('token')) {
+        if(localStorage.getItem('token')) {
 			setTokenValid(1)
         }else{
 			Router.push("/my-account/");

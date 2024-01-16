@@ -1,17 +1,17 @@
 import Link from 'next/link'
 import React from 'react'
-import Cookies from 'js-cookie';
+;
 import { signOut } from "next-auth/react"
 
 function Sidebar({setTokenValid}) {
    //function logout
 	const logoutHanlder = async () => {
-        let tokenName = Cookies.get('token');
-		//remove token from cookies
-		Cookies.remove("token");
-		Cookies.remove("user_lgdt");
-		Cookies.remove('customerData');
-		Cookies.remove('coutData');
+        let tokenName = localStorage.getItem('token');
+		//remove token from localstorage
+		localStorage.setItem("token",'');
+		localStorage.setItem("user_lgdt",'');
+		localStorage.setItem('customerData','');
+		localStorage.setItem('coutData','');
         if(tokenName == 'logingoogle')
         {
             await signOut();

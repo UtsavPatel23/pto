@@ -3,7 +3,7 @@ import axios from 'axios';
 import { HEADER_FOOTER_ENDPOINT, NEXT_PUBLIC_SITE_API_URL } from '../../src/utils/constants/endpoints';
 import Layout from '../../src/components/layout';
 import { useEffect } from 'react';
-import Cookies from 'js-cookie';
+;
 import { useState } from 'react';
 import Loader from "./../../public/loader.gif";
 import Router from "next/router";
@@ -15,6 +15,7 @@ import OrderBasicDetails from '../../src/components/thank-you/order-basic-detail
 import OrderDetails from '../../src/components/thank-you/order-details';
 import OrderAddress from '../../src/components/thank-you/order-address';
 import { getStates } from '../../src/utils/checkout';
+import { get_order } from '../../src/utils/apiFun/order';
 
 
 
@@ -43,19 +44,14 @@ export default function viewOrder ({headerFooter,states}){
     
 	// Get order 
 	useEffect(() => {
+		(async () => {
 		if(orderid)
 		{
 			let data = '';
 			var tmpsubtotal = 0;
-			let config = {
-					method: 'post',
-					maxBodyLength: Infinity,
-					url: NEXT_PUBLIC_SITE_API_URL +'/api/order/get-order?id='+orderid,
-					headers: { },
-					data : data
-					};
-			axios.request(config)
-			.then((response) => {
+			const response = await get_order(orderid);
+              if(response.success)
+              {
 
 					setOrderData(response.data.orderData);
 					if(response.data.orderData.line_items != undefined)
@@ -66,21 +62,17 @@ export default function viewOrder ({headerFooter,states}){
 					}
 					setSubtotal(tmpsubtotal);
 					setLoading(false);
-			})
-			.catch((error) => {
-			console.log(error);
-			setLoading(false);
-			});
+			}
 		}
-					
+		})();		
 	}, [orderid]);
 		
     // set defaulte user login data 
     useEffect(() => {
 		if(tokenValid)
 		{
-       		if(Cookies.get('customerData')) {
-				var customerDataTMP =  JSON.parse(Cookies.get('customerData'));
+       		if(localStorage.getItem('customerData')) {
+				var customerDataTMP =  JSON.parse(localStorage.getItem('customerData'));
 				console.log('customerDataTMP',customerDataTMP);
 				if(customerDataTMP?.id != '')
 				{
@@ -92,9 +84,9 @@ export default function viewOrder ({headerFooter,states}){
 		}
 
 		//check token
-        if(Cookies.get('token')) {
+        if(localStorage.getItem('token')) {
 			setTokenValid(1)
-			setToken(Cookies.get('token'));
+			setToken(localStorage.getItem('token'));
         }else{
 			Router.push("/my-account/");
 		}

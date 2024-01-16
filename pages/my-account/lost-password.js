@@ -3,7 +3,7 @@ import Loader from "./../../public/loader.gif";
 import axios from 'axios';
 import { HEADER_FOOTER_ENDPOINT,  USER_CHANGEPASS,  USER_FORGOT,  USER_KEYVERI,  USER_REGIS } from '../../src/utils/constants/endpoints';
 import Layout from '../../src/components/layout';
-import Cookies from 'js-cookie';
+;
 
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -101,7 +101,7 @@ export default function lostPassword ({headerFooter}){
 	const { errors } = formState;
 
 	const onFormSubmitForgot = ( event ) => {
-		var  userData =  Cookies.get('lpKeyValid');
+		var  userData =  localStorage.getItem('lpKeyValid');
 		if(userData != undefined)
 		{
 			userData = JSON.parse(userData);
@@ -121,7 +121,7 @@ export default function lostPassword ({headerFooter}){
 				console.log('res',res);
 				if(res.data.code == '200')
 				{
-					Cookies.remove("lpKeyValid");
+					localStorage.setItem("lpKeyValid",'');
 					setRegisFields( {
 						...regisFields,
 						regis_error: '',
@@ -178,7 +178,7 @@ export default function lostPassword ({headerFooter}){
         //check token
 		if(router.query.key != undefined)
 		{
-			if(Cookies.get('lpKeyValid')) {
+			if(localStorage.getItem('lpKeyValid')) {
 				setLpKeyValid(1)
 			}else{
 				
@@ -194,7 +194,7 @@ export default function lostPassword ({headerFooter}){
 							if(res.data.code == '200')
 							{
 								
-								Cookies.set('lpKeyValid',JSON.stringify(res.data.data))
+								localStorage.setItem('lpKeyValid',JSON.stringify(res.data.data))
 								setRegisFields( {
 									...regisFields,
 									regis_error: '',
@@ -210,7 +210,7 @@ export default function lostPassword ({headerFooter}){
 									regis_loading: false }
 									);
 								setLostError('This password reset key is for a different. Please try again.');
-								Cookies.remove("lpKeyValid");
+								localStorage.setItem("lpKeyValid",'');
 							}
 						} )
 						.catch( err => {

@@ -4,6 +4,7 @@ import axios from "axios";
 import { clearCart } from "../../../utils/cart";
 import { NEXT_PUBLIC_SITE_API_URL } from "../../../utils/constants/endpoints";
 import Router from 'next/router';
+import { update_order } from "../../../utils/apiFun/order";
 // Renders errors or successfull transactions on the screen.
 function Message({ content }) {
   return <p>{content}</p>;
@@ -34,7 +35,7 @@ function PaypalButtonCheckout({createdOrderData}) {
           }}
           createOrder={async () => {
             try {
-              const response = await fetch("/api/paypal/create-order", {
+              const response = await fetch(NEXT_PUBLIC_SITE_API_URL +"/api/paypal/create-order", {
                 method: "POST",
                 headers: {
                   "Content-Type": "application/json",
@@ -113,16 +114,13 @@ function PaypalButtonCheckout({createdOrderData}) {
                         token : transaction.id,
                         orderno : reference_id,
                     };
-                    
-                    await axios.post( NEXT_PUBLIC_SITE_API_URL + '/api/order/update-order', newOrderData )
-                      .then( res => {
-                        //window.location.href =  process.env.NEXT_PUBLIC_SITE_URL+'/thank-you/?orderPostnb='+window.btoa(reference_id)+'&status=SUCCESS';
-                        Router.push('/thank-you/?orderPostnb='+window.btoa(reference_id)+'&status=SUCCESS');
-                        console.log('res UPDATE DATA ORDER',res);
-                      } )
-                      .catch( err => {
-                        //console.log('err UPDATE DATA ORDER',err);
-                      } )
+                    const updateOrder =  await update_order(newOrderData);
+                    if(updateOrder.success)
+                    {
+                      Router.push('/thank-you/?orderPostnb='+window.btoa(reference_id)+'&status=SUCCESS');
+                    }else{
+
+                    }
                   }
                 setMessage(
                   `Transaction ${transaction.status}: ${transaction.id}. See console for all available details`,

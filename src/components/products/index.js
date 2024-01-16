@@ -11,7 +11,7 @@ import * as React from 'react';
 import Slider from '@mui/material/Slider';
 import Router, { useRouter } from 'next/router';
 import { get_count_total_discount, go_to_main_filter, selectattributdefault} from '../../utils/customjs/custome';
-import Cookies from 'js-cookie';
+;
 
 
 const Products = ({ products , options ,  tokenValid }) => {
@@ -52,9 +52,9 @@ const Products = ({ products , options ,  tokenValid }) => {
 	const [customerData,setCustomerData] = useState(0);
 
 	useEffect(() => {
-		if(Cookies.get('token')) {
-			if(Cookies.get('customerData')) {
-			var customerDataTMP =  JSON.parse(Cookies.get('customerData'));
+		if(localStorage.getItem('token')) {
+			if(localStorage.getItem('customerData')) {
+			var customerDataTMP =  JSON.parse(localStorage.getItem('customerData'));
 			setCustomerData(customerDataTMP);
 			}
 		}

@@ -1,6 +1,4 @@
-import axios from "axios";
-import Cookies from "js-cookie";
-import { NEXT_PUBLIC_SITE_API_URL } from "./constants/endpoints";
+import { createCustomers, getCustomers } from "./apiFun/customer";
 
 /* Get customer data */
 export const get_customer = async(arg_user_email,setCustomerData)=>
@@ -10,25 +8,21 @@ export const get_customer = async(arg_user_email,setCustomerData)=>
                 customers: null,
                 error: '',
             };
-			try {
-                const {data:resultCus} = await axios.get( NEXT_PUBLIC_SITE_API_URL + '/api/customer/get-customers?email='+arg_user_email);
-                
-                if ( resultCus.error ) {
-                    responseCus.error = resultCus.error;
-                }
-               
+			const resultCus = await getCustomers(arg_user_email);
+			console.log('======resultCus=====',resultCus);
+			if(resultCus.success)
+			{
 				responseCus.success = true;
-				console.log('resultCus',resultCus);
 				if(resultCus.customers != undefined)
 				{
 					responseCus.customers = resultCus.customers[0];
 					setCustomerData(resultCus.customers[0]);
-					Cookies.set('customerData',JSON.stringify(resultCus.customers[0]));
+					localStorage.setItem('customerData',JSON.stringify(resultCus.customers[0]));
 				}
-            } catch ( error ) {
-                // @TODO to be handled later.
-                console.warn( 'Handle create order error', error?.message );
-            }
+			}else{
+				responseCus.error = resultCus.error;
+			}
+			
 			//console.log('responseCus',loginFields.userEmail);
 			console.log('responseCus',responseCus);
 			return responseCus.customers;
@@ -51,20 +45,15 @@ export const handleCreateCustomer = async(input) => {
 				billing: input.billing,
 				shipping:input.shipping 
 			  };
-			  console.log('userData',userData);
-			await axios.post(NEXT_PUBLIC_SITE_API_URL +'/api/customer/create-customers/',
-			userData
-			).then((response) => {
-				console.log(response.data);
+			   console.log('userData',userData);
+
+			   const response = await createCustomers();
+			   if(response.success)
+			   {
 				responseCus.success = true;
 				responseCus.customers = response.data;
-				//res.json( responseCus );
-			})
-			.catch((error) => {
-				console.log('Err',error.response.data);
+			   }else{
 				responseCus.error = error.response.data.error;
-				//res.status( 500 ).json( responseCus  );
-			});
-
+			   }
 			return responseCus;
 }

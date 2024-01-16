@@ -1,8 +1,7 @@
 import { SHOP_SHIPPING_MULI } from "../constants/endpoints";
 import axios from 'axios';
-import Cookies from 'js-cookie';
-import { constant, isEmpty } from "lodash";
-import { get_customer } from "../customer";
+;
+import {  isEmpty } from "lodash";
 import { clearCart } from "../cart";
 
 export function go_to_main_filter()
@@ -206,27 +205,29 @@ export function get_count_total_discount(filter_discount)
 
 
 export   function localstorage_cookiesClear(){
+  setTimeout(function(){
       var hours = 20; // to clear the localStorage after 1 hour
-                // (if someone want to clear after 8hrs simply change hours=8)
-    var now = new Date().getTime();
-    var setupTime = localStorage.getItem('setupTime');
-    if (setupTime == null) {
-      localStorage.setItem('setupTime', now)
-    } else {
-      if(now-setupTime > hours*60*60*1000) {
-        if(Cookies.get('token')) {
-          //remove token from cookies
-          Cookies.remove("token");
-          Cookies.remove("user_lgdt");
-          Cookies.remove('customerData');
-          Cookies.remove('coutData');
-          clearCart(null,false);
-          
+                  // (if someone want to clear after 8hrs simply change hours=8)
+      var now = new Date().getTime();
+      var setupTime = localStorage.getItem('setupTime');
+      if (setupTime == null) {
+        localStorage.setItem('setupTime', now)
+      } else {
+        if(now-setupTime > hours*60*60*1000) {
+          if(localStorage.getItem('token')) {
+            //remove token from localStorage
+            localStorage.setItem("token",'');
+            localStorage.setItem("user_lgdt",'');
+            localStorage.setItem('customerData','');
+            localStorage.setItem('coutData','');
+            clearCart(null,false);
+            
+          }
+      localStorage.clear()
+          localStorage.setItem('setupTime', now);
         }
-		localStorage.clear()
-        localStorage.setItem('setupTime', now);
       }
-    }
+    },10000);
   }
 
 export  function selectattributdefault(filter_attributes,filter_option)
@@ -628,8 +629,8 @@ export function exclude_category_for(data,exclude_category) {
 export function get_customer_id()
 {
   var  customer_id = '';
-  if(Cookies.get('customerData')) {
-    var customerDataTMP =  JSON.parse(Cookies.get('customerData'));
+  if(localStorage.getItem('customerData')) {
+    var customerDataTMP =  JSON.parse(localStorage.getItem('customerData'));
     if(customerDataTMP != undefined && customerDataTMP != '')
     {
       customer_id = customerDataTMP.id;
@@ -687,4 +688,19 @@ export function getPriceRemoveDiscount(product)
         }
       }
     return product.price;
+}
+
+export const serialize = function(obj, prefix) {
+  var str = [],
+    p;
+  for (p in obj) {
+    if (obj.hasOwnProperty(p)) {
+      var k = prefix ? prefix + "[" + p + "]" : p,
+        v = obj[p];
+      str.push((v !== null && typeof v === "object") ?
+        serialize(v, k) :
+        encodeURIComponent(k) + "=" + encodeURIComponent(v));
+    }
+  }
+  return str.join("&");
 }

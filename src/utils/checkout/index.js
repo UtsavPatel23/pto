@@ -6,6 +6,7 @@ import { clearCart } from '../cart';
 import axios from 'axios';
 import { NEXT_PUBLIC_SITE_API_URL, WOOCOMMERCE_STATES_ENDPOINT } from '../constants/endpoints';
 import Router from 'next/router';
+import { update_order, update_order_notes } from '../apiFun/order';
 
 /**
  * Handle Other Payment Method checkout.
@@ -124,14 +125,8 @@ export const handleStripeCheckout = async (
 		bacs : 1,
 		orderId: customerOrderData?.orderPostID,
 	};
-   	await	axios.post( NEXT_PUBLIC_SITE_API_URL +'/api/order/update-order', newOrderData )
-		.then( res => {
-			console.log('res UPDATE DATA ORDER',res);
-		} )
-		.catch( err => {
-			console.log('err UPDATE DATA ORDER',err);
-		} )
-	
+	 update_order(newOrderData);
+   	
 	setCoutData('');
 	const cartCleared = await clearCart( setCart, () => {
 	} );
@@ -370,13 +365,7 @@ export const createCheckoutSessionAndRedirect = async (
 			orderId: orderPostID,
 			noteMessage: 'Error : session not created.'
 		};
-		axios.post( NEXT_PUBLIC_SITE_API_URL +'/api/order/update-order-notes', newOrderNote )
-			.then( res => {
-					console.log('res UPDATE DATA ORDER Note',res);
-			} )
-			.catch( err => {
-				console.log('err UPDATE DATA ORDER Note ',err);
-			} )
+		update_order_notes(newOrderNote);
 		setRequestError('Error : session not created.');
 		setIsProcessing( false );
 	}
@@ -566,16 +555,8 @@ export const createCheckoutAfterpayAndRedirect = async (
 				  ],
 				  orderId : orderPostID,
 			};
+			await update_order(newOrderData);
 			
-			await axios.post( NEXT_PUBLIC_SITE_API_URL +'/api/order/update-order', newOrderData )
-				.then( res => {
-	
-					//console.log('res UPDATE DATA ORDER',res);
-				} )
-				.catch( err => {
-					//console.log('err UPDATE DATA ORDER',err);
-				} )
-
 			// cartCleared
 			if(checkOutOrderPay == 1)
 			{
@@ -594,13 +575,7 @@ export const createCheckoutAfterpayAndRedirect = async (
 				orderId: orderPostID,
 				noteMessage: 'Error :'+ createCheckoutRes?.message
 			};
-			axios.post( NEXT_PUBLIC_SITE_API_URL +'/api/order/update-order-notes', newOrderNote )
-				.then( res => {
-						console.log('res UPDATE DATA ORDER Note',res);
-				} )
-				.catch( err => {
-					console.log('err UPDATE DATA ORDER Note ',err);
-				} )
+			update_order_notes(newOrderNote);
 			setRequestError('Error :' + createCheckoutRes?.message);
 			setIsProcessing( false );
 		}
@@ -668,15 +643,7 @@ export const createCheckoutAfterpayAndRedirect = async (
 					  ],
 					  orderId : orderPostID,
 				};
-				
-				await axios.post( NEXT_PUBLIC_SITE_API_URL +'/api/order/update-order', newOrderData )
-					.then( res => {
-		
-						//console.log('res UPDATE DATA ORDER',res);
-					} )
-					.catch( err => {
-						//console.log('err UPDATE DATA ORDER',err);
-					} )
+				await update_order(newOrderData);
 					
 				// cartCleared
 				if(checkOutOrderPay == 1)
@@ -696,14 +663,8 @@ export const createCheckoutAfterpayAndRedirect = async (
                     orderId: orderPostID,
                     noteMessage: 'Error :'+ createCheckoutRes?.error
                 };
-                axios.post( NEXT_PUBLIC_SITE_API_URL +'/api/order/update-order-notes', newOrderNote )
-                    .then( res => {
-                            console.log('res UPDATE DATA ORDER Note',res);
-                    } )
-                    .catch( err => {
-                        console.log('err UPDATE DATA ORDER Note ',err);
-                    } )
-				setRequestError('Error :' + createCheckoutRes?.error);
+				update_order_notes(newOrderNote);
+               setRequestError('Error :' + createCheckoutRes?.error);
 				setIsProcessing( false );
 			}
 			

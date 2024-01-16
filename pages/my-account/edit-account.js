@@ -4,7 +4,7 @@ import axios from 'axios';
 import { HEADER_FOOTER_ENDPOINT, NEXT_PUBLIC_SITE_API_URL } from '../../src/utils/constants/endpoints';
 import Layout from '../../src/components/layout';
 import { useEffect } from 'react';
-import Cookies from 'js-cookie';
+;
 import { useState } from 'react';
 import Link from 'next/link';
 import Loader from "./../../public/loader.gif";
@@ -14,6 +14,7 @@ import InputField from '../../src/components/checkout/form-elements/input-field'
 import Datepicker from "react-tailwindcss-datepicker"; 
 import Router from "next/router";
 import Sidebar from '../../src/components/my-account/sidebar';
+import { updateCustomers } from '../../src/utils/apiFun/customer';
 
 
 
@@ -123,11 +124,9 @@ export default function editAccount ({headerFooter,countriesData}){
 			}
 		  console.log('userData 1',userData);
 		
-		
-		await axios.post(NEXT_PUBLIC_SITE_API_URL +'/api/customer/update-customers/',
-		userData
-		).then((response) => {
-			console.log(response.data);
+		  const response =  await updateCustomers(userData);
+		  if(response?.success)
+		  {
 			setMessage( {
 				...message,
 				regis_error: '',
@@ -135,10 +134,10 @@ export default function editAccount ({headerFooter,countriesData}){
 				regis_loading: false,
 				message:"User update successfully"}
 				);
-			Cookies.set('customerData',JSON.stringify(response.data.customers));
+			localStorage.setItem('customerData',JSON.stringify(response.data.customers));
 			if(input.password != '')
 			{
-				Cookies.set('u8po1d',btoa(input.password));
+				localStorage.setItem('u8po1d',btoa(input.password));
 				setInput( {
 					...input,
 					oldpassword:'',
@@ -146,11 +145,7 @@ export default function editAccount ({headerFooter,countriesData}){
 					confirmPassword:'',
 				} );
 			}
-			//res.json( responseCus );
-		})
-		.catch((error) => {
-			console.log('Err',error.response.data);
-			
+		  }else{
 			setMessage( {
 				...message,
 				regis_error: error.response.data.error,
@@ -159,15 +154,15 @@ export default function editAccount ({headerFooter,countriesData}){
 				message:"Invalid data"
 				}
 				);
-			//res.status( 500 ).json( responseCus  );
-		});
+		  }
+		
 		
 	};
 console.log('message',message);
     // set defaulte user login data 
     useEffect(() => {
-        if(Cookies.get('customerData')) {
-			var customerDataTMP =  JSON.parse(Cookies.get('customerData'));
+        if(localStorage.getItem('customerData')) {
+			var customerDataTMP =  JSON.parse(localStorage.getItem('customerData'));
 			console.log('customerDataTMP',customerDataTMP);
 			if(customerDataTMP != undefined && customerDataTMP != '')
 			{
@@ -190,9 +185,9 @@ console.log('message',message);
 		}
 
 		//check token
-        if(Cookies.get('token')) {
+        if(localStorage.getItem('token')) {
 			setTokenValid(1)
-			setToken(Cookies.get('token'));
+			setToken(localStorage.getItem('token'));
         }else{
 			Router.push("/my-account/");
 		}

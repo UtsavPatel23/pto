@@ -7,12 +7,12 @@ import { clearCart } from '../../utils/cart';
 import { getShipping, get_discount_type_cart } from '../../utils/customjs/custome';
 
 import Loader from "./../../../public/loader.gif";
-import Cookies from 'js-cookie';
+;
 import { isEmpty } from 'lodash';
 import RedeemPoints from './redeem-points';
 import LoginForm from '../my-account/login';
 import Router from "next/router";
-import { NEXT_PUBLIC_SITE_API_URL } from '../../utils/constants/endpoints';
+import { valid_coupon } from '../../utils/apiFun/valid-coupon';
 
 
 const CartItemsContainer = ({options}) => {
@@ -128,34 +128,28 @@ const CartItemsContainer = ({options}) => {
 					code: couponCodeText,
 				};
 				
-				try {
-					const request = await fetch( NEXT_PUBLIC_SITE_API_URL + '/api/valid-coupon', {
-						method: 'POST',
-						headers: {
-							'Content-Type': 'application/json',
-						},
-						body: JSON.stringify( couponData ),
-					} );
-					
-					const result = await request.json();
+				const result = await  valid_coupon(couponData);
+				
+				if(result.success && result.error == '')
+				{
 					if ( result.error ) {
 						response.error = result.error;
 					// setOrderFailedError( 'Something went wrong. Order creation failed. Please try again' );
 					}
 					console.log('result return ',result);
 					var usage_left = 1;
-					if(result.couponData.usage_limit != null)
+					if(result?.couponData?.usage_limit != null)
 					{
-						usage_left = result.couponData.usage_limit - result.couponData.usage_count;
+						usage_left = result.couponData.usage_limit - result.couponData?.usage_count;
 					}
 					
 					const toDay = new Date();
-					const date_expires = new Date(result.couponData.date_expires);
+					const date_expires = new Date(result.couponData?.date_expires);
 					var used_byMsg = false;
 					var used_login = false;
 					if(!isEmpty(result.couponData.used_by) && result.couponData.usage_limit_per_user)
 					{
-						var customerDatastring = Cookies.get('customerData')
+						var customerDatastring = localStorage.getItem('customerData')
 						var customerData = {};
 						if(customerDatastring != undefined)
 						{
@@ -217,11 +211,10 @@ const CartItemsContainer = ({options}) => {
 					response.couponId = result?.couponId ?? '';
 					}
 					
-				} catch ( error ) {
+				} else {
 					// @TODO to be handled later.
 					response.error = "In validate Coupon";
 					response.success = false;
-					console.warn( 'Handle create order error', error?.message );
 				}
 				setCoutData( {
 					...coutData,
@@ -264,20 +257,20 @@ const CartItemsContainer = ({options}) => {
 
 	//hook useEffect variable data set
     useEffect(() => {
-        if(Cookies.get('coutData')) {
-			setCoutData(JSON.parse(Cookies.get('coutData')));
+        if(localStorage.getItem('coutData')) {
+			setCoutData(JSON.parse(localStorage.getItem('coutData')));
 		}
-		if(Cookies.get('token')) {
+		if(localStorage.getItem('token')) {
 			setTokenValid(1);
         }
-		if(Cookies.get('customerData')) {
-			setCustomerData(JSON.parse(Cookies.get('customerData')));
+		if(localStorage.getItem('customerData')) {
+			setCustomerData(JSON.parse(localStorage.getItem('customerData')));
 		}
     }, []);
 
-	//hook useEffect Checkout data set in cookies
+	//hook useEffect Checkout data set in localStorage
     useEffect(() => {
-        Cookies.set('coutData',JSON.stringify(coutData));
+        localStorage.setItem('coutData',JSON.stringify(coutData));
     }, [coutData]);
 
 	//hook useEffect Cart change evemt
