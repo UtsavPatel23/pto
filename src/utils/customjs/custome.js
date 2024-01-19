@@ -192,12 +192,12 @@ export function get_count_total_discount(filter_discount)
     
     while(carRes != undefined)
     {
-      var cat_slug = carRes?.term_link;
+      var cat_slug = '/c/'+carRes?.term_link;
       if(!WEB_DEVICE)
           {
-          cat_slug = '?sname='+carRes?.slug;
+          cat_slug = '/cat/?sname='+carRes?.slug;
         }
-        breadcrumbs.push({'breadcrumb':carRes.name,'href':'/c/'+cat_slug });
+        breadcrumbs.push({'breadcrumb':carRes.name,'href': cat_slug });
         carRes = get_chield_by_parent_id(categories,carRes.id);
     }
       return breadcrumbs;

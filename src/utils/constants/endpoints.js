@@ -1,4 +1,7 @@
-export const HEADER_FOOTER_ENDPOINT = `${ process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL }/wp-json/rae/v1/header-footer?header_location_id=hcms-menu-header&footer_location_id=hcms-menu-footer`;
+export const WEB_DEVICE = true;
+
+
+export const HEADER_FOOTER_ENDPOINT = `${process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL}/wp-json/rae/v1/header-footer?header_location_id=hcms-menu-header&footer_location_id=hcms-menu-footer`;
 export const GET_POSTS_ENDPOINT = `${ process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL }/wp-json/rae/v1/posts`;
 export const GET_POST_ENDPOINT = `${ process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL }/wp-json/wp/v2/posts`;
 export const GET_PAGES_ENDPOINT = `${ process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL }/wp-json/wp/v2/pages`;
@@ -59,4 +62,3 @@ export const WC_CONSUMER_SECRET_API ='cs_48e3a294c8154d5dd7f2005ff13598838e2c553
 
 export const WCAPI_QUERY_PRM = '?consumer_key='+WC_CONSUMER_KEY_API+'&consumer_secret='+WC_CONSUMER_SECRET_API+'&';
 
-export const WEB_DEVICE = true;

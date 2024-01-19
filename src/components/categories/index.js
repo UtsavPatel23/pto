@@ -15,14 +15,14 @@ const Categories = ({ categories }) => {
 				{ firstLevelCategories.length ? firstLevelCategories.map( category => {
 					if(category.cat_count > 0)
 					{
-						var cat_slug = category?.term_link;
+						var cat_slug = '/c/'+category?.term_link;
 						if(!WEB_DEVICE)
 							{
-								cat_slug = '?sname='+category?.slug;
+								cat_slug = '/cat/?sname='+category?.slug;
 							}
 					return (
 							<div key={'secondLevelCategories'+category?.term_id}>
-							<Link href={ `/c/${ cat_slug }`} legacyBehavior>
+							<Link href={ `${ cat_slug }`} legacyBehavior>
 								<a>
 									<h6>{ category?.name ?? '' } ({category?.cat_count})</h6>
 								</a> 
@@ -34,14 +34,14 @@ const Categories = ({ categories }) => {
 									{ return secondLevelCategories.length ? secondLevelCategories.map( category_inn => {
 										if(category_inn.cat_count > 0)
 										{
-											var cat_slug = category_inn?.term_link;
+											var cat_slug = '/c/'+category_inn?.term_link;
 											if(!WEB_DEVICE)
 												{
-													cat_slug = '?sname='+category_inn?.slug;
+													cat_slug = '/cat/?sname='+category_inn?.slug;
 												}
 										return (
 												<div key={'thirdLevelCategories'+category_inn?.term_id}>
-												<Link href={ `/c/${ cat_slug }`} legacyBehavior>
+												<Link href={ `${ cat_slug }`} legacyBehavior>
 													<a>
 														<h6>-- { category_inn?.name ?? '' }</h6>
 													</a> 
@@ -58,13 +58,13 @@ const Categories = ({ categories }) => {
 																		{ thirdLevelCategories.length ? thirdLevelCategories.map( category_inn3 => {
 																			if(category_inn3.cat_count > 0)
 																			{
-																				var cat_slug = category_inn3?.term_link;
+																				var cat_slug = '/c/'+category_inn3?.term_link;
 																			if(!WEB_DEVICE)
 																				{
-																					cat_slug = '?sname='+category_inn3?.slug;
+																					cat_slug = '/cat/?sname='+category_inn3?.slug;
 																				}
 																			return (<>
-																					<Link href={ `/c/${ cat_slug }`} legacyBehavior>
+																					<Link href={ `${ cat_slug }`} legacyBehavior>
 																						<a>
 																							<h6>---- { category_inn3?.name ?? '' }</h6>
 																						</a> 
