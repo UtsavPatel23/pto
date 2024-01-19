@@ -12,7 +12,6 @@ import { useEffect } from 'react';
 ;
 import OrderDetails from '../../../src/components/thank-you/order-details';
 import PaypalButtonCheckout from '../../../src/components/checkout/paypal/paypal-button';
-import { NEXT_PUBLIC_SITE_API_URL } from '../../../src/utils/constants/endpoints';
 import { get_order, update_order, update_order_notes } from '../../../src/utils/apiFun/order';
 const defaultCustomerInfo = {
 	firstName: '',

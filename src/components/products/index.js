@@ -11,7 +11,9 @@ import * as React from 'react';
 import Slider from '@mui/material/Slider';
 import Router, { useRouter } from 'next/router';
 import { get_count_total_discount, go_to_main_filter, selectattributdefault} from '../../utils/customjs/custome';
-;
+import { WEB_DEVICE } from '../../utils/constants/endpoints';
+
+
 
 
 const Products = ({ products , options ,  tokenValid }) => {
@@ -439,7 +441,10 @@ const encodeDataToURL = (data) => {
 			console.log('newLocation',newLocation);
 			if(newLocation != '/shop')
 			{
+				if(WEB_DEVICE)
+    			{
 				window.history.pushState('Details', "search title", newLocation); 
+				}
 			}
 			//Router.push(newLocation);
 		  }

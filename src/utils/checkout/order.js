@@ -7,7 +7,6 @@
  */
 import { isArray, isEmpty } from 'lodash';
 import { createOrderWC } from '../apiFun/order';
-import { NEXT_PUBLIC_SITE_API_URL } from '../constants/endpoints';
 import { get_customer_id } from '../customjs/custome';
 
 export const getCreateOrderLineItems = ( products ) => {

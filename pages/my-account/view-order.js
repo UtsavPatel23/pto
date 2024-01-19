@@ -1,6 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-import { HEADER_FOOTER_ENDPOINT, NEXT_PUBLIC_SITE_API_URL } from '../../src/utils/constants/endpoints';
+import { HEADER_FOOTER_ENDPOINT } from '../../src/utils/constants/endpoints';
 import Layout from '../../src/components/layout';
 import { useEffect } from 'react';
 ;

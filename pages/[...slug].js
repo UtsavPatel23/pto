@@ -10,11 +10,12 @@ import { useRouter } from 'next/router';
 import Layout from '../src/components/layout';
 import { FALLBACK, handleRedirectsAndReturnData, isCustomPageUri } from '../src/utils/slug';
 import { getFormattedDate, getPathNameFromUrl, sanitize } from '../src/utils/miscellaneous';
-import { getPage, getPages, getPost, getPosts } from '../src/utils/blog';
+import { getPage} from '../src/utils/blog';
 import axios from 'axios';
 import { HEADER_FOOTER_ENDPOINT } from '../src/utils/constants/endpoints';
 import Image from '../src/components/image';
 import PostMeta from '../src/components/post-meta';
+import { getPagesAPI } from '../src/utils/apiFun/pages';
 
 const Page = ( { headerFooter, pageData } ) => {
 	const router = useRouter();
@@ -87,8 +88,8 @@ export async function getStaticProps( { params } ) {
  * @returns {Promise<{paths: [], fallback: boolean}>}
  */
 export async function getStaticPaths() {
-	const pagesData = await getPages();
-	
+	//const pagesData = await getPages();
+	const pagesData = await getPagesAPI();
 	const pathsData = [];
 	
 	isArray( pagesData ) && pagesData.map( page => {

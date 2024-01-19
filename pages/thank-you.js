@@ -5,9 +5,8 @@ import axios from 'axios';
 import Layout from '../src/components/layout';
 import Loading from '../src/components/icons/Loading';
 import { AppContext } from '../src/components/context';
-import { HEADER_FOOTER_ENDPOINT, NEXT_PUBLIC_SITE_API_URL, USER_LOGIN } from '../src/utils/constants/endpoints';
-import { isEmpty } from 'lodash';
-;
+import { HEADER_FOOTER_ENDPOINT, NEXT_PUBLIC_SITE_API_URL } from '../src/utils/constants/endpoints';
+
 import Bacs from './../src/components/thank-you/bacs';
 import OrderBasicDetails from './../src/components/thank-you/order-basic-details';
 import OrderDetails from './../src/components/thank-you/order-details';

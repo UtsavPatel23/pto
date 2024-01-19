@@ -50,7 +50,7 @@ function Sidebar({setTokenValid}) {
                 </Link>
 			</li>
             <li>
-				<Link href="/cart" target="_blank">
+				<Link href="/cart">
 				    My Cart
                 </Link>
 			</li>
@@ -60,13 +60,13 @@ function Sidebar({setTokenValid}) {
                 </Link>
 	</li>{*/}
             <li>
-			 	<Link href="/my-account/track-order/" target="_blank">
+			 	<Link href="/my-account/track-order/">
                     Track Order
                 </Link>
 
             </li>
             <li>
-                <Link href="/my-account/faqs/" target="_blank">
+                <Link href="/faqs/">
                     FAQs
                 </Link>
             </li>

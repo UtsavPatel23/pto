@@ -6,7 +6,6 @@
  import ExternalLink from '../products/external-link';
  import ProductGallery from './product-gallery';
  import axios from 'axios';
- import { SHOP_SHIPPING_SINGLE} from '../../utils/constants/endpoints';
  import Link from 'next/link';
  import jQuery, { queue } from "jquery";
 import { useEffect } from 'react';
@@ -22,6 +21,7 @@ import InputQty from '../single-product/input-qty';
 ;
 import { get_coupon_box } from '../../utils/shop/shop-box';
 import WishlistButton from '../wishlist/wishlistbutton'
+import { WEB_DEVICE } from '../../utils/constants/endpoints';
 
  const SingleProduct = ( { product,reviews,options} ) => {
 		 const paymentOptions = options?.payments;
@@ -420,8 +420,13 @@ import WishlistButton from '../wishlist/wishlistbutton'
 					{product.tags.length ? <div key="tags"><b>Tags :</b>
 									{
 										product.tags.map( tag => {
+											var tag_slug = tag?.slug;
+											if(!WEB_DEVICE)
+    											{
+													tag_slug = '?sname='+tag_slug;
+												}
 												return (
-													<Link href={process.env.NEXT_PUBLIC_SITE_URL +'/product-tag/'+tag.slug}>{tag.name}</Link>
+													<Link href={'/product-tag/'+tag_slug}>{tag.name}</Link>
 												)
 										})
 									}

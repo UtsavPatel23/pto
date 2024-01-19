@@ -47,6 +47,9 @@ export const CAPTCHA_SITE_KEY = '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI';
 // Wishlist
 export const WISHLIST_URL = `${process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL}/wp-json/shop-nj/v1/wishlist`;
 
+// pages list
+export const PAGES_URL = `${process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL}/wp-json/shop-nj/v1/pages`;
+
 // Local API url
 export const NEXT_PUBLIC_SITE_API_URL='https://pto-plum.vercel.app'
 
@@ -55,3 +58,5 @@ export const WC_CONSUMER_KEY_API ='ck_102c7b5cd0df449b8074a0a574220352f49bdd01'
 export const WC_CONSUMER_SECRET_API ='cs_48e3a294c8154d5dd7f2005ff13598838e2c5539'
 
 export const WCAPI_QUERY_PRM = '?consumer_key='+WC_CONSUMER_KEY_API+'&consumer_secret='+WC_CONSUMER_SECRET_API+'&';
+
+export const WEB_DEVICE = false;
