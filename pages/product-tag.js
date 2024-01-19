@@ -19,6 +19,7 @@ import Loader from "./../public/loader.gif";
     const [productsTMP,setProductsTMP] = useState({});
     const slug = process.browser ? Router.query.sname : null;
     const [loading, SetLoading] = useState(true);
+    const [dataMsg , setDataMsg] = useState('');
     useEffect(()=>{
         (async () => {
             let config = {
@@ -35,16 +36,28 @@ import Loader from "./../public/loader.gif";
         console.log( 'error', error );
         });
         SetLoading(false);
+        setTimeout(function(){
+            if(isEmpty(productsTMP))
+            {
+                setDataMsg('Data Not found');
+            }
+        },500)
     })();
     },[slug != null])
     console.log('productsTMP',productsTMP);
-    
-    if(isEmpty(productsTMP))
+    if(loading)
+    {
+         return(
+            <Layout headerFooter={headerFooter || {}}>
+                { loading && <img className="loader" src={Loader.src} alt="Loader" width={50}/> }
+            </Layout>
+        )
+    }
+    else if(isEmpty(productsTMP))
     {
         return(
             <Layout headerFooter={headerFooter || {}}>
-                { loading && <img className="loader" src={Loader.src} alt="Loader" width={50}/> }
-                Data Not found
+               {dataMsg}
             </Layout>
         )
     }else{

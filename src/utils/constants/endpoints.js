@@ -59,4 +59,4 @@ export const WC_CONSUMER_SECRET_API ='cs_48e3a294c8154d5dd7f2005ff13598838e2c553
 
 export const WCAPI_QUERY_PRM = '?consumer_key='+WC_CONSUMER_KEY_API+'&consumer_secret='+WC_CONSUMER_SECRET_API+'&';
 
-export const WEB_DEVICE = false;
+export const WEB_DEVICE = true;

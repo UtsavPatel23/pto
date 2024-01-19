@@ -1,4 +1,4 @@
-import { SHOP_SHIPPING_MULI } from "../constants/endpoints";
+import { SHOP_SHIPPING_MULI, WEB_DEVICE } from "../constants/endpoints";
 import axios from 'axios';
 ;
 import {  isEmpty } from "lodash";
@@ -192,7 +192,12 @@ export function get_count_total_discount(filter_discount)
     
     while(carRes != undefined)
     {
-        breadcrumbs.push({'breadcrumb':carRes.name,'href':'/categories/'+carRes.term_link });
+      var cat_slug = carRes?.term_link;
+      if(!WEB_DEVICE)
+          {
+          cat_slug = '?sname='+carRes?.slug;
+        }
+        breadcrumbs.push({'breadcrumb':carRes.name,'href':'/c/'+cat_slug });
         carRes = get_chield_by_parent_id(categories,carRes.id);
     }
       return breadcrumbs;
