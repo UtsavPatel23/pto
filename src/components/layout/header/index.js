@@ -56,7 +56,7 @@ const Header = ( { header } ) => {
 									if (menuItem?.title == 'Categories') {
 										return (
 											<Link key={menuItem?.ID}
-												href={ !WEB_DEVICE ? '/cat?sname=all' : 'c'}>
+												href={ !WEB_DEVICE ? '/cat?sname=all' : '/c'}>
 												<div className="block mt-4 lg:inline-block lg:mt-0 hover:text-brand-royal-blue duration-500 mr-10"
 													dangerouslySetInnerHTML={{ __html: menuItem.title }} />
 											</Link>

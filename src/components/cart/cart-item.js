@@ -4,6 +4,7 @@ import Image from '../image';
 import { deleteCartItem, updateCart } from '../../utils/cart';
 import Link from 'next/link';
 import { getPriceRemoveDiscount } from '../../utils/customjs/custome';
+import { WEB_DEVICE } from '../../utils/constants/endpoints';
 
 const CartItem = ( {
 	                   item,
@@ -117,6 +118,11 @@ const CartItem = ( {
 		maxQty = false;
 	}
 	const productPrice = getPriceRemoveDiscount(item?.data);
+	var p_slug = '/p/'+item?.data?.slug;
+	if(!WEB_DEVICE)
+		{
+			p_slug = '/product/?sname='+item?.data?.slug;
+		}
 	return (
 		<div id={'pro_'+item?.product_id} className="cart-item-wrap grid grid-cols-3 gap-6 mb-5 border border-brand-bright-grey p-5">
 			<div className="col-span-1 cart-left-col">
@@ -133,7 +139,7 @@ const CartItem = ( {
 			<div className="col-span-2 cart-right-col ">
 				<div className="flex justify-between flex-col h-full">
 					<div className="cart-product-title-wrap relative">
-					<Link href={'/product/'+item?.data?.slug}>
+					<Link href={p_slug}>
 						<h5 className="cart-product-title text-brand-orange">{ item?.data?.name }</h5>
 					</Link>	
 					<span key='notefocus'>

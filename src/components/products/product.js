@@ -8,6 +8,7 @@ import { getMemberOnlyProduct, getNewProductTag } from '../../utils/customjs/cus
 import { get_coupon_box, get_custom_badge, get_gridtimer } from '../../utils/shop/shop-box';
 import Gridtimer from './gridtimer';
 import WishlistButton from '../wishlist/wishlistbutton'
+import { WEB_DEVICE } from '../../utils/constants/endpoints';
 
 const Product = ( { product , tokenValid ,options,customerData,setCustomerData} ) => {
 	if ( isEmpty( product ) ) {
@@ -31,12 +32,17 @@ const Product = ( { product , tokenValid ,options,customerData,setCustomerData} 
 	var coupon_box = get_coupon_box(options,product.sku);
 
 	// All skus grid timer
-	var gridtimer = get_gridtimer(options,product);
-
+	var gridtimer = get_gridtimer(options, product);
+	
+	var p_slug = '/p/'+product?.slug;
+	if(!WEB_DEVICE)
+		{
+			p_slug = '/product/?sname='+product?.slug;
+		}
 
 	return (
 		<div className="h-fit">
-			<Link href={ `/product/${ product?.slug }`} legacyBehavior>
+			<Link href={ `${ p_slug }`} legacyBehavior>
 				<a>
 					<Image
 						sourceUrl={ img?.src ?? '' }
@@ -193,8 +199,13 @@ const Product = ( { product , tokenValid ,options,customerData,setCustomerData} 
 					return (
 						<>{ 'simple' == productType ? <AddToCart product={product}/> : null }</>
 						)
-				}else{
-					return (<Link href={ `/product/${ product?.slug }`} legacyBehavior>
+				} else {
+					var p_slug = '/p/'+product?.slug;
+					if(!WEB_DEVICE)
+						{
+							p_slug = '/product/?sname='+product?.slug;
+						}
+					return (<Link href={ `${ p_slug }`} legacyBehavior>
 						Read more
 					</Link>)
 				} 

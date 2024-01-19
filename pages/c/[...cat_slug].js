@@ -11,8 +11,6 @@
  import Layout from '../../src/components/layout';
 import Products from '../../src/components/products';
 import Category from '../../src/components/categories/category';
-import { getCategoryData } from '../../src/utils/products';
-import { FALLBACK} from '../../src/utils/slug';
 
 
  export default function cat_slug({ headerFooter, categories,cacheValid}) {
