@@ -53,7 +53,7 @@ import { FALLBACK} from '../../src/utils/slug';
  }
 
 // getStaticProps // getServerSideProps
-export async function getStaticProps(context){
+export async function getServerSideProps(context){
     const { data: headerFooterData } = await axios.get( HEADER_FOOTER_ENDPOINT );
    // const {data : res} = await axios.get(SHOP_PRODUCTLIST_BY_PARAMETER,context);
    const {params}  = context;
@@ -83,7 +83,7 @@ export async function getStaticProps(context){
     };
   };
   
- export async function getStaticPaths() {
+ /*export async function getStaticPaths() {
 	const { data: categories } = await getCategoryData();
 	
 	// Expected Data Shape: [{ params: { slug: 'pendant' } }, { params: { slug: 'shirt' } }],
@@ -99,6 +99,6 @@ export async function getStaticProps(context){
 		paths: pathsData,
 		fallback: FALLBACK,
 	};
-}
+}*/
  
 
