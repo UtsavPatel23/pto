@@ -23,7 +23,7 @@ const axios = require('axios');
     let config = {
         method: 'post',
         maxBodyLength: Infinity,
-        url: process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL +'/wp-json/wc/v3/orders/'+srData,
+        url: process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL +'/wp-json/wc/v3/orders/'+srData+'&create_order=1',
       };
   await axios.request(config)
         .then((response) => {
