@@ -24,7 +24,7 @@ export default function Product( { headerFooter, product,reviews } ) {
 	var p_slug = '/p/'+product?.slug;
 		if(!WEB_DEVICE)
 			{
-				p_slug = '/product/?sname='+product?.slug;
+				p_slug = '/product/?prodict_single=1&sname='+product?.slug;
 			}
 	return (
 		<Layout
@@ -33,7 +33,7 @@ export default function Product( { headerFooter, product,reviews } ) {
 			uri={ `${ p_slug ?? '' }` }
 			pageData = {product}
 		>
-			<SingleProduct product={ product } reviews={reviews} options={headerFooter?.footer?.options ?? ''}/>
+			<SingleProduct singleProduct={ product } reviews={reviews} options={headerFooter?.footer?.options ?? ''}/>
 		</Layout>
 	);
 }

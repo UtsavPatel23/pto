@@ -28,10 +28,13 @@ function wishlistButton({customerData,setCustomerData,product,tokenValid}) {
             if(wishlistValue)
             {
                 setWishlist(1);
+            } else {
+                setWishlist(0);
             }
+            
         }
         
-}, [tokenValid]);
+}, [tokenValid,product]);
     return (
         <div key='wishlist'>
 			Wishlist : 

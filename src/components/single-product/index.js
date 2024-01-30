@@ -18,12 +18,14 @@ import { isEmpty } from 'lodash';
 import { getMemberOnlyProduct, getNewProductTag, storeYourBrowsingHistory } from '../../utils/customjs/custome';
 import BuyNow from '../cart/buy-now';
 import InputQty from '../single-product/input-qty';
-;
+import $ from 'jquery';
 import { get_coupon_box } from '../../utils/shop/shop-box';
 import WishlistButton from '../wishlist/wishlistbutton'
-import { WEB_DEVICE } from '../../utils/constants/endpoints';
+import { SHOP_SHIPPING_SINGLE, WEB_DEVICE } from '../../utils/constants/endpoints';
 
- const SingleProduct = ( { product,reviews,options} ) => {
+const SingleProduct = ({ singleProduct, reviews, options }) => {
+		const [product, setProduct] = useState(singleProduct);
+		const {attributes_new} = singleProduct;
 		 const paymentOptions = options?.payments;
 		 const [timer,setTimer] = useState(0);
 		 const [shippingCharge,setShippingCharge] = useState('<span>Calculate Shipping</span>');
@@ -34,8 +36,10 @@ import { WEB_DEVICE } from '../../utils/constants/endpoints';
 		 const [membersonly,setMembersonly]=useState('');
 		 const [customerData,setCustomerData] = useState(0);
 
-		 const [productCountQty, setProductCountQty] = useState(1);
+	const [productCountQty, setProductCountQty] = useState(1);
+	const [att_selected, setAtt_selected] = useState('');
 
+	
 		 
  // ************* ********************************  ************************ 
  // ************* Shipping Calculation ************************************* 
@@ -94,70 +98,78 @@ import { WEB_DEVICE } from '../../utils/constants/endpoints';
 		 const [cashbackpoints,setCashbackpoints] = useState(Math.round(product.price)*10);
 		 // Dicount timer
 		 useEffect(()=>{
-			if ((product.type == 'simple') && (product.meta_data.product_discount != '') && product.meta_data.product_discount != undefined) 
+			if ((singleProduct.type == 'simple' || product.type == 'variation') && (product.meta_data.product_discount != '') && product.meta_data.product_discount != undefined) 
 			{
 				const toDay = new Date();
 				var product_start_date = product.meta_data.product_start_date;
 				var product_end_date = product.meta_data.product_end_date;
 				product_start_date = new Date(product_start_date+' 00:00:00');
 				product_end_date = new Date(product_end_date+' 23:59:59');
-				if (product_start_date <= toDay && toDay <= product_end_date) 
-				{
-						setTimer(1);
-						var dis_price = ((product.price * product.meta_data.product_discount)/100);
-						setCashback((Math.round((product.price-dis_price))/10));
-						setCashbackpoints((Math.round((product.price-dis_price))*10));
-						var countDownDate = product_end_date.getTime();
-						// Update the count down every 1 second
-						var x = setInterval(function() {
+				if (product_start_date <= toDay && toDay <= product_end_date) {
+					setTimer(1);
+					var dis_price = ((product.price * product.meta_data.product_discount) / 100);
+					setCashback((Math.round((product.price - dis_price)) / 10));
+					setCashbackpoints((Math.round((product.price - dis_price)) * 10));
+					var countDownDate = product_end_date.getTime();
+					// Update the count down every 1 second
+					var x = setInterval(function () {
 
-								// Get todays date and time
-								const now = new Date();
-								var dayNum = now.getDay();
+						// Get todays date and time
+						const now = new Date();
+						var dayNum = now.getDay();
 
 								
-								var daysToFri = 5 - (dayNum < 5? dayNum : dayNum - 7);
-								//console.log('daysToFri = ' + daysToFri);
-								var fridayNoon = new Date(+now);
-								fridayNoon.setDate(fridayNoon.getDate() + daysToFri);
-								fridayNoon.setHours(24,0,0,0);
+						var daysToFri = 5 - (dayNum < 5 ? dayNum : dayNum - 7);
+						//console.log('daysToFri = ' + daysToFri);
+						var fridayNoon = new Date(+now);
+						fridayNoon.setDate(fridayNoon.getDate() + daysToFri);
+						fridayNoon.setHours(24, 0, 0, 0);
 								
-								var ms = Math.ceil((fridayNoon - now)/1000)*1000;
+						var ms = Math.ceil((fridayNoon - now) / 1000) * 1000;
 								
-								// Find the distance between now an the count down date
-								var distance = countDownDate - now.getTime();
+						// Find the distance between now an the count down date
+						var distance = countDownDate - now.getTime();
 								
 								
-								// Time calculations for days, hours, minutes and seconds
-								var days_weekday = Math.floor(ms / (1000 * 60 * 60 * 24));
-								var days_end_date = Math.floor(distance % (1000 * 60 * 60 * 24 * 9) / (1000 * 60 * 60 * 24));
-								days_end_date = days_end_date + 1
-								var days  = 0;
-								if(days_weekday < days_end_date)
-								{
-									days = days_weekday;
-								}else{
-									days = days_end_date;
-								}
-								var hours = Math.floor((ms % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-								var minutes = Math.floor((ms % (1000 * 60 * 60)) / (1000 * 60));
-								var seconds = Math.floor((ms % (1000 * 60)) / 1000);
+						// Time calculations for days, hours, minutes and seconds
+						var days_weekday = Math.floor(ms / (1000 * 60 * 60 * 24));
+						var days_end_date = Math.floor(distance % (1000 * 60 * 60 * 24 * 9) / (1000 * 60 * 60 * 24));
+						days_end_date = days_end_date + 1
+						var days = 0;
+						if (days_weekday < days_end_date) {
+							days = days_weekday;
+						} else {
+							days = days_end_date;
+						}
+						var hours = Math.floor((ms % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+						var minutes = Math.floor((ms % (1000 * 60 * 60)) / (1000 * 60));
+						var seconds = Math.floor((ms % (1000 * 60)) / 1000);
 
-								if(days >= 0)
-								{
-									jQuery('#timer_count_down').html('<span class="days inline-block"><div  class="wrapper">'+days+'d </div></span><span class="hours inline-block"><div class="wrapper"> '+hours+'h</div></span><span class="minutes inline-block"><div class="wrapper"> '+minutes+'m</div></span><span class="seconds inline-block"><div class="wrapper"> '+seconds+'s</div></span>');
-									//jQuery('.summary-inner h3.timer-heading').html('When Timer goes down, prices go up');
-								}
-								if (ms < 0) {
-									clearInterval(x);
-									//document.getElementById("timer_count_down").remove();
-								}
+						if (days >= 0) {
+							jQuery('#timer_count_down').html('<span class="days inline-block"><div  class="wrapper">' + days + 'd </div></span><span class="hours inline-block"><div class="wrapper"> ' + hours + 'h</div></span><span class="minutes inline-block"><div class="wrapper"> ' + minutes + 'm</div></span><span class="seconds inline-block"><div class="wrapper"> ' + seconds + 's</div></span>');
+							//jQuery('.summary-inner h3.timer-heading').html('When Timer goes down, prices go up');
+						}
+						if (ms < 0) {
+							clearInterval(x);
+							//document.getElementById("timer_count_down").remove();
+						}
 								
-						}, 1000);
+					}, 1000);
+				} else { 
+					setTimer(0);
+					setCashback((Math.round((product.price)) / 10));
+					setCashbackpoints((Math.round((product.price)) * 10));
 				}
+			} else { 
+				setTimer(0);
+				setCashback((Math.round((product.price)) / 10));
+					setCashbackpoints((Math.round((product.price)) * 10));
 			}
-			
-			},[])
+			 setProductCountQty(1);
+			 setShippingCharge('<span>Calculate Shipping</span>');
+			 $('#shippingCalculation_input').val('');
+			 
+			},[product])
 			useEffect(()=>{
 				setYourBrowsingHistory(storeYourBrowsingHistory(product));
 			},[product]);
@@ -178,16 +190,44 @@ import { WEB_DEVICE } from '../../utils/constants/endpoints';
 				}
 			}
 		}, []);
+	
+		// Members only
 		useEffect(() => {
 			if(tokenValid == 1 && options?.discount_type_3 == 1)
 				{
 					var messageText  = options?.nj_display_single_product_member_only ?? '';
 					setMembersonly(getMemberOnlyProduct(options,product,messageText));
 				}
-		}, [tokenValid]);
+		}, [tokenValid,product]);
 
 		// Coupon box
-		var coupon_box = get_coupon_box(options,product.sku);
+	var coupon_box = get_coupon_box(options, product.sku);
+	const attribut_drop = async() =>{
+			var att_select = '';
+			$(".attribut_drop").each(function () {
+				if ($(this).val() != '')
+				{
+					att_select += $( this ).val()+'__';
+				}
+			});
+			setAtt_selected(att_select);
+			console.log('att_select = ',att_select);
+			console.log('att_select',singleProduct.product_variations[att_select]);
+			console.log('product_variations',singleProduct.product_variations);
+			if ( !isEmpty( singleProduct.product_variations[att_select] ) ) {
+				setProduct(singleProduct.product_variations[att_select]);
+			}else{
+				setProduct(singleProduct);
+			}
+	}
+	const clear_drop = async() =>{
+		$(".attribut_drop").each(function () {
+			$(this).val('');
+		});
+		setProduct(singleProduct);
+		setAtt_selected('');
+		}
+	console.log('variation product ',product);
 	 return Object.keys( product ).length ? (
 		 <div className="single-product container mx-auto my-32 px-4 xl:px-0">
 			 <div key="section1" className="grid md:grid-cols-2 gap-4">
@@ -195,30 +235,53 @@ import { WEB_DEVICE } from '../../utils/constants/endpoints';
 					 { product.images.length ? (
 						 <ProductGallery items={ product?.images }/>
 					 ) : null }
-					 {getNewProductTag(product.date_created) == 1 ? <>New</>:null}
+					 {getNewProductTag(singleProduct.date_created) == 1 ? <>New</>:null}
 				 </div>
 				 <div  key="product_info" className="product-info">
-				 	<h4 className="products-main-title text-2xl uppercase">{ product.name }</h4>
-					 {product.average_rating > 1?
+					 <h4 key="product_title"
+						dangerouslySetInnerHTML={ {
+							__html: product.name,
+						} }
+						className="roducts-main-title text-2xl uppercase"
+					/>
+					 {singleProduct.average_rating > 1?
 					 <div key="average_rating">
-						{product.average_rating}
+						{singleProduct.average_rating}
 					 	(<span className="count">{reviews.length}</span> customer reviews)
 					  </div>
 					 :null}
 					 
 					<div key="product_info1"
 						dangerouslySetInnerHTML={ {
-							__html: product?.price_html ?? '',
+							__html: product?.price_html ? product?.price_html : '$'+product?.price ,
 						} }
 						className="product-price mb-5"
 					/> 
+					 {
+					!isEmpty(attributes_new)?
+					attributes_new.map(per_page_no=>(
+							<div key={per_page_no.id}>
+								{per_page_no.name} : 
+								<>
+								<select  id={'id_att_'+per_page_no.name} className="attribut_drop" onChange={attribut_drop}  name={'nm_att_'+per_page_no.name}>
+									<option key={per_page_no.if} value=''>Choose an option</option> 
+									{per_page_no.options.map(attribut_val=>(
+										<option key={attribut_val.slug} value={attribut_val.slug}>{attribut_val.name}</option> 
+									))}
+								</select>
+								</>
+							</div> 
+						))
+						:''
+					 }
+					 { att_selected != '' ? <><button onClick={clear_drop}>Clear</button></>: null}
 					 <div key="product_info2">
 						{timer != 0?<div id="timer_count_down"></div>:null}
 						{timer != 0?<div>Extra Discount{product.meta_data.product_discount}%Off</div>:null}
 					</div>
 					<div key="product_info3"> 
 					{(() => {
-						if ((product.type == 'simple') && (product.price > 0)) 
+						if ((singleProduct.type == 'simple' || singleProduct.type == 'variable') && (product.price > 0)) 
 						{
 							var offpride = Math.round(((product.regular_price-product.price)*100)/product.regular_price);
 							if(offpride > 0){
@@ -248,22 +311,21 @@ import { WEB_DEVICE } from '../../utils/constants/endpoints';
 					})()}
 					<div key="product_info4">
 					{(() => {
-						if (product.stock_quantity < 1) 
-						{
-						return (
-							<div>Sold Out!</div>
-						)
-						}else if(product.stock_quantity <= 20) 
-						{
-							return (
-								<div>Hurry Up, Limited Stock available !</div>
-							)	
-						}else if(product.stock_quantity > 20) 
-						{
-							return (
-								<div>In stock</div>
-							)	
-						}
+							 if (product.type == 'simple' || product.type == 'variation') {
+								 if (product.stock_quantity < 1) {
+									 return (
+										 <div>Sold Out!</div>
+									 )
+								 } else if (product.stock_quantity <= 20) {
+									 return (
+										 <div>Hurry Up, Limited Stock available !</div>
+									 )
+								 } else if (product.stock_quantity > 20) {
+									 return (
+										 <div>In stock</div>
+									 )
+								 }
+							 }
 
 					})()} 
 					</div>
@@ -278,36 +340,43 @@ import { WEB_DEVICE } from '../../utils/constants/endpoints';
 							})()}
 					</div>
 					<div key="product_info6">
-					{ 'simple' === product?.type && product?.stock_quantity > 0 ? <>
+					{ (product?.type == 'simple' || product?.type == 'variation') && product?.stock_quantity > 0 ? <>
 						<InputQty product={ product } productCountQty={productCountQty} setProductCountQty={setProductCountQty}/>
 						<AddToCart product={ product } productCountQty={productCountQty}/>
 						<BuyNow  product={ product } productCountQty={productCountQty}/>
 						</> : null }
-					</div>
-					<WishlistButton customerData={customerData} setCustomerData={setCustomerData} product={product} tokenValid={tokenValid}/>
-					<div key="reward-wrapper">
-						<div key="reward-inner">
-							<div key="top_smooth" >
-								<p>Reward Points</p>
-								<Link href="#" >Know More</Link>
+					 </div>
+					 {(() => {
+						 if (product?.type == 'simple' || product?.type == 'variation') {
+							 return (<>
+								 <WishlistButton customerData={customerData} setCustomerData={setCustomerData} product={product} tokenValid={tokenValid} />
+								 <div key="reward-wrapper">
+								 <div key="reward-inner">
+									 <div key="top_smooth" >
+										 <p>Reward Points</p>
+										 <Link href="#" >Know More</Link>
+									 </div>
+									 <div key="text">
+										 <p>Buy &amp; Get 10% Cashback <b>{cashbackpoints}</b> Reward points Worth <b>${cashback}</b> </p>
+									 </div>
+								 </div>
+								 <div key="co-tips">
+									 <Link href="/my-account/rewards/">Manage</Link> Your Reward Points.
+								 </div>
+							 </div>
+						
+							<div key="product_info7">
+								<input id="shippingCalculation_input" type="number" onKeyUp={shippingCalculation} data-inputsku={ product?.sku ?? '' } data-inputproduct_code={product.meta_data.product_code}   size="4"  name="product_code" placeholder="POSTCODE"  disabled={inputshipdisabled} /> 
+								<span
+									dangerouslySetInnerHTML={ {
+										__html: shippingCharge ?? '',
+									} }
+									className="product-price mb-5"
+								/>
 							</div>
-							<div key="text">
-									<p>Buy &amp; Get 10% Cashback <b>{cashbackpoints}</b> Reward points Worth <b>${cashback}</b> </p>
-							</div>
-						</div>
-						<div key="co-tips">
-								<Link href="/my-account/rewards/">Manage</Link> Your Reward Points.
-						</div>
-					</div>
-					<div key="product_info7">
-						<input type="number" onKeyUp={shippingCalculation} data-inputsku={ product?.sku ?? '' } data-inputproduct_code={product.meta_data.product_code}   size="4"  name="product_code" placeholder="POSTCODE"  disabled={inputshipdisabled} /> 
-						<span
-							dangerouslySetInnerHTML={ {
-								__html: shippingCharge ?? '',
-							} }
-							className="product-price mb-5"
-						/>
-					</div>
+							 </>);
+						  }
+					})()}
 					{(() => {
 						if(coupon_box != '')
 						{
@@ -371,13 +440,15 @@ import { WEB_DEVICE } from '../../utils/constants/endpoints';
 										);
 									}
 						}
-					})()}
+					 })()}
+						
 					<div key="product_info9"
 						dangerouslySetInnerHTML={ {
 							__html: product.description,
 						} }
 						className="product-description mb-5"
 					/>
+					
 					{(() => {
 						if(product.weight != '' && product.dimensions.length != '')
 						{
@@ -399,10 +470,15 @@ import { WEB_DEVICE } from '../../utils/constants/endpoints';
 					
 					<Warranty_tab />
 					<Shipping_guide_tab />
-					<Reward_points_tab />
+				<Reward_points_tab />
 					{reviews.length?
 					<div key="reviews_list">
-						<p>{reviews.length} {product.name}</p>
+						<p>{reviews.length} <span key="product_title"
+						dangerouslySetInnerHTML={ {
+							__html: product.name,
+						} }
+						className="text-2xl "
+					/></p>
 						<div>{product.average_rating} Based on {reviews.length} reviews</div>
 						{
 								reviews.map( review => {
@@ -417,7 +493,7 @@ import { WEB_DEVICE } from '../../utils/constants/endpoints';
 					<div key="brand-productcode">
 					{product.meta_data.product_code ? <div key="product_code"><b>Product Code :</b>{product.meta_data.product_code}-{product.sku}</div>:null}
 					{product.meta_data.custom_sku_code ? <div key="custom_sku_code"><b>SKU :</b>{product.meta_data.custom_sku_code}</div>:null}
-					{product.tags.length ? <div key="tags"><b>Tags :</b>
+					{product?.tags?.length ? <div key="tags"><b>Tags :</b>
 									{
 										product.tags.map( tag => {
 											var tag_slug = tag?.slug;
@@ -434,23 +510,23 @@ import { WEB_DEVICE } from '../../utils/constants/endpoints';
 					{product.meta_data.bulky_iteam ? <div key="bulky_iteam"><b>Bulky Item :</b>{product.meta_data.bulky_iteam}</div>:null}
 					</div>
 					{(() => {
-						if(undefined != product.related_ids)
+						if(undefined != singleProduct.related_ids)
 						{
 							return (<div key="Related-Products">
 								<b>Related Products</b>
-								{	product.related_ids.length ? 
+								{	singleProduct.related_ids.length ? 
 							
 									<div className='grid grid-cols-4 gap-4'>
 									{
-										product.related_ids.map( product => {
+										singleProduct.related_ids.map( productRel => {
 											var Membersonly  = '';
 												if(tokenValid == 1 && options?.discount_type_3 == 1)
 													{
 														var messageText  = options?.nj_display_box_member_only ?? '';
-														Membersonly = getMemberOnlyProduct(options,product,messageText);
+														Membersonly = getMemberOnlyProduct(options,productRel,messageText);
 													}
 												return (
-													<Product key={ product?.id } product={product}  Membersonly={Membersonly}   tokenValid={tokenValid} options={options} customerData={customerData} setCustomerData={setCustomerData}/>
+													<Product key={ productRel?.id } product={productRel}  Membersonly={Membersonly}   tokenValid={tokenValid} options={options} customerData={customerData} setCustomerData={setCustomerData}/>
 												)
 										})
 									}

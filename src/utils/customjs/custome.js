@@ -584,8 +584,13 @@ export function getMemberOnlyProduct(options,product,messageText) {
 														tmpProPrice = (tmpProPrice - ((tmpProPrice * product_discount)/100));
 													}
 												var memberPrice = (tmpProPrice - ((rate_percentage_login_user * tmpProPrice)/100));
-												memberPrice = memberPrice.toFixed(2);
-												Membersonly = messageText.replace("NJSC_price", memberPrice);
+                        memberPrice = memberPrice.toFixed(2);
+                        if (product.type == 'simple' || product.type == 'variation') {
+                          Membersonly = messageText.replace("NJSC_price", memberPrice);
+                        } else { 
+                          Membersonly = messageText.replace("NJSC_price", '');
+                          Membersonly = Membersonly.replace("$", '');
+                        }
 											}
 											
 									}
