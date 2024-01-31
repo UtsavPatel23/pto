@@ -16,12 +16,20 @@ export const getCreateOrderLineItems = ( products ) => {
 	}
 	
 	return products?.map(
-		( { product_id, quantity } ) => {
-			return {
-				quantity,
-				product_id,
-				// variation_id: '', // @TODO to be added.
-			};
+		({ product_id, quantity, variation_id }) => {
+			if (variation_id != 0) {
+				return {
+					quantity,
+					product_id,
+					variation_id, // @TODO to be added.
+				};
+			} else { 
+				return {
+					quantity,
+					product_id,
+				};
+			}
+			
 		},
 	);
 };
