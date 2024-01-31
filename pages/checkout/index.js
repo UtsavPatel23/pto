@@ -1,7 +1,6 @@
 import Layout from '../../src/components/layout';
 import {
-	HEADER_FOOTER_ENDPOINT,
-	WOOCOMMERCE_COUNTRIES_ENDPOINT,
+	HEADER_FOOTER_ENDPOINT, WEB_DEVICE,
 } from '../../src/utils/constants/endpoints';
 import axios from 'axios';
 import CheckoutForm from '../../src/components/checkout/checkout-form';
@@ -13,10 +12,12 @@ export default function Checkout({ headerFooter }) {
 	const options = headerFooter?.footer?.options;
 	paymentModes = paymentModes.filter(obj => 
 		{
-		if (obj.method_enabled == true) {
-			return true;
-		}
-	});
+			if (!WEB_DEVICE) {
+				return obj.method_enabled_mobile;
+			} else {
+				return obj.method_enabled;
+			}
+		});
 	return (
 		<Layout headerFooter={headerFooter || {}}>
 			<h1>Checkout</h1>

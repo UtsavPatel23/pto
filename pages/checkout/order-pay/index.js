@@ -13,6 +13,7 @@ import { useEffect } from 'react';
 import OrderDetails from '../../../src/components/thank-you/order-details';
 import PaypalButtonCheckout from '../../../src/components/checkout/paypal/paypal-button';
 import { get_order, update_order, update_order_notes } from '../../../src/utils/apiFun/order';
+import { WEB_DEVICE } from '../../../src/utils/constants/endpoints';
 const defaultCustomerInfo = {
 	firstName: '',
 	lastName: '',
@@ -67,11 +68,12 @@ export default function Checkout({ headerFooter }) {
 	const options = headerFooter?.footer?.options;
 	paymentModes = paymentModes.filter(obj => 
 		{
-		if (obj.method_enabled == true) {
-			return true;
-		}
-	});
-
+			if (!WEB_DEVICE) {
+				return obj.method_enabled_mobile;
+			} else {
+				return obj.method_enabled;
+			}
+		});
 	//hook useEffect
     useEffect(() => {
         //check token
