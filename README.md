@@ -44,7 +44,7 @@ without having to re-build next.js the application.
 
 ## [Tutorial Course](https://www.youtube.com/playlist?list=PLD8nQCAhR3tSRwsvzRtogv9MFkEWo5d9c)
 
-## [Live Demo Link](https://nextjs-woocommerce-restapi-virid.vercel.app/)
+## [Live Demo Link](https://pto-plum.vercel.app/)
 
 ## Setup
 
