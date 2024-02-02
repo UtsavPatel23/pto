@@ -39,6 +39,8 @@ without having to re-build next.js the application.
 - [x] Checkout : - Guest user, Order Notes,Order Pay. 
 - [x] Payment gateway - Paypal,Bank transfer,Stripe,AfterPay,Laybuy. 
 - [x] Dashboard User login,Forgot password and singup. 
+- [x] Create Android build. 
+- [x] Create IOS build. 
 
 
 
