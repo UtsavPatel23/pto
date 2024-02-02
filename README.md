@@ -30,11 +30,17 @@ without having to re-build next.js the application.
 - [x] 404 Page
 - [x] Display Comments
 - [x] Post a Comment ( using a Comment Form )
-- [ ] Post Preview ( Coming Soon )
-- [ ] Product Pagination ( Coming Soon )
-- [ ] Load More Products ( Coming Soon )
-- [ ] Authentication with JWT and Http Only Cookie implementation. ( Coming Soon )
-- [ ] Login feature for WP Post Preview in Next.js ( Coming Soon )
+- [x] Product Pagination
+- [x] Variation Products 
+- [x] Authentication with JWT and Http Only Cookie implementation. 
+- [x] Product wishlist. 
+- [x] Product Filter. 
+- [x] Cart : - Coupon Code, Redeem Points,Shipping Charge. 
+- [x] Checkout : - Guest user, Order Notes,Order Pay. 
+- [x] Payment gateway - Paypal,Bank transfer,Stripe,AfterPay,Laybuy. 
+- [x] Dashboard User login,Forgot password and singup. 
+
+
 
 ## [Tutorial Course](https://www.youtube.com/playlist?list=PLD8nQCAhR3tSRwsvzRtogv9MFkEWo5d9c)
 

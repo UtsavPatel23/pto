@@ -259,19 +259,24 @@ const SingleProduct = ({ singleProduct, reviews, options }) => {
 					/> 
 					 {
 					!isEmpty(attributes_new)?
-					attributes_new.map(per_page_no=>(
-							<div key={per_page_no.id}>
-								{per_page_no.name} : 
-								<>
-								<select  id={'id_att_'+per_page_no.name} className="attribut_drop" onChange={attribut_drop}  name={'nm_att_'+per_page_no.name}>
-									<option key={per_page_no.if} value=''>Choose an option</option> 
-									{per_page_no.options.map(attribut_val=>(
-										<option key={attribut_val.slug} value={attribut_val.slug}>{attribut_val.name}</option> 
-									))}
-								</select>
-								</>
-							</div> 
-						))
+							 attributes_new.map(per_page_no => {
+								 if (per_page_no.variation)
+								 {
+									 return (
+										<div key={per_page_no.id}>
+										{per_page_no.name} :
+										<>
+											<select id={'id_att_' + per_page_no.name} className="attribut_drop" onChange={attribut_drop} name={'nm_att_' + per_page_no.name}>
+												<option key={per_page_no.if} value=''>Choose an option</option>
+												{per_page_no.options.map(attribut_val => (
+													<option key={attribut_val.slug} value={attribut_val.slug}>{attribut_val.name}</option>
+												))}
+											</select>
+										</>
+									</div>
+									)			 
+								 }
+						})
 						:''
 					 }
 					 { att_selected != '' ? <><button onClick={clear_drop}>Clear</button></>: null}
