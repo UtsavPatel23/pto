@@ -605,6 +605,22 @@ const CheckoutForm = ( { countriesData , paymentModes , options} ) => {
 		if(discount_bundle != 0)
 		{
 			setDiscountBundleDis(discount_bundle);
+			if (coutData?.bundlediscountPrice != undefined) {
+				if (coutData?.bundlediscountPrice > 0 && coutData?.bundlediscountPrice != discount_bundle) {
+					setCoutData({
+						...coutData,
+						"bundlediscountPrice": discount_bundle
+					}
+					);
+				}
+			} else { 
+				setCoutData({
+					...coutData,
+					"bundlediscountPrice": discount_bundle
+				}
+				);
+			}
+
 			totalPriceSum = totalPriceSum - discount_bundle;
 		}
 
@@ -743,6 +759,7 @@ const CheckoutForm = ( { countriesData , paymentModes , options} ) => {
 	console.log('paymentMethodDiscount',paymentMethodDiscount);
 	console.log('cartSubTotalDiscount',cartSubTotalDiscount);
 	console.log('createdOrderData',createdOrderData);
+	console.log('coutData',coutData);
 	return (
 		<>
 		{ loading && <img className="loader" src={Loader.src} alt="Loader" width={50}/> }
