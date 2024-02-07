@@ -14,7 +14,7 @@ import { isEmpty, isArray } from 'lodash';
  * @param {Function} setIsAddedToCart Sets A Boolean Value If Product Is Added To Cart.
  * @param {Function} setLoading Sets A Boolean Value For Loading State.
  */
-export const groupAddToCart = async( productId, qty = 1, setCart, itemCountAdd,setItemCountAdd, setLoading ,ViewCartaction,i) => {
+export const groupAddToCart = async( productId, qty = 1, setCart, itemCountAdd,setItemCountAdd, setLoading ,ViewCartaction,i,setAddcartMsg) => {
 	const storedSession = getSession();
 	const addOrViewCartConfig = getApiCartConfig();
 	
@@ -40,7 +40,9 @@ export const groupAddToCart = async( productId, qty = 1, setCart, itemCountAdd,s
 			//setLoading(false);
 		} )
 		.catch( err => {
-			console.log( 'err', err );
+			console.log('err', err);
+			setAddcartMsg('You cannot add this product to the cart because the product is just stocked out.');
+			setLoading(false);
 		} );
 };
 

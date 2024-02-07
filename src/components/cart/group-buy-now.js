@@ -11,7 +11,8 @@ const GroupBuyNow = ({coutData,setCoutData,group_product_id}) => {
 	const [ cart, setCart ] = useContext( AppContext );
 	const [loading, setLoading] = useState(false);
 	const [itemCount,setItemCount] = useState(0);  
-	const [itemCountAdd,setItemCountAdd] = useState(0);  
+	const [itemCountAdd, setItemCountAdd] = useState(0);  
+	const [ addcartMsg, setAddcartMsg ] = useState( '' );
 	const addToCartBtnClasses = cx(
 		'duration-500 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow',
 		{
@@ -49,7 +50,7 @@ const GroupBuyNow = ({coutData,setCoutData,group_product_id}) => {
 					{
 						ViewCartaction = true;
 					}
-					await groupAddToCart(parseInt(product_id) ?? 0, parseInt(value), setCart, itemCountAdd, setItemCountAdd, setLoading, ViewCartaction, i) 
+					await groupAddToCart(parseInt(product_id) ?? 0, parseInt(value), setCart, itemCountAdd, setItemCountAdd, setLoading, ViewCartaction, i,setAddcartMsg) 
 					i++;
 				}
 			}
@@ -62,7 +63,7 @@ const GroupBuyNow = ({coutData,setCoutData,group_product_id}) => {
 			);
 		
 	}
-	if ((itemCountAdd == itemCount) && (itemCount > 0) && !loading)
+	if ((itemCountAdd == itemCount) && (itemCount > 0) && !loading && (addcartMsg == ''))
 	{
 		setLoading(true);
 		Router.push("/checkout/")
@@ -75,8 +76,9 @@ const GroupBuyNow = ({coutData,setCoutData,group_product_id}) => {
 				onClick={ groupaddtocart }
 				disabled={ loading }
 			>
-			{ loading  ? 'Adding...' : 'Buy Now' }
+			{addcartMsg != '' ? 'Buy Now' : <>{ loading  ? 'Adding...' : 'Buy Now' }</> }
 			</button>
+			{addcartMsg != '' ? <>{ addcartMsg}</>:null}
 		</>
 	);
 };

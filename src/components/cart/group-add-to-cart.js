@@ -13,7 +13,8 @@ const GroupAddToCart = ({coutData,setCoutData,group_product_id}) => {
 	const [ isAddedToCart, setIsAddedToCart ] = useState( false );
 	const [loading, setLoading] = useState(false);
 	const [itemCount,setItemCount] = useState(0);  
-	const [itemCountAdd,setItemCountAdd] = useState(0);  
+	const [itemCountAdd, setItemCountAdd] = useState(0);  
+	const [ addcartMsg, setAddcartMsg ] = useState( '' );
 	const addToCartBtnClasses = cx(
 		'duration-500 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow',
 		{
@@ -51,7 +52,7 @@ const GroupAddToCart = ({coutData,setCoutData,group_product_id}) => {
 						ViewCartaction = true;
 					}
 					//console.log('ViewCartaction', ViewCartaction);
-					await groupAddToCart(parseInt(product_id) ?? 0, parseInt(value), setCart, itemCountAdd, setItemCountAdd, setLoading, ViewCartaction, i) 
+					await groupAddToCart(parseInt(product_id) ?? 0, parseInt(value), setCart, itemCountAdd, setItemCountAdd, setLoading, ViewCartaction, i,setAddcartMsg) 
 					i++;
 				}
 			}
@@ -72,9 +73,10 @@ const GroupAddToCart = ({coutData,setCoutData,group_product_id}) => {
 				onClick={ groupaddtocart }
 				disabled={ loading }
 			>
-			{ loading  ? 'Adding...' : 'Add to cart' }
+			{addcartMsg != '' ? 'Add to cart' : <>{ loading  ? 'Adding...' : 'Add to cart' }</> }
 			</button>
-			{ (itemCountAdd == itemCount) && (itemCount > 0) && ! loading  ? (
+			{addcartMsg != '' ? <>{ addcartMsg}</>:null}
+			{ (itemCountAdd == itemCount) && (itemCount > 0) && ! loading && addcartMsg == '' ? (
 				<Link href="/cart" legacyBehavior>
 					<a
 						className="bg-white hover:bg-gray-100 text-gray-800 font-semibold ml-4 py-11px px-4 border border-gray-400 rounded shadow"
