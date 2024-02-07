@@ -229,6 +229,7 @@ const SingleProduct = ({ singleProduct, reviews, options }) => {
 		setAtt_selected('');
 		}
 	console.log('variation product ',product);
+	console.log('membersonly product ',membersonly);
 	 return Object.keys( product ).length ? (
 		 <div className="single-product container mx-auto my-32 px-4 xl:px-0">
 			 <div key="section1" className="grid md:grid-cols-2 gap-4">
@@ -260,7 +261,7 @@ const SingleProduct = ({ singleProduct, reviews, options }) => {
 					 /> 
 					 {
 						 product?.type == 'grouped' ?
-							 <GroupProduct product={product} bundle_discount={options?.nj_bundle_discount}></GroupProduct> : null
+							 <GroupProduct options={options} product={product} bundle_discount={options?.nj_bundle_discount}></GroupProduct> : null
 					 }
 					 {
 					!isEmpty(attributes_new)?
@@ -289,22 +290,22 @@ const SingleProduct = ({ singleProduct, reviews, options }) => {
 						{timer != 0?<div id="timer_count_down"></div>:null}
 						{timer != 0?<div>Extra Discount{product.meta_data.product_discount}%Off</div>:null}
 					</div>
-					<div key="product_info3"> 
+					 
 					{(() => {
 						if ((singleProduct.type == 'simple' || singleProduct.type == 'variable') && (product.price > 0)) 
 						{
 							var offpride = Math.round(((product.regular_price-product.price)*100)/product.regular_price);
 							if(offpride > 0){
 								return (
-									<>
-									{offpride}%Off
-									</>
+										<div key="product_info3">
+											{offpride}%Off
+										</div>
 								)
 							}
 								
 						} 
 					})()} 
-					</div>
+					
 					{(() =>{
 						// Member only
 						if(membersonly != '')
@@ -339,25 +340,24 @@ const SingleProduct = ({ singleProduct, reviews, options }) => {
 
 					})()} 
 					</div>
-					<div key="product_info5"> 
 						{(() => {
 							if (product.meta_data.short_description_badge != '' && product.meta_data.short_description_badge != 0 && product.meta_data.short_description_badge != undefined) 
 							{
 							return (
-								<div>{product.meta_data.short_description_badge.replace('-',' ')}</div>
+								<div key="product_info5">{product.meta_data.short_description_badge.replace('-',' ')}</div>
 							)
 							}
 							})()}
-					</div>
-					<div key="product_info6">
-					{ (product?.type == 'simple' || product?.type == 'variation') && product?.stock_quantity > 0 ? <>
+					
+						 {(product?.type == 'simple' || product?.type == 'variation') && product?.stock_quantity > 0 ?
+						<div key="product_info6">
 						<InputQty product={ product } productCountQty={productCountQty} setProductCountQty={setProductCountQty}/>
 						<AddToCart product={ product } productCountQty={productCountQty}/>
 						<BuyNow  product={ product } productCountQty={productCountQty}/>
-						</> : null }
-					 </div>
+						</div> : null }
+					 
 					 {(() => {
-						 if (product?.type == 'simple' || product?.type == 'variation') {
+						 if (product?.type == 'simple' || product?.type == 'variation'  || product?.type == 'grouped') {
 							 return (<>
 								 <WishlistButton customerData={customerData} setCustomerData={setCustomerData} product={product} tokenValid={tokenValid} />
 								 <div key="reward-wrapper">
@@ -374,7 +374,12 @@ const SingleProduct = ({ singleProduct, reviews, options }) => {
 									 <Link href="/my-account/rewards/">Manage</Link> Your Reward Points.
 								 </div>
 							 </div>
-						
+							 </>);
+						  }
+					 })()}
+					 {(() => {
+						 if (product?.type == 'simple' || product?.type == 'variation' ) {
+							 return (<>
 							<div key="product_info7">
 								<input id="shippingCalculation_input" type="number" onKeyUp={shippingCalculation} data-inputsku={ product?.sku ?? '' } data-inputproduct_code={product.meta_data.product_code}   size="4"  name="product_code" placeholder="POSTCODE"  disabled={inputshipdisabled} /> 
 								<span
@@ -413,7 +418,11 @@ const SingleProduct = ({ singleProduct, reviews, options }) => {
 								text={ product?.button_text ?? '' }
 							/> : null
 					}
-					</div>
+					 </div>
+				 </div>
+				 </div>
+				 <div key="section1" className="grid md:grid-cols-1 gap-8">
+					 <div>
 					{(() => {
 						if(!isEmpty(paymentOptions))
 						{
@@ -587,7 +596,7 @@ const SingleProduct = ({ singleProduct, reviews, options }) => {
 						
 				
 				 </div>{/* end product_info */ }
-			</div>	
+			</div>
 		 </div>
 	 ) : null;
  };

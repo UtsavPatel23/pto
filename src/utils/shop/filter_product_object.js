@@ -34,28 +34,32 @@ export const get_products_filtered_by_filter_option = (ProductsTmp,filter_option
                     //console.log('j XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX= '+key+' j '+j);j++;
             var attr_inner_flg_arr = []; 
                     var attr_find_one = filter_option['attributes'][key].some(s => {
-            var  attr_inner_flag = false;
-                        var attr_r =  Object.keys(obj['attributes']).some(attk => {
-                        // * attribut name 
-                        if(obj['attributes'][attk].name == key)
+                        var attr_inner_flag = false;
+                        if (!isEmpty(obj['attributes']) && (obj['attributes'] != ''))
                         {
-                            var found = obj['attributes'][attk]['options'].find(function (element) {
-                            if(s == element)
+                            var attr_r =  Object.keys(obj['attributes']).some(attk => {
+                                // * attribut name 
+                                if(obj['attributes'][attk].name == key)
+                                {
+                                    var found = obj['attributes'][attk]['options'].find(function (element) {
+                                    if(s == element)
+                                    {
+                                        return true;
+                                    }
+                                    });
+                                    if(found != undefined)
+                                    {
+                                    return true;
+                                    }
+                                }
+                                })
+                                attr_inner_flg_arr.push(attr_r);
+                            if(attr_r)
                             {
-                                return true;
-                            }
-                            });
-                            if(found != undefined)
-                            {
-                            return true;
+                                attr_inner_flag = true;
                             }
                         }
-                        })
-                        attr_inner_flg_arr.push(attr_r);
-                    if(attr_r)
-                    {
-                        attr_inner_flag = true;
-                    }
+                        
                     
                     });
             

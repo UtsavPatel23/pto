@@ -6,11 +6,12 @@ import Image from '../image';
 import InputQtyGroup from './input-qty-group';
 import GroupAddToCart from '../cart/group-add-to-cart';
 import GroupBuyNow from '../cart/group-buy-now';
-import { get_discount_price } from '../../utils/customjs/custome';
-function group_product({ product ,bundle_discount}) {
+import { getMemberOnlyProduct, get_discount_price } from '../../utils/customjs/custome';
+function group_product({options, product ,bundle_discount}) {
     var vewBtnGroupProduct = true;
     const { grouped_products  } = product;
-    const [coutData,setCoutData]  = useState('');
+    const [coutData, setCoutData] = useState('');
+    var messageText  = options?.nj_display_single_product_member_only ?? '';
     console.log('Group product', product)
     console.log('grouped_products', grouped_products)
     console.log('coutData', coutData)
@@ -37,6 +38,8 @@ function group_product({ product ,bundle_discount}) {
                         const img = product?.images?.[0] ?? {};
                         var p_slug = '/p/' + product?.slug;
                         var p_price = '';
+                        
+					    var membersonly = getMemberOnlyProduct(options,product,messageText);
                         if (bundle_discount > 0)
                         {
                             p_price = get_discount_price(product);
@@ -62,7 +65,7 @@ function group_product({ product ,bundle_discount}) {
                                 <td>
                                     <h6>
                                     <Link href={ `${ p_slug }`} legacyBehavior>
-                                            <a>Test Product d162</a>
+                                            <a>{ product.name}</a>
                                     </Link>
                                     </h6>
                                     <div key="product_info1"
@@ -71,11 +74,41 @@ function group_product({ product ,bundle_discount}) {
                                         } }
                                         className="product-price mb-5"
                                     /> 
+                                {product?.meta_data?.product_discount > 0?<div  key="product_info2">Extra Discount{product.meta_data.product_discount}%Off</div>:null}
+                                    
+                                {(() => {
+                                    if (product.price > 0) 
+                                    {
+                                        var offpride = Math.round(((product.regular_price-product.price)*100)/product.regular_price);
+                                        if(offpride > 0){
+                                            return (
+                                                    <div key="product_info3">
+                                                        {offpride}%Off
+                                                    </div>
+                                            )
+                                        }
+                                            
+                                    } 
+                                })()} 
                                     { p_price != ''?<>
                                     <div key='BundlePrice'>
                                     Bundle Price {p_price}
                                         </div>
-                                    </>:null}
+                                    </> : null}
+                                    {(() =>{
+                                    // Member only
+                                    if(membersonly != '')
+                                    {
+                                    return(
+                                            <div key="membersonly"
+                                                dangerouslySetInnerHTML={ {
+                                                    __html: membersonly ?? '',
+                                                } }
+                                                className="membersonly"
+                                            />
+                                        );
+                                    }
+                                })()}
                                     <div key="product_info4">
                                     {(() => {
                                             if (product.stock_quantity < 1) {
