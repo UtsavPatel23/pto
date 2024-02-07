@@ -22,6 +22,7 @@ import $ from 'jquery';
 import { get_coupon_box } from '../../utils/shop/shop-box';
 import WishlistButton from '../wishlist/wishlistbutton'
 import { SHOP_SHIPPING_SINGLE, WEB_DEVICE } from '../../utils/constants/endpoints';
+import GroupProduct from './group-product';
 
 const SingleProduct = ({ singleProduct, reviews, options }) => {
 		const [product, setProduct] = useState(singleProduct);
@@ -256,7 +257,11 @@ const SingleProduct = ({ singleProduct, reviews, options }) => {
 							__html: product?.price_html ? product?.price_html : '$'+product?.price ,
 						} }
 						className="product-price mb-5"
-					/> 
+					 /> 
+					 {
+						 product?.type == 'grouped' ?
+							 <GroupProduct product={product} bundle_discount={options?.nj_bundle_discount}></GroupProduct> : null
+					 }
 					 {
 					!isEmpty(attributes_new)?
 							 attributes_new.map(per_page_no => {

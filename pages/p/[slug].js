@@ -11,6 +11,9 @@ import SingleProduct from '../../src/components/single-product';
  */
 import axios from 'axios';
 import { useRouter } from 'next/router';
+import Router from "next/router";
+import { isEmpty } from 'lodash';
+import { useEffect } from 'react';
 
 export default function Product( { headerFooter, product,reviews } ) {
 	console.log('product',product);
@@ -21,6 +24,11 @@ export default function Product( { headerFooter, product,reviews } ) {
 	if ( router.isFallback ) {
 		return <div>Loading...</div>;
 	}
+	useEffect(() => {
+		if (isEmpty(product)) {
+			Router.push("/404/");
+		}
+	}, [product])
 	var p_slug = '/p/'+product?.slug;
 		if(!WEB_DEVICE)
 			{
@@ -43,7 +51,7 @@ export async function getServerSideProps( { params } ) {
 	const { slug } = params || {};
 	const { data: headerFooterData } = await axios.get( HEADER_FOOTER_ENDPOINT );
 	const { data: product } = await getProductBySlug( slug );
-	const { data: reviews } = await getreviewsByProID( product[ 0 ].id );
+	const { data: reviews } = await getreviewsByProID( product[ 0 ]?.id );
 	
 	return {
 		props: {

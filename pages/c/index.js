@@ -13,6 +13,7 @@ import Layout from '../../src/components/layout';
 
 export default function categories({ headerFooter, categories }) {
     console.log('categories',categories);
+    console.log('SHOP_CATEGORIES',SHOP_CATEGORIES);
     if(isEmpty(categories))
     {
         return(

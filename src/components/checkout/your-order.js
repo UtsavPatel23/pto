@@ -3,7 +3,7 @@
 import { Fragment } from 'react';
 import CheckoutCartItem from "./checkout-cart-item";
 
-const YourOrder = ( { cart,shippingCost,discoutDis,cartSubTotalDiscount,totalPriceDis,notice,postcodedis ,coutData} ) => {
+const YourOrder = ( { cart,shippingCost,discoutDis,cartSubTotalDiscount,totalPriceDis,notice,postcodedis ,coutData,discountBundleDis} ) => {
 	//console.log('totalPriceDis',totalPriceDis);
 	//console.log('shippingCost',shippingCost);
 	console.log('cartSubTotalDiscount',cartSubTotalDiscount);
@@ -37,7 +37,19 @@ const YourOrder = ( { cart,shippingCost,discoutDis,cartSubTotalDiscount,totalPri
 							<td className="woo-next-checkout-total font-normal text-xl">Sub Total</td>
 							<td className="woo-next-checkout-total font-bold text-xl">{ cart?.cartItems?.[ 0 ]?.currency ?? '' }{ cart?.totalPrice.toFixed(2) ?? '' }</td>
 						</tr>
-						
+						{ /*Print Bundle disount */}
+						{(() => {
+								if (discountBundleDis != 0)
+								{
+									return (
+										<tr className="">
+											<td className=""/>
+											<td className="woo-next-checkout-total font-normal text-xl">Bundle Discount</td>
+											<td className="woo-next-checkout-total  text-xl">-{ cart?.cartItems?.[ 0 ]?.currency ?? '' }{ discountBundleDis ?? '' }</td>
+										</tr>
+									);
+								}
+						})()} 
 						{/* DiscoutDis*/}
 						{(() => {
 							if(discoutDis != 0 && (undefined != discoutDis)) 
@@ -45,7 +57,7 @@ const YourOrder = ( { cart,shippingCost,discoutDis,cartSubTotalDiscount,totalPri
 								return (
 									<tr className="">
 										<td className=""/>
-										<td className="woo-next-checkout-total font-normal text-xl">Discount</td>
+										<td className="woo-next-checkout-total font-normal text-xl">Discount ({coutData?.CouponApply?.couponData?.code}) :</td>
 										<td className="woo-next-checkout-total  text-xl">-{ cart?.cartItems?.[ 0 ]?.currency ?? '' }{ discoutDis ?? '' }</td>
 									</tr>
 									)	

@@ -20,23 +20,31 @@ export const get_attr_count_data_final_list = (ProductsTmp)=>{
     
     // ************* Create attribut filter object create ************************ 
 	ProductsTmp.some(attr_obj => {
-		attr_obj.attributes.forEach((element) => {
-			if (isNaN(attr_count_data_final_list["attributes"][element.name]))
-			{
-				attr_count_data_final_list["attributes"][element.name] = {};
-			}
-		});
+		if (attr_obj?.attributes != undefined)
+		{
+			attr_obj.attributes.forEach((element) => {
+				if (isNaN(attr_count_data_final_list["attributes"][element.name]))
+				{
+					attr_count_data_final_list["attributes"][element.name] = {};
+				}
+			});
+		}
+		
 	});
 	ProductsTmp.some(obj => {
 		//console.log('************************ Attribut '+obj['id']+' ******************************');
-		obj['attributes'].some(attr_obj => {
-			attr_obj.options.forEach((element) => {
-				if (isNaN(attr_count_data_final_list['attributes'][attr_obj.name][element])) {
-					attr_count_data_final_list['attributes'][attr_obj.name][element] = 0;
-				}
-				attr_count_data_final_list['attributes'][attr_obj.name][element] = 1 + attr_count_data_final_list['attributes'][attr_obj.name][element];
+		if (obj['attributes'] != undefined)
+		{
+			obj['attributes'].some(attr_obj => {
+				attr_obj.options.forEach((element) => {
+					if (isNaN(attr_count_data_final_list['attributes'][attr_obj.name][element])) {
+						attr_count_data_final_list['attributes'][attr_obj.name][element] = 0;
+					}
+					attr_count_data_final_list['attributes'][attr_obj.name][element] = 1 + attr_count_data_final_list['attributes'][attr_obj.name][element];
+				});
 			});
-		});
+		}
+		
 
 		//console.log('************************ Categories '+obj['id']+' ******************************');
 		obj['categories'].some(attr_obj => {
@@ -93,7 +101,7 @@ export const get_attr_count_data_final_list = (ProductsTmp)=>{
         }
 
 		//console.log('************************ tags '+obj['id']+' ******************************');
-	obj['tags'].some(tags_obj => {
+	obj['tags']?.some(tags_obj => {
 				if(!isEmpty(attr_count_data_final_list['tags']))
 				{
 					var objIndex  = attr_count_data_final_list['tags'].findIndex(function (element) {

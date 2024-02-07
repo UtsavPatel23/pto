@@ -119,7 +119,24 @@ export const getCreateOrderData = ( shippingCost,couponName,order, products ,cou
 
 			}
 		}
+		// Bundle discount
+		if(coutData?.bundlediscountPrice != undefined)
+		{
+			if(coutData?.bundlediscountPrice > 0)
+			{
+				tmpOrderData = { ...tmpOrderData, ...{
+					"fee_lines":[             
+						...tmpOrderData.fee_lines,
+						{    
+							"name":"Bundle discount:",
+							"total": '-'+coutData?.bundlediscountPrice.toString()
+						}
+					]
+					}};
 
+
+			}
+		}
 	
 	if(Object.keys(cartSubTotalDiscount).length > 0)
 	{

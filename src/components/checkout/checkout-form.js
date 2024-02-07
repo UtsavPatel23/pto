@@ -17,7 +17,7 @@ import {
 } from '../../utils/checkout';
 import { useEffect } from 'react';
 ;
-import { getShipping, get_discount_type_cart, get_points, get_stateList } from '../../utils/customjs/custome';
+import { getShipping, get_discount_bundle, get_discount_type_cart, get_points, get_stateList } from '../../utils/customjs/custome';
 import Loader from "./../../../public/loader.gif";
 import axios from 'axios';
 import { SUBURB_API_URL } from '../../utils/constants/endpoints';
@@ -117,7 +117,8 @@ const CheckoutForm = ( { countriesData , paymentModes , options} ) => {
 	// Paypal
 	const [paypalButtonBisible,setPaypalButtonBisible] = useState(false);
 	
-
+	// Bundle disount 
+	const [discountBundleDis, setDiscountBundleDis] = useState(0);
 	
 	/**
 	 * Handle form submit.
@@ -597,6 +598,16 @@ const CheckoutForm = ( { countriesData , paymentModes , options} ) => {
 			totalPriceSum = totalPriceSum+shippingCost
 		}
 
+		// discount Bundle  product
+		var discount_bundle = 0;
+		discount_bundle = get_discount_bundle(cart?.cartItems,options,totalPrice,coutData);
+		console.log('reurn bundle discount', discount_bundle);
+		if(discount_bundle != 0)
+		{
+			setDiscountBundleDis(discount_bundle);
+			totalPriceSum = totalPriceSum - discount_bundle;
+		}
+
 		// CouponApply
 		if(CouponApply != '' && CouponApply != undefined)
 		{
@@ -824,7 +835,7 @@ const CheckoutForm = ( { countriesData , paymentModes , options} ) => {
 						<div className="your-orders">
 							{/*	Order*/ }
 							<h2 className="text-xl font-medium mb-4">Your Order</h2>
-							<YourOrder cart={ cart } shippingCost={shippingCost} discoutDis={discoutDis} cartSubTotalDiscount={cartSubTotalDiscount} totalPriceDis={totalPriceDis} notice={notice} postcodedis={postcodedis} coutData={coutData}/>
+								<YourOrder cart={cart} shippingCost={shippingCost} discoutDis={discoutDis} cartSubTotalDiscount={cartSubTotalDiscount} totalPriceDis={totalPriceDis} notice={notice} postcodedis={postcodedis} coutData={coutData} discountBundleDis={discountBundleDis} />
 
 							{createdOrderData?.allData?.payment_method == 'ppcp-gateway' && paypalButtonBisible ?<></>:
 							<>

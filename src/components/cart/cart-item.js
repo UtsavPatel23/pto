@@ -153,7 +153,7 @@ const CartItem = ( {
 					{itemNote != ''? 
 					<div key="purchase_note"
 						dangerouslySetInnerHTML={ {
-							__html: itemNote.purchase_note ?? '',
+							__html: itemNote?.purchase_note ?? '',
 						} }
 						className="purchase_note mb-5"
 					/> 

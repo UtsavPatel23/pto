@@ -4,7 +4,7 @@ import CartItem from './cart-item';
 
 import Link from 'next/link';
 import { clearCart } from '../../utils/cart';
-import { getShipping, get_discount_type_cart } from '../../utils/customjs/custome';
+import { getShipping, get_discount_bundle, get_discount_type_cart } from '../../utils/customjs/custome';
 
 import Loader from "./../../../public/loader.gif";
 ;
@@ -45,6 +45,9 @@ const CartItemsContainer = ({options}) => {
 	// Cart sub total Discount 
 	const [cartSubTotalDiscount,setCartSubTotalDiscount] = useState(null);
 	
+	// Bundle disount 
+	const [discountBundleDis, setDiscountBundleDis] = useState(0);
+
 	// Clear the entire cart.
 	const handleClearCart = async ( event ) => {
 		event.stopPropagation();
@@ -304,6 +307,32 @@ const CartItemsContainer = ({options}) => {
 		{
 			totalPriceSum = totalPriceSum+shippingCost
 		}
+
+		// discount Bundle  product
+		var discount_bundle = 0;
+		discount_bundle = get_discount_bundle(cartItems,options,totalPrice,coutData);
+		console.log('reurn bundle discount', discount_bundle);
+		if(discount_bundle != 0)
+		{
+			setDiscountBundleDis(discount_bundle);
+			if (coutData?.bundlediscountPrice != undefined) {
+				if (coutData?.bundlediscountPrice > 0 && coutData?.bundlediscountPrice != discount_bundle) {
+					setCoutData({
+						...coutData,
+						"bundlediscountPrice": discount_bundle
+					}
+					);
+				}
+			} else { 
+				setCoutData({
+					...coutData,
+					"bundlediscountPrice": discount_bundle
+				}
+				);
+			}
+			totalPriceSum = totalPriceSum - discount_bundle;
+		}
+
 		// CouponApply
 		if(CouponApply != '' && CouponApply != undefined)
 		{
@@ -432,7 +461,6 @@ const CartItemsContainer = ({options}) => {
 			  });
 		}
 	  }
-	
 	return (
 		<div className="content-wrap-cart">
 			{ loading && <img className="loader" src={Loader.src} alt="Loader" width={50}/> }
@@ -500,6 +528,20 @@ const CartItemsContainer = ({options}) => {
 							<p className="col-span-2 p-2 mb-0">Sub Total({totalQty})</p>
 							<p className="col-span-1 p-2 mb-0">{cartItems?.[0]?.currency ?? ''}{parseFloat(totalPrice).toFixed(2)}</p>
 						</div>
+						<div key='bundle_dis'>
+						{ /*Print Bundle disount */}
+						{(() => {
+								if (discountBundleDis != 0)
+								{
+									return (
+										<div className="flex grid grid-cols-3 bg-gray-100 mb-4">
+											<p className="col-span-2 p-2 mb-0">Bundle Discount : </p>
+											<p className="col-span-1 p-2 mb-0">-{cartItems?.[0]?.currency ?? ''}{discountBundleDis}</p>
+										</div>
+									);
+								}
+						})()} 
+						</div>
 						<div key='discount'>
 							{/* cart Sub Total Discount */}
 							{(() => {
@@ -534,7 +576,7 @@ const CartItemsContainer = ({options}) => {
 								{
 									return (
 										<div className="flex grid grid-cols-3 bg-gray-100 mb-4">
-											<p className="col-span-2 p-2 mb-0">Discount : {coutData?.CouponApply?.couponData?.code} <button onClick={removeCouponCode}>Remove</button></p>
+											<p className="col-span-2 p-2 mb-0">Discount ({coutData?.CouponApply?.couponData?.code} <button onClick={removeCouponCode}>Remove</button>)</p>
 											<p className="col-span-1 p-2 mb-0">-{cartItems?.[0]?.currency ?? ''}{ discoutDis }</p>
 										</div>
 										)

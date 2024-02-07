@@ -179,7 +179,7 @@ if(!isEmpty(filter_option['discount']))
             var tag_flg_arr = [];
             Object.keys(filter_option['tags']).some(key => {
                 //console.log('key',filter_option['tags'][key]);
-                
+                if (obj['tags'] != undefined) { 
                     var found_tag = obj['tags'].find(function (element) {
                         //console.log('element',element.name);
                         if(filter_option['tags'][key] == element.name)
@@ -187,6 +187,8 @@ if(!isEmpty(filter_option['discount']))
                             return true;
                         }
                     });
+                }
+                    
                     if(found_tag != undefined)
                             {
                                 tag_flg_arr.push(true);

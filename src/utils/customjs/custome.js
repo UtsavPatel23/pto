@@ -350,7 +350,7 @@ export function get_discount_type_cart(cartItems,options,setCartSubTotalDiscount
         var msgTmpDiscount = '';
         var tmpDiscount = 0;
         var arr_msg = [];
-        { options.discount_rate_product_quantity_discount.length &&
+        { options.discount_rate_product_quantity_discount?.length &&
           options.discount_rate_product_quantity_discount.map( ( discount_item ) => {
             //console.log('discount_item',discount_item);
             if(item.quantity < discount_item.quantity)
@@ -410,7 +410,7 @@ export function get_discount_type_cart(cartItems,options,setCartSubTotalDiscount
     //console.log('minPriceArr',minPriceArr);
     //console.log('minValuePrice',minValuePrice);
     //console.log('discount_rate_multiple_product_in_cart_discount',discount_rate_multiple_product_in_cart_discount);
-    { discount_rate_multiple_product_in_cart_discount.length &&
+    { discount_rate_multiple_product_in_cart_discount?.length &&
       discount_rate_multiple_product_in_cart_discount.map( ( item ) => {
       //    console.log('item',item);
       //    console.log('CL ',cartItems.length);
@@ -713,4 +713,60 @@ export const serialize = function(obj, prefix) {
     }
   }
   return str.join("&");
+}
+
+export const get_discount_price = (product) => { 
+  var p_price = product.price;
+    const toDay = new Date();
+    var product_start_date = product.meta_data.product_start_date;
+    var product_end_date = product.meta_data.product_end_date;
+    product_start_date = new Date(product_start_date+' 00:00:00');
+    product_end_date = new Date(product_end_date+' 23:59:59');
+    if (product_start_date <= toDay && toDay <= product_end_date) {
+        p_price = (product.price -((product.price * product.meta_data.product_discount) / 100));
+  }
+  return p_price;
+}
+
+export function get_discount_bundle(cartItems, options, totalPrice, coutData) {
+  const bundle_discount = coutData?.bundle_discount ?? {};
+  const bundle_discount_percentage = options?.nj_bundle_discount ?? 0;
+  var returnValue = 0;
+  if (!isEmpty(bundle_discount) && !isEmpty(cartItems) && (bundle_discount_percentage > 0)) {
+    //console.log('bundle_discount', Object.keys(bundle_discount).length)
+    if (Object.keys(bundle_discount).length > 0)
+    {
+      for (const [key, value] of Object.entries(bundle_discount)) { 
+        //console.log('key' + key + 'val', value);
+        var flg = 1;
+        var dis_proItem_price = 0;
+        if (value.length > 0)
+        {
+          console.log('length', value.length); 
+          value.map((pID) => { 
+            console.log('pID', pID);
+            console.log('cartItems', cartItems);
+            let found = cartItems.find(function (cartItem) {
+                return pID ==  cartItem?.product_id;
+            });
+            if (found == undefined) {
+              flg = 0;
+            } else { 
+              dis_proItem_price += found?.line_subtotal;
+            }
+
+          });
+        }
+        if (flg == 1)
+        {
+          console.log('Bp d p', dis_proItem_price);
+          returnValue += ((dis_proItem_price * bundle_discount_percentage) / 100);
+        }
+
+      }
+    }
+  } else { 
+    returnValue = 0;
+  }
+  return parseFloat(returnValue).toFixed(2);;
 }
