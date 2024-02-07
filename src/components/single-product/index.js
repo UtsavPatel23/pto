@@ -57,6 +57,7 @@ const SingleProduct = ({ singleProduct, reviews, options }) => {
 				// Local storage get
 				var shippinLocalStorageKey = postcode+'_'+sku;
 				 var shippingCharge_res = -2;
+				 
 				 var shipping_single = localStorage.getItem('sbhaduaud');
 				 if(shipping_single != null && shipping_single != '')
 				 {
@@ -66,7 +67,10 @@ const SingleProduct = ({ singleProduct, reviews, options }) => {
 					shipping_single = {};
 				 }
 
-				 if(shippingCharge_res == undefined || shippingCharge_res == -2)
+				 if (product_code == 'LP') { 
+					 shippingCharge_res = 0;
+				}
+				else if(shippingCharge_res == undefined || shippingCharge_res == -2)
 				 { 
 					// API shipping get
 					const payload = {postcode: postcode, sku: sku,product_code:product_code };

@@ -17,6 +17,7 @@ const CartItem = ( {
 	const [productCount, setProductCount] = useState( item.quantity );
 	const [updatingProduct, setUpdatingProduct] = useState( false );
 	const [removingProduct, setRemovingProduct] = useState( false );
+	const [localPickupMsg, setLocalPickupMsg] = useState( '' );
 	const productImg = item?.data?.images?.[0] ?? '';
 	//console.log('cartNote inc',cartNote);
 	//console.log('item inc',item);
@@ -122,7 +123,26 @@ const CartItem = ( {
 	if(!WEB_DEVICE)
 		{
 			p_slug = '/product/?sname='+item?.data?.slug;
+	}
+
+	useEffect(() => { 
+		if (!isEmpty(item.data?.meta_data) && (item.data?.meta_data != ''))
+		{
+			let found = item.data?.meta_data.find(function (metaitem) {
+				return 'product_code' ==  metaitem?.key;
+			});	
+			console.log('found.value',found.value)
+			if (found != undefined && found != '' && (!isEmpty(found)))
+			{
+				if (found.value == 'LP') {
+					setLocalPickupMsg('This product will not be shipped.(Its for pick up only)');
+				 }
+			}
+			
 		}
+	},[]);
+	
+	
 	return (
 		<div id={'pro_'+item?.product_id} className="cart-item-wrap grid grid-cols-3 gap-6 mb-5 border border-brand-bright-grey p-5">
 			<div className="col-span-1 cart-left-col">
@@ -141,7 +161,8 @@ const CartItem = ( {
 					<div className="cart-product-title-wrap relative">
 					<Link href={p_slug}>
 						<h5 className="cart-product-title text-brand-orange">{ item?.data?.name }</h5>
-					</Link>	
+						</Link>	
+						{localPickupMsg != '' ? <>{ localPickupMsg}</>:null}
 					<span key='notefocus'>
 							<input type='text' className='focusbox' readOnly="readOnly" id={'pro_'+item?.data?.sku?.replaceAll("-","_")}/>
 						</span>
