@@ -54,8 +54,8 @@ export const WISHLIST_URL = `${process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL}/wp-js
 export const PAGES_URL = `${process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL}/wp-json/shop-nj/v1/pages`;
 
 // Local API url
-export const NEXT_PUBLIC_SITE_API_URL='http://localhost:3000/'
-//export const NEXT_PUBLIC_SITE_API_URL='https://pto-plum.vercel.app'
+//export const NEXT_PUBLIC_SITE_API_URL='http://localhost:3000/'
+export const NEXT_PUBLIC_SITE_API_URL='https://pto-plum.vercel.app'
 
 // ## WooCommerce Consumer Key and secret.
 export const WC_CONSUMER_KEY_API ='ck_102c7b5cd0df449b8074a0a574220352f49bdd01'

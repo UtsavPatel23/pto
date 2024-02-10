@@ -5,7 +5,7 @@ import axios from 'axios';
 import Layout from '../src/components/layout';
 import Loading from '../src/components/icons/Loading';
 import { AppContext } from '../src/components/context';
-import { HEADER_FOOTER_ENDPOINT, NEXT_PUBLIC_SITE_API_URL } from '../src/utils/constants/endpoints';
+import { HEADER_FOOTER_ENDPOINT, NEXT_PUBLIC_SITE_API_URL, WEB_DEVICE } from '../src/utils/constants/endpoints';
 
 import Bacs from './../src/components/thank-you/bacs';
 import OrderBasicDetails from './../src/components/thank-you/order-basic-details';
@@ -23,7 +23,7 @@ const ThankYouContent = ({headerFooter,states}) => {
 	const [ isSessionFetching, setSessionFetching ] = useState( false );
 	const [ sessionData, setSessionData ] = useState( {} );
 	const session_id = process.browser ? Router.query.session_id : null;
-	const WEB_DEVICE = process.browser ? Router.query.WEB_DEVICE : null;
+	const WEB_DEVICEQuery = process.browser ? Router.query.WEB_DEVICE : null;
 	const orderPostnb = process.browser ? Router.query.orderPostnb : null;
 	const status = process.browser ? Router.query.status : null;
 	const orderToken = process.browser ? Router.query.orderToken : null;
@@ -93,7 +93,7 @@ console.log('sessionData',sessionData);
 			if(status != 'SUCCESS')
 			{
 				redirecturl =  '/checkout/order-pay?orderid=' + response.data.orderData?.id + '&key=' + order_key + '&status=CANCELLED&orderToken=' + token;
-				if (WEB_DEVICE == 'false') {
+				if (WEB_DEVICEQuery == 'false' && (WEB_DEVICE)) {
 					const newOrderData = {
 						_web_to_mobil: redirecturl,
 						orderId: response.data.orderData?.id,
@@ -106,7 +106,7 @@ console.log('sessionData',sessionData);
 					return '';
 				}
 			} else {
-				if (WEB_DEVICE == 'false') {
+				if (WEB_DEVICEQuery == 'false' && (WEB_DEVICE) ) {
 					const newOrderData = {
 						_web_to_mobil: Router.asPath,
 						orderId: response.data.orderData?.id,
@@ -212,7 +212,8 @@ console.log('sessionData',sessionData);
 		window.close();
 		console.log('clos');
 	}
-	if (updateweb_to_mobil) {
+	console.log('updateweb_to_mobil', updateweb_to_mobil);
+	if (updateweb_to_mobil == 1) {
 		if (process.browser) {
 			return(<button onClick={closeWindow} >close</button>)
 			
