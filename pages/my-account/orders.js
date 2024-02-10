@@ -195,11 +195,15 @@ export default function orders ({headerFooter,states}){
 											:null}
 											{userOrder?.status == 'pending' || userOrder?.status == 'cancelled'?
 											null
-											:<button onClick={invoice_pdf => {
+													:
+													<Link href={ `${ process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL }/wp-admin/admin-ajax.php?action=generate_wpo_wcpdf&document_type=invoice&order_ids=${ userOrder?.id }&access_key=${ userOrder?.order_key }&my-account=true`} target="_blank" className={'bg-purple-600 text-white px-3 py-1 m-px rounded-sm w-auto '}>Invoice</Link>
+													
+												}
+												{/*} <button onClick={invoice_pdf => {
 												create_invoice_pdf(userOrder,header,states,paymentModes);
 											}} className={'bg-purple-600 text-white px-3 py-1 m-px rounded-sm w-auto '}>
 													Invoice
-											</button>}
+										</button>{*/}
 											</td>
 											<td className="border border-slate-700 ">
 												<ButtonOrderTracking options={options} meta_data={userOrder?.meta_data}/>

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { update_order_notes } from "../apiFun/order";
+import { update_order, update_order_notes } from "../apiFun/order";
 import { NEXT_PUBLIC_SITE_API_URL } from "../constants/endpoints";
 
 export function payment_capture_afterpay(orderToken,orderData) {

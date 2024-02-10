@@ -312,7 +312,7 @@ export const createCheckoutSessionAndRedirect = async (
 								customerOrderData
 								) => {
 	const sessionData = {
-		success_url: window.location.origin + `/thank-you?session_id={CHECKOUT_SESSION_ID}&order_id=${ orderId }&status=SUCCESS`,
+		success_url: NEXT_PUBLIC_SITE_API_URL + `/thank-you?session_id={CHECKOUT_SESSION_ID}&order_id=${ orderId }&status=SUCCESS`,
 		//cancel_url: window.location.href,
 		cancel_url: process.env.NEXT_PUBLIC_SITE_URL+'/checkout/order-pay?orderid='+orderPostID+'&key='+order_key,
 		customer_email: input.billingDifferentThanShipping ? input?.shipping?.email : input?.billing?.email,
@@ -523,7 +523,7 @@ export const createCheckoutAfterpayAndRedirect = async (
 				"email": input?.billing?.email
 				},
 			"merchant": {
-				"redirectConfirmUrl": process.env.NEXT_PUBLIC_SITE_URL+'/thank-you/?orderPostnb='+window.btoa(orderPostID)+'&orderId='+orderId,
+				"redirectConfirmUrl": NEXT_PUBLIC_SITE_API_URL+'/thank-you/?orderPostnb='+window.btoa(orderPostID)+'&orderId='+orderId,
 				"redirectCancelUrl": process.env.NEXT_PUBLIC_SITE_URL+'/checkout/order-pay?orderid='+orderPostID+'&key='+order_key
 				},
 			"merchantReference": orderId,
@@ -604,7 +604,7 @@ export const createCheckoutAfterpayAndRedirect = async (
 	let laybuyOrderData = {
 				amount: totalPriceDis,
 				currency: 'AUD',
-				returnUrl: process.env.NEXT_PUBLIC_SITE_URL+'/thank-you/?orderPostnb='+window.btoa(orderPostID)+'&orderId='+orderId+'&key='+order_key,
+				returnUrl: NEXT_PUBLIC_SITE_API_URL+'/thank-you/?orderPostnb='+window.btoa(orderPostID)+'&orderId='+orderId+'&key='+order_key,
 				merchantReference: orderId,
 				customer: {
 				firstName: input?.billing?.firstName ? input?.billing?.firstName : input?.billing?.first_name,

@@ -68,8 +68,8 @@ const SingleProduct = ({ singleProduct, reviews, options }) => {
 				 }
 
 				 if (product_code == 'LP') { 
-					 shippingCharge_res = 0;
-				}
+					shippingCharge_res = 0;
+			   		}
 				else if(shippingCharge_res == undefined || shippingCharge_res == -2)
 				 { 
 					// API shipping get
@@ -89,6 +89,9 @@ const SingleProduct = ({ singleProduct, reviews, options }) => {
 				 } else {
 					 shippingMessage = '<span "success">$'+ shippingCharge_res + ' Shipping charge to '+postcode+'</span>';
 				 }
+				 if (product_code == 'LP') { 
+					shippingMessage = '<span "success">This product will not be shipped.(Its for pick up only)</span>';
+			   		}
 				 setShippingCharge(shippingMessage);
 
 				 // Local storage set
