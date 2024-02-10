@@ -786,7 +786,7 @@ const CheckoutForm = ( { countriesData , paymentModes , options} ) => {
 	}, [webtomobileURL]);
 	
 	const get_web_to_mobile = async () => { 
-		if (webtomobileURLCount < 40)
+		if (webtomobileURLCount < 7)
 		{
 		var getOrder_web_to_mobile = await get_order(createdOrderData?.orderPostID);	
 		//var getOrder_web_to_mobile = await get_order(587286);	

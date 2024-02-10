@@ -106,9 +106,10 @@ console.log('sessionData',sessionData);
 					return '';
 				}
 			} else {
+				var redirectthanyouURL =  Router.asPath.replace("WEB_DEVICE=false", "WEB_DEVICE=true");
 				if (WEB_DEVICEQuery == 'false' && (WEB_DEVICE) ) {
 					const newOrderData = {
-						_web_to_mobil: Router.asPath,
+						_web_to_mobil: redirectthanyouURL,
 						orderId: response.data.orderData?.id,
 						web_to_mobil: 1,
 					};
@@ -223,7 +224,10 @@ console.log('sessionData',sessionData);
 	if(status != 'SUCCESS')
 			{
 				return (<></>);
-			}
+	}
+	if (WEB_DEVICEQuery == 'false') { 
+		return (<>Pament process ....</>);
+	}
 	return (
 		<div className="h-almost-screen">
 			<div className="w-600px mt-10 m-auto">
