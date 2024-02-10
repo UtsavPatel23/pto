@@ -187,7 +187,18 @@ export const update_order = async ( newOrderDataReq ) => {
 	}
 	
 	let newOrderData = {};
-	if(newOrderDataReq?.redeem == 1)
+	if(newOrderDataReq?.web_to_mobil == 1)
+	{
+		newOrderData = {
+			meta_data: [
+				{
+				  "key": "_web_to_mobil",
+				  "value": newOrderDataReq._web_to_mobil
+				}
+			  ]
+		}
+	}
+	else if(newOrderDataReq?.redeem == 1)
 	{
 		newOrderData = {
 			meta_data: [

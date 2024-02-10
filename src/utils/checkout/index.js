@@ -4,7 +4,7 @@ import { loadStripe } from '@stripe/stripe-js';
 import { createTheOrder, getCreateOrderData } from './order';
 import { clearCart } from '../cart';
 import axios from 'axios';
-import { NEXT_PUBLIC_SITE_API_URL, WOOCOMMERCE_STATES_ENDPOINT } from '../constants/endpoints';
+import { NEXT_PUBLIC_SITE_API_URL, WEB_DEVICE, WOOCOMMERCE_STATES_ENDPOINT } from '../constants/endpoints';
 import Router from 'next/router';
 import { update_order, update_order_notes } from '../apiFun/order';
 
@@ -604,7 +604,7 @@ export const createCheckoutAfterpayAndRedirect = async (
 	let laybuyOrderData = {
 				amount: totalPriceDis,
 				currency: 'AUD',
-				returnUrl: NEXT_PUBLIC_SITE_API_URL+'/thank-you/?orderPostnb='+window.btoa(orderPostID)+'&orderId='+orderId+'&key='+order_key,
+				returnUrl: NEXT_PUBLIC_SITE_API_URL+'/thank-you/?orderPostnb='+window.btoa(orderPostID)+'&orderId='+orderId+'&key='+order_key+'&WEB_DEVICE='+WEB_DEVICE,
 				merchantReference: orderId,
 				customer: {
 				firstName: input?.billing?.firstName ? input?.billing?.firstName : input?.billing?.first_name,

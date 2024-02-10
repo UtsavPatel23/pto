@@ -20,7 +20,7 @@ import { useEffect } from 'react';
 import { getShipping, get_discount_bundle, get_discount_type_cart, get_points, get_stateList } from '../../utils/customjs/custome';
 import Loader from "./../../../public/loader.gif";
 import axios from 'axios';
-import { SUBURB_API_URL } from '../../utils/constants/endpoints';
+import { SUBURB_API_URL, WEB_DEVICE } from '../../utils/constants/endpoints';
 import { debounce, isEmpty } from 'lodash';
 import TextArea from './form-elements/textarea-field';
 import { get_customer, handleCreateCustomer } from '../../utils/customer';
@@ -30,6 +30,7 @@ import { fieldFocusSet } from './field-focus';
 import PaypalButtonCheckout from './paypal/paypal-button';
 import CancelOrderButton from './cancel-order';
 import Router from 'next/router';
+import { get_order } from '../../utils/apiFun/order';
 
 // Use this for testing purposes, so you dont have to fill the checkout form over an over again.
 // const defaultCustomerInfo = {
@@ -119,6 +120,11 @@ const CheckoutForm = ( { countriesData , paymentModes , options} ) => {
 	
 	// Bundle disount 
 	const [discountBundleDis, setDiscountBundleDis] = useState(0);
+
+	// redirect web to mobile
+	const [webtomobileURL, setWebtomoblieURL] = useState('');
+	var webtomobileURLCount = 0;
+	var myInterval = ''
 	
 	/**
 	 * Handle form submit.
@@ -756,10 +762,61 @@ const CheckoutForm = ( { countriesData , paymentModes , options} ) => {
 		}
 	}
 
-	console.log('paymentMethodDiscount',paymentMethodDiscount);
+	useEffect(() => { 
+		console.log('cart', cart);
+		if (!WEB_DEVICE && cart == null) { 
+			console.log('api call', cart);
+			//createdOrderData?.orderPostID
+			
+			(async () => {
+				myInterval = setInterval(get_web_to_mobile, 5000);
+				
+				//await get_web_to_mobile();
+			  })();
+		}
+	}, [cart]);
+
+	useEffect(() => { 
+		
+		if (webtomobileURL != '') { 
+			clearInterval(myInterval);
+			console.log('webtomobileURL', webtomobileURL);
+			Router.push(webtomobileURL);
+		}
+	}, [webtomobileURL]);
+	
+	const get_web_to_mobile = async () => { 
+		if (webtomobileURLCount < 5)
+		{
+		var getOrder_web_to_mobile = await get_order(587287);	
+		//var getOrder_web_to_mobile = await get_order(587286);	
+		if (getOrder_web_to_mobile?.data?.orderData?.meta_data) { 
+			if (getOrder_web_to_mobile?.data?.orderData?.meta_data.length > 0)
+			{
+				let found = getOrder_web_to_mobile?.data?.orderData?.meta_data.find(function (meta_data) {
+					return '_web_to_mobil' ==  meta_data?.key;
+				});
+				if (found == undefined) {
+					console.log('notfound');
+				} else { 
+					setWebtomoblieURL(found.value);
+				}
+			}
+			
+		}
+		console.log('orderDataget',getOrder_web_to_mobile);
+		webtomobileURLCount++;
+		}
+		console.log('webtomobileURLCount', webtomobileURLCount);
+	};
+
+	console.log('paymentMethodDiscount', paymentMethodDiscount);
 	console.log('cartSubTotalDiscount',cartSubTotalDiscount);
 	console.log('createdOrderData',createdOrderData);
-	console.log('coutData',coutData);
+	console.log('coutData', coutData);
+	
+	
+
 	return (
 		<>
 		{ loading && <img className="loader" src={Loader.src} alt="Loader" width={50}/> }
@@ -906,7 +963,13 @@ const CheckoutForm = ( { countriesData , paymentModes , options} ) => {
 				</form>
 				{!tokenValid?<LoginForm setTokenValid={setTokenValid} setCustomerData={setCustomerData}></LoginForm>:null}
 				</div>
-			) : null }
+			) : <>
+				{(() => {
+						if (!WEB_DEVICE) { 
+							return ('Pease wait..')
+						}
+				})()}  
+			</>}
 		</>
 	);
 };

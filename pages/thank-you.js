@@ -23,6 +23,7 @@ const ThankYouContent = ({headerFooter,states}) => {
 	const [ isSessionFetching, setSessionFetching ] = useState( false );
 	const [ sessionData, setSessionData ] = useState( {} );
 	const session_id = process.browser ? Router.query.session_id : null;
+	const WEB_DEVICE = process.browser ? Router.query.WEB_DEVICE : null;
 	const orderPostnb = process.browser ? Router.query.orderPostnb : null;
 	const status = process.browser ? Router.query.status : null;
 	const orderToken = process.browser ? Router.query.orderToken : null;
@@ -30,6 +31,7 @@ const ThankYouContent = ({headerFooter,states}) => {
 	const order_key = process.browser ? Router.query.key : null;
 	const [ orderData, setOrderData ] = useState( {} );
 	const [subtotal,setSubtotal] = useState(0);
+	const [updateweb_to_mobil,setUpdateweb_to_mobil] = useState(0);
 	const paymentModes = headerFooter?.footer?.options?.nj_payment_method ?? '';
 	
 	// stripe
@@ -80,25 +82,49 @@ const ThankYouContent = ({headerFooter,states}) => {
 		
 	},[]);*/
 console.log('sessionData',sessionData);
+//console.log('Router',Router.asPath);
 	const getOrderData = async(id) => {
 		let data = '';
 		var tmpsubtotal = 0;
 		const response = await get_order(id);
 		if(response.success)
 		{
+			var redirecturl = '';
 			if(status != 'SUCCESS')
 			{
-					Router.push('/checkout/order-pay?orderid='+response.data.orderData?.id+'&key='+order_key+'&status=CANCELLED&orderToken='+token);
+				redirecturl =  '/checkout/order-pay?orderid=' + response.data.orderData?.id + '&key=' + order_key + '&status=CANCELLED&orderToken=' + token;
+				if (WEB_DEVICE == 'false') {
+					const newOrderData = {
+						_web_to_mobil: redirecturl,
+						orderId: response.data.orderData?.id,
+						web_to_mobil: 1,
+					};
+					await update_order(newOrderData);
+					setUpdateweb_to_mobil(1);
+				} else {
+					Router.push(redirecturl);
 					return '';
-			}else{
-				setOrderData(response.data.orderData);
-				if(response.data.orderData.line_items != undefined)
-				{
-					response.data.orderData?.line_items.map( ( item ) => {
-						tmpsubtotal =tmpsubtotal+parseFloat(item.subtotal);
-					}) 
 				}
-				setSubtotal(tmpsubtotal);
+			} else {
+				if (WEB_DEVICE == 'false') {
+					const newOrderData = {
+						_web_to_mobil: Router.asPath,
+						orderId: response.data.orderData?.id,
+						web_to_mobil: 1,
+					};
+					await update_order(newOrderData);
+					setUpdateweb_to_mobil(1);
+				} else {
+					setOrderData(response.data.orderData);
+					if(response.data.orderData.line_items != undefined)
+					{
+						response.data.orderData?.line_items.map( ( item ) => {
+							tmpsubtotal =tmpsubtotal+parseFloat(item.subtotal);
+						}) 
+					}
+					setSubtotal(tmpsubtotal);
+				}
+				
 			}
 		}
 			
@@ -181,7 +207,17 @@ console.log('sessionData',sessionData);
 		
 
 		
-	},[orderData]);
+	}, [orderData]);
+	const closeWindow = () => { 
+		window.close();
+		console.log('clos');
+	}
+	if (updateweb_to_mobil) {
+		if (process.browser) {
+			return(<button onClick={closeWindow} >close</button>)
+			
+		}
+	}
 	console.log('states',states);
 	if(status != 'SUCCESS')
 			{
