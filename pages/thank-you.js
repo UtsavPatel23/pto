@@ -215,6 +215,9 @@ console.log('sessionData',sessionData);
 	}
 	console.log('updateweb_to_mobil', updateweb_to_mobil);
 	if (updateweb_to_mobil == 1) {
+		if (typeof window !== 'undefined') { 
+            window.close(); 
+        }
 		if (process.browser) {
 			return(<button onClick={closeWindow} >close</button>)
 			
