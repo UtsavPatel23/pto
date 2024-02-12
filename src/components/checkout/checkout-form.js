@@ -765,14 +765,21 @@ const CheckoutForm = ( { countriesData , paymentModes , options} ) => {
 	useEffect(() => { 
 		console.log('cart', cart);
 		if (!WEB_DEVICE && cart == null) { 
-			console.log('api call', cart);
-			//createdOrderData?.orderPostID
-			
-			(async () => {
-				myInterval = setInterval(get_web_to_mobile, 5000);
+			//createdOrderData.
+			if (createdOrderData?.allData?.payment_method == 'afterpay' || 
+				createdOrderData?.allData?.payment_method == 'laybuy')
+			{
+				console.log('createdOrderData payment_method', createdOrderData?.allData?.payment_method);
+				console.log('api call', cart);
+				//createdOrderData?.orderPostID
 				
-				//await get_web_to_mobile();
-			  })();
+				(async () => {
+					myInterval = setInterval(get_web_to_mobile, 5000);
+					
+					//await get_web_to_mobile();
+				})();
+			}
+			
 		}
 	}, [cart]);
 
@@ -786,7 +793,7 @@ const CheckoutForm = ( { countriesData , paymentModes , options} ) => {
 	}, [webtomobileURL]);
 	
 	const get_web_to_mobile = async () => { 
-		if (webtomobileURLCount < 7)
+		if (webtomobileURLCount < 15)
 		{
 		var getOrder_web_to_mobile = await get_order(createdOrderData?.orderPostID);	
 		//var getOrder_web_to_mobile = await get_order(587286);	

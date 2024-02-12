@@ -523,8 +523,9 @@ export const createCheckoutAfterpayAndRedirect = async (
 				"email": input?.billing?.email
 				},
 			"merchant": {
-				"redirectConfirmUrl": NEXT_PUBLIC_SITE_API_URL+'/thank-you/?orderPostnb='+window.btoa(orderPostID)+'&orderId='+orderId,
-				"redirectCancelUrl": process.env.NEXT_PUBLIC_SITE_URL+'/checkout/order-pay?orderid='+orderPostID+'&key='+order_key
+				"redirectConfirmUrl": NEXT_PUBLIC_SITE_API_URL+'/thank-you/?orderPostnb='+window.btoa(orderPostID)+'&orderId='+orderId+'&WEB_DEVICE='+WEB_DEVICE,
+				"redirectCancelUrl": NEXT_PUBLIC_SITE_API_URL+'/thank-you/?orderPostnb='+window.btoa(orderPostID)+'&orderId='+orderId+'&key='+order_key+'&WEB_DEVICE='+WEB_DEVICE,
+				//"redirectCancelUrl": NEXT_PUBLIC_SITE_API_URL+'/checkout/order-pay?orderid='+orderPostID+'&key='+order_key+'&WEB_DEVICE='+WEB_DEVICE
 				},
 			"merchantReference": orderId,
 		});

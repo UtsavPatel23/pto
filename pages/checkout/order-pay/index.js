@@ -62,6 +62,11 @@ export default function Checkout({ headerFooter }) {
 	const [paypalButtonBisible,setPaypalButtonBisible] = useState(false);
 	const [createdOrderData,setCreatedOrderData] = useState(null);
 	
+	// redirect web to mobile
+	const [webtomobileURL, setWebtomoblieURL] = useState('');
+	const [getredirectAPI, setGetredirectAPI] = useState(false);
+	var webtomobileURLCount = 0;
+	var myInterval = ''
 	
 
 	var paymentModes = headerFooter?.footer?.options?.nj_payment_method ?? '';
@@ -108,6 +113,16 @@ export default function Checkout({ headerFooter }) {
 					shipping: response.data.orderData.shipping,
 				} );
 			}
+			if (!WEB_DEVICE)
+			{
+				const newOrderData = {
+					_web_to_mobil: '',
+					orderId: orderid,
+					web_to_mobil: 1,
+				};
+				update_order(newOrderData);	
+			}
+			
 		}
 		})();
 	}, [ orderid ] );
@@ -188,7 +203,8 @@ export default function Checkout({ headerFooter }) {
 		// For Afterpay payment mode, handle the afterpay payment and thank you.
 		if ( 'afterpay' === input.paymentMethod ) {
 			setIsOrderProcessing( true );
-			await paymentMethodUpdate( orderData?.id, input.paymentMethod);
+			await paymentMethodUpdate(orderData?.id, input.paymentMethod);
+			setGetredirectAPI(true);
 			await createCheckoutAfterpayAndRedirect( 
 					totalPriceDis,
 					null, // products
@@ -208,7 +224,8 @@ export default function Checkout({ headerFooter }) {
 		// For Laybuy payment mode, handle the laybuy payment and thank you.
 		if ( 'laybuy' === input.paymentMethod ) {
 			setIsOrderProcessing( true );
-			await paymentMethodUpdate( orderData?.id, input.paymentMethod);
+			await paymentMethodUpdate(orderData?.id, input.paymentMethod);
+			setGetredirectAPI(true);
 			await createCheckoutLaybuyAndRedirect( 
 					totalPriceDis,
 					null, // products
@@ -274,6 +291,56 @@ export default function Checkout({ headerFooter }) {
 		
 		SetLoading(false);
 	};
+
+
+	useEffect(() => { 
+		if (!WEB_DEVICE ) { 
+			//createdOrderData.
+			if (orderData?.payment_method == 'afterpay' || 
+			orderData?.payment_method == 'laybuy')
+			{
+				(async () => {
+					myInterval = setInterval(get_web_to_mobile, 5000);
+				})();
+			}
+			
+		}
+	}, [getredirectAPI]);
+
+	useEffect(() => { 
+		
+		if (webtomobileURL != '') { 
+			//clearInterval(myInterval);
+			console.log('webtomobileURL', webtomobileURL);
+			Router.push(webtomobileURL);
+		}
+	}, [webtomobileURL]);
+	
+	const get_web_to_mobile = async () => { 
+		if (webtomobileURLCount < 15)
+		{
+		var getOrder_web_to_mobile = await get_order(orderData?.id);	
+		//var getOrder_web_to_mobile = await get_order(587286);	
+		if (getOrder_web_to_mobile?.data?.orderData?.meta_data) { 
+			if (getOrder_web_to_mobile?.data?.orderData?.meta_data.length > 0)
+			{
+				let found = getOrder_web_to_mobile?.data?.orderData?.meta_data.find(function (meta_data) {
+					return '_web_to_mobil' ==  meta_data?.key;
+				});
+				if (found == undefined) {
+					console.log('notfound');
+				} else { 
+					setWebtomoblieURL(found.value);
+				}
+			}
+			
+		}
+		console.log('orderDataget',getOrder_web_to_mobile);
+		webtomobileURLCount++;
+		}
+		console.log('webtomobileURLCount', webtomobileURLCount);
+	};
+
 	console.log('input',input);
 	console.log('orderData',orderData);
 	console.log('wc_order_key',wc_order_key);
