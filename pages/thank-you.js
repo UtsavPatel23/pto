@@ -221,13 +221,13 @@ console.log('sessionData',sessionData);
 		}
 	}
 	console.log('states',states);
-	if(status != 'SUCCESS')
+	if (WEB_DEVICEQuery == 'false') { 
+		return (<>Pament process ....</>);
+	}else if (status != 'SUCCESS')
 			{
 				return (<></>);
 	}
-	if (WEB_DEVICEQuery == 'false') { 
-		return (<>Pament process ....</>);
-	}
+	
 	return (
 		<div className="h-almost-screen">
 			<div className="w-600px mt-10 m-auto">
