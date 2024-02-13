@@ -41,7 +41,9 @@ const SingleProduct = ({ singleProduct, reviews, options }) => {
 	const [att_selected, setAtt_selected] = useState('');
 
 	
-		 
+	useEffect(() => {
+		setProduct(singleProduct)
+	}, [singleProduct]);	 
  // ************* ********************************  ************************ 
  // ************* Shipping Calculation ************************************* 
  // ************* ********************************  ************************ 
