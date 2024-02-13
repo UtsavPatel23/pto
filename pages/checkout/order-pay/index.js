@@ -13,7 +13,7 @@ import { useEffect } from 'react';
 import OrderDetails from '../../../src/components/thank-you/order-details';
 import PaypalButtonCheckout from '../../../src/components/checkout/paypal/paypal-button';
 import { get_order, update_order, update_order_notes } from '../../../src/utils/apiFun/order';
-import { WEB_DEVICE } from '../../../src/utils/constants/endpoints';
+import { CHECKOUT_API_CALL_LIMIT, CHECKOUT_API_TIME_INT, WEB_DEVICE } from '../../../src/utils/constants/endpoints';
 const defaultCustomerInfo = {
 	firstName: '',
 	lastName: '',
@@ -300,7 +300,7 @@ export default function Checkout({ headerFooter }) {
 			orderData?.payment_method == 'laybuy')
 			{
 				(async () => {
-					myInterval = setInterval(get_web_to_mobile, 5000);
+					myInterval = setInterval(get_web_to_mobile, CHECKOUT_API_TIME_INT);
 				})();
 			}
 			
@@ -317,7 +317,7 @@ export default function Checkout({ headerFooter }) {
 	}, [webtomobileURL]);
 	
 	const get_web_to_mobile = async () => { 
-		if (webtomobileURLCount < 15)
+		if (webtomobileURLCount < CHECKOUT_API_CALL_LIMIT)
 		{
 		var getOrder_web_to_mobile = await get_order(orderData?.id);	
 		//var getOrder_web_to_mobile = await get_order(587286);	

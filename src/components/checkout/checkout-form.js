@@ -20,7 +20,7 @@ import { useEffect } from 'react';
 import { getShipping, get_discount_bundle, get_discount_type_cart, get_points, get_stateList } from '../../utils/customjs/custome';
 import Loader from "./../../../public/loader.gif";
 import axios from 'axios';
-import { SUBURB_API_URL, WEB_DEVICE } from '../../utils/constants/endpoints';
+import { CHECKOUT_API_CALL_LIMIT, CHECKOUT_API_TIME_INT, SUBURB_API_URL, WEB_DEVICE } from '../../utils/constants/endpoints';
 import { debounce, isEmpty } from 'lodash';
 import TextArea from './form-elements/textarea-field';
 import { get_customer, handleCreateCustomer } from '../../utils/customer';
@@ -774,7 +774,7 @@ const CheckoutForm = ( { countriesData , paymentModes , options} ) => {
 				//createdOrderData?.orderPostID
 				
 				(async () => {
-					myInterval = setInterval(get_web_to_mobile, 5000);
+					myInterval = setInterval(get_web_to_mobile, CHECKOUT_API_TIME_INT);
 					
 					//await get_web_to_mobile();
 				})();
@@ -793,7 +793,7 @@ const CheckoutForm = ( { countriesData , paymentModes , options} ) => {
 	}, [webtomobileURL]);
 	
 	const get_web_to_mobile = async () => { 
-		if (webtomobileURLCount < 15)
+		if (webtomobileURLCount < CHECKOUT_API_CALL_LIMIT)
 		{
 		var getOrder_web_to_mobile = await get_order(createdOrderData?.orderPostID);	
 		//var getOrder_web_to_mobile = await get_order(587286);	
