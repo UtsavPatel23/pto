@@ -1,7 +1,7 @@
 /**
  * Internal Dependencies.
  */
- import { HEADER_FOOTER_ENDPOINT, SHOP_PRODUCTLIST } from '../src/utils/constants/endpoints';
+ import { HEADER_FOOTER_ENDPOINT } from '../src/utils/constants/endpoints';
  import Product from '../src/components/products/product';
  
  /**
@@ -14,6 +14,7 @@
 import { isEmpty } from 'lodash';
 import Link from 'next/link';
 import Loader from "./../public/loader.gif";
+import { get_products_ids } from '../src/utils/apiFun/product';
  
  export default function Home({ headerFooter}) {
      
@@ -45,18 +46,21 @@ import Loader from "./../public/loader.gif";
      }, []);
 
      useEffect(() => {
-        if(customerWishlist)
-        {
+         if(customerWishlist)
+         {
+            //console.log('customerWishlist',customerWishlist.toString());
         (async () => {
             setLoading(true);
-            const res1 = await fetch(SHOP_PRODUCTLIST);
+            const productlist = await get_products_ids(customerWishlist.toString());
+            setWishlistProducts(productlist.productList);
+           /*const res1 = await fetch(SHOP_PRODUCTLIST);
             let products1 = await res1.json();
             setWishlistProducts(products1.filter(obj => {
                 return (customerWishlist && (customerWishlist != 0))?customerWishlist.find(function (element) {
                     return parseInt(element) == obj['id'];
                    }):null;
                    
-               }));
+               }));*/
             setLoading(false);
         })();
         }
@@ -64,8 +68,6 @@ import Loader from "./../public/loader.gif";
           // this now gets called when the component unmounts
         };
       }, [customerWishlist]);
-     
-    
         return (
             <Layout headerFooter={ headerFooter || {} } seo={ seo }>
                 <div className='grid grid-cols-4 gap-4'>
@@ -87,14 +89,10 @@ import Loader from "./../public/loader.gif";
      
      const { data: headerFooterData } = await axios.get( HEADER_FOOTER_ENDPOINT );
      
-     //const res = await fetch(SHOP_PRODUCTLIST);
-     //let products = await res.json();
-     
    
      return {
          props: {
              headerFooter: headerFooterData?.data ?? {},
-            // products: products,
          },
          
          /**
