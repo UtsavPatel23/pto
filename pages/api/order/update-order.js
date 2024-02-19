@@ -73,7 +73,11 @@ export default async function handler( req, res ) {
 				{
 				  "key": "_create_checkout_token",
 				  "value": req.body?.token
-				}
+				},
+				{
+					"key": "_transaction_id",
+					"value": req.body?.token
+				  }
 				],
 		}
 		noteMessage = 'Order charge successful in '+req.body?.payment_method+'. Token : ' +req.body?.token+ "  Order no : "+req.body?.orderno;

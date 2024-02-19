@@ -238,7 +238,11 @@ export const update_order = async ( newOrderDataReq ) => {
 				{
 				  "key": "_create_checkout_token",
 				  "value": newOrderDataReq?.token
-				}
+				},
+				{
+					"key": "_transaction_id",
+					"value": newOrderDataReq?.token
+				  }
 				],
 		}
 		noteMessage = 'Order charge successful in '+newOrderDataReq?.payment_method+'. Token : ' +newOrderDataReq?.token+ "  Order no : "+newOrderDataReq?.orderno;
