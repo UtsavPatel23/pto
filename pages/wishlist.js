@@ -46,7 +46,7 @@ import { get_products_ids } from '../src/utils/apiFun/product';
      }, []);
 
      useEffect(() => {
-         if(customerWishlist)
+         if(customerWishlist && customerWishlist != '')
          {
             //console.log('customerWishlist',customerWishlist.toString());
         (async () => {
