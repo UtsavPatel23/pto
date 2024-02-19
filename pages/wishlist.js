@@ -14,7 +14,7 @@
 import { isEmpty } from 'lodash';
 import Link from 'next/link';
 import Loader from "./../public/loader.gif";
-import { get_products_ids } from '../src/utils/apiFun/product';
+import { get_products_ids } from '../src/utils/apiFun/productwooapi';
  
  export default function Home({ headerFooter}) {
      
