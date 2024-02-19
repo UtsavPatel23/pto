@@ -14,7 +14,8 @@
 import { isEmpty } from 'lodash';
 import Link from 'next/link';
 import Loader from "./../public/loader.gif";
-//import { get_products_ids } from '../src/utils/apiFun/product';
+import { get_products_ids } from '../src/utils/customjs/custome';
+
  
  export default function Home({ headerFooter}) {
      
@@ -48,26 +49,27 @@ import Loader from "./../public/loader.gif";
      useEffect(() => {
          if(customerWishlist && customerWishlist != '')
          {
-            //console.log('customerWishlist',customerWishlist.toString());
+            console.log('customerWishlist str',customerWishlist.toString());
         (async () => {
             setLoading(true);
-           // const productlist = await get_products_ids(customerWishlist.toString());
-           // setWishlistProducts(productlist.productList);
-           const res1 = await fetch(SHOP_PRODUCTLIST);
+           const productlist = await get_products_ids(customerWishlist.toString());
+           setWishlistProducts(productlist.productList);
+          /* const res1 = await fetch(SHOP_PRODUCTLIST);
             let products1 = await res1.json();
             setWishlistProducts(products1.filter(obj => {
                 return (customerWishlist && (customerWishlist != 0))?customerWishlist.find(function (element) {
                     return parseInt(element) == obj['id'];
                    }):null;
                    
-               }));
+               }));*/
             setLoading(false);
         })();
         }
         return () => {
           // this now gets called when the component unmounts
         };
-      }, [customerWishlist]);
+     }, [customerWishlist]);
+     
         return (
             <Layout headerFooter={ headerFooter || {} } seo={ seo }>
                 <div className='grid grid-cols-4 gap-4'>
@@ -76,11 +78,25 @@ import Loader from "./../public/loader.gif";
                         return (
                            <Product  product={product}    tokenValid={tokenValid} options={options} customerData={customerData} setCustomerData={setCustomerData}/>
                         )
-                       }):<Link href="/shop/" className='mx-1 my-1 bg-blue-500 hover:bg-blue-700 text-white py-1 px-2 rounded'>Add Wishlist</Link>}
+                }) :
+                <>
+                    {(() => {
+                        if (customerWishlist == null) 
+                        {
+                        return (
+                            <Link href="/shop/" className='mx-1 my-1 bg-blue-500 hover:bg-blue-700 text-white py-1 px-2 rounded'>Add Wishlist</Link>
+                        )
+                        } 
+                    })()}   
+                            
+                            </>
+                       }
                 </div>
             </Layout>
         )
    
+  
+       
         
      
  }
