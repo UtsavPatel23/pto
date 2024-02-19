@@ -51,16 +51,16 @@ import { get_products_ids } from '../src/utils/apiFun/product';
             //console.log('customerWishlist',customerWishlist.toString());
         (async () => {
             setLoading(true);
-            const productlist = await get_products_ids(customerWishlist.toString());
-            setWishlistProducts(productlist.productList);
-           /*const res1 = await fetch(SHOP_PRODUCTLIST);
+           // const productlist = await get_products_ids(customerWishlist.toString());
+           // setWishlistProducts(productlist.productList);
+           const res1 = await fetch(SHOP_PRODUCTLIST);
             let products1 = await res1.json();
             setWishlistProducts(products1.filter(obj => {
                 return (customerWishlist && (customerWishlist != 0))?customerWishlist.find(function (element) {
                     return parseInt(element) == obj['id'];
                    }):null;
                    
-               }));*/
+               }));
             setLoading(false);
         })();
         }
