@@ -75,7 +75,8 @@ export const handleStripeCheckout = async (
 	console.log('customerOrderData',customerOrderData);
 	console.log('totalPriceDis', totalPriceDis);
 	if (parseFloat(customerOrderData?.total).toFixed(2) != totalPriceDis.toFixed(2)) {
-		 setRequestError(true);
+		setRequestError(true);
+		setIsProcessing( false );
 		return '';
 	 } 
 	setCoutData('');
@@ -182,6 +183,7 @@ export const handleStripeCheckout = async (
 	console.log('totalPriceDis', totalPriceDis);
 	if (parseFloat(customerOrderData?.total).toFixed(2) != totalPriceDis.toFixed(2)) {
 		setRequestError(true);
+		setIsProcessing( false );
 	   return '';
 	} 
 	setCoutData('');
@@ -236,6 +238,7 @@ export const handleStripeCheckout = async (
 	console.log('totalPriceDis', totalPriceDis);
 	if (parseFloat(customerOrderData?.total).toFixed(2) != totalPriceDis.toFixed(2)) {
 		setRequestError(true);
+		setIsProcessing( false );
 	   return '';
 	} 
 	setCoutData('');
@@ -289,6 +292,7 @@ export const handleStripeCheckout = async (
 	console.log('totalPriceDis', totalPriceDis);
 	if (parseFloat(customerOrderData?.total).toFixed(2) != totalPriceDis.toFixed(2)) {
 		setRequestError(true);
+		setIsProcessing( false );
 	   return '';
 	} 
 	setCoutData('');
