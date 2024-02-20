@@ -71,7 +71,13 @@ export const handleStripeCheckout = async (
 	setIsProcessing( true );
 	const orderData = getCreateOrderData(shippingCost,couponName, input, products ,coutData,cartSubTotalDiscount);
 	//console.log('input orderData',orderData);return '';
-	const customerOrderData = await createTheOrder( orderData, setRequestError, '' );
+	const customerOrderData = await createTheOrder(orderData, setRequestError, '');
+	console.log('customerOrderData',customerOrderData);
+	console.log('totalPriceDis', totalPriceDis);
+	if (parseFloat(customerOrderData?.total).toFixed(2) != totalPriceDis.toFixed(2)) {
+		 setRequestError(true);
+		return '';
+	 } 
 	setCoutData('');
 	
 	// On success show stripe form.
@@ -172,7 +178,12 @@ export const handleStripeCheckout = async (
 	const orderData = getCreateOrderData(shippingCost,couponName, input, products ,coutData,cartSubTotalDiscount);
 	console.log('input orderData',orderData);
 	const customerOrderData = await createTheOrder( orderData, setRequestError, '' );
-	console.log('customerOrderData',customerOrderData);
+	console.log('customerOrderData', customerOrderData);
+	console.log('totalPriceDis', totalPriceDis);
+	if (parseFloat(customerOrderData?.total).toFixed(2) != totalPriceDis.toFixed(2)) {
+		setRequestError(true);
+	   return '';
+	} 
 	setCoutData('');
 	
 	// On success show stripe form.
@@ -221,7 +232,12 @@ export const handleStripeCheckout = async (
 	const orderData = getCreateOrderData(shippingCost,couponName, input, products ,coutData,cartSubTotalDiscount);
 	console.log('input orderData',orderData);
 	const customerOrderData = await createTheOrder( orderData, setRequestError, '' );
-	console.log('customerOrderData',customerOrderData);
+	console.log('customerOrderData', customerOrderData);
+	console.log('totalPriceDis', totalPriceDis);
+	if (parseFloat(customerOrderData?.total).toFixed(2) != totalPriceDis.toFixed(2)) {
+		setRequestError(true);
+	   return '';
+	} 
 	setCoutData('');
 	
 	// On success show stripe form.
@@ -269,7 +285,12 @@ export const handleStripeCheckout = async (
 	const orderData = getCreateOrderData(shippingCost,couponName, input, products ,coutData,cartSubTotalDiscount);
 	console.log('input orderData',orderData);
 	const customerOrderData = await createTheOrder( orderData, setRequestError, '' );
-	console.log('customerOrderData',customerOrderData);
+	console.log('customerOrderData', customerOrderData);
+	console.log('totalPriceDis', totalPriceDis);
+	if (parseFloat(customerOrderData?.total).toFixed(2) != totalPriceDis.toFixed(2)) {
+		setRequestError(true);
+	   return '';
+	} 
 	setCoutData('');
 	
 	// On success show stripe form.
