@@ -31,7 +31,7 @@ export default async function handler(req, res) {
         res.status(500).json({ error: 'Required data not sent' });
             
     }
-    var stringData = process.env.AFTERPAY_MERCHANT_ID+':'+process.env.AFTERPAY_SECRET_KEY;
+    var stringData = process.env.NEXT_PUBLIC_AFTERPAY_MERCHANT_ID+':'+process.env.NEXT_PUBLIC_AFTERPAY_SECRET_KEY;
     //var stringData = '42312:a47f38f9ac76ed1d062dfb4ffe6d98b35dfdbd40aea5917a9ba1f399d51e2d1f766077214fb6ba98598eeef34049f61291b4b7929142089fd70acee5a17bd788';
     // Create buffer object, specifying utf8 as encoding 
     let bufferObj = Buffer.from(stringData, "utf8"); 
@@ -41,7 +41,7 @@ export default async function handler(req, res) {
     let config = {
         method: 'post',
         maxBodyLength: Infinity,
-        url: process.env.AFTERPAY_API_URL+'/v2/checkouts',
+        url: process.env.NEXT_PUBLIC_AFTERPAY_API_URL+'/v2/checkouts',
         headers: { 
         'Accept': 'application/json', 
         'Content-Type': 'application/json', 

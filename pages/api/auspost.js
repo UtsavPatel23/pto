@@ -16,7 +16,7 @@ export default async function handler( req, res ) {
 	const config = {
 		headers:{
 			'accept': 'application/json',
-			 'AUTH-KEY': process.env.AUSPOST_KEY,
+			 'AUTH-KEY': process.env.NEXT_PUBLIC_AUSPOST_KEY,
 		 }
 	  };
 

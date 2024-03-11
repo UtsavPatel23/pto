@@ -3,10 +3,10 @@ const Stripe = require('stripe');
 import { isEmpty } from 'lodash';
 const WooCommerceRestApi = require("@woocommerce/woocommerce-rest-api").default;
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+const stripe = new Stripe(process.env.NEXT_PUBLIC_STRIPE_SECRET_KEY, {
     apiVersion: '2020-08-27'
 });
-const webhookSecret = process.env.STRIPE_WEBHOOK_ENDPOINT_SECRET;
+const webhookSecret = process.env.NEXT_PUBLIC_STRIPE_WEBHOOK_ENDPOINT_SECRET;
 
 export const config = {
     api: {
@@ -16,8 +16,8 @@ export const config = {
 
 const api = new WooCommerceRestApi({
 	url: process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL,
-	consumerKey: process.env.WC_CONSUMER_KEY,
-	consumerSecret: process.env.WC_CONSUMER_SECRET,
+	consumerKey: process.env.NEXT_PUBLIC_WC_CONSUMER_KEY,
+	consumerSecret: process.env.NEXT_PUBLIC_WC_CONSUMER_SECRET,
 	version: "wc/v3"
 });
 

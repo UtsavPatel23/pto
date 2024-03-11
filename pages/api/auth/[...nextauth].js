@@ -8,16 +8,16 @@ export default NextAuth({
   providers: [
     // OAuth authentication providers...
     /*AppleProvider({
-      clientId: process.env.APPLE_ID,
-      clientSecret: process.env.APPLE_SECRET
+      clientId: process.env.NEXT_PUBLIC_APPLE_ID,
+      clientSecret: process.env.NEXT_PUBLIC_APPLE_SECRET
     }),
     FacebookProvider({
-      clientId: process.env.FACEBOOK_ID,
-      clientSecret: process.env.FACEBOOK_SECRET
+      clientId: process.env.NEXT_PUBLIC_FACEBOOK_ID,
+      clientSecret: process.env.NEXT_PUBLIC_FACEBOOK_SECRET
     }),*/
     GoogleProvider({
-      clientId: process.env.GOOGLE_ID,
-      clientSecret: process.env.GOOGLE_SECRET
+      clientId: process.env.NEXT_PUBLIC_GOOGLE_ID,
+      clientSecret: process.env.NEXT_PUBLIC_GOOGLE_SECRET
     }),
     // Passwordless / email sign in
     /*EmailProvider({

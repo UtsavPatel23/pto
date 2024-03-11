@@ -21,9 +21,9 @@ function runMiddleware(req, res, fn) {
 }
 
 
-const { PAYPAL_CLIENT_ID, PAYPAL_CLIENT_SECRET,PAYPAL_API_URL, PORT = 3000 } = process.env;
+const { NEXT_PUBLIC_PAYPAL_CLIENT_ID, NEXT_PUBLIC_PAYPAL_CLIENT_SECRET,NEXT_PUBLIC_PAYPAL_API_URL, PORT = 3000 } = process.env;
 ///const base = "https://api-m.sandbox.paypal.com";
-const base = PAYPAL_API_URL;
+const base = NEXT_PUBLIC_PAYPAL_API_URL;
 const app = express();
 
 // host static files
@@ -38,11 +38,11 @@ app.use(express.json());
  */
 const generateAccessToken = async () => {
   try {
-    if (!PAYPAL_CLIENT_ID || !PAYPAL_CLIENT_SECRET) {
+    if (!NEXT_PUBLIC_PAYPAL_CLIENT_ID || !NEXT_PUBLIC_PAYPAL_CLIENT_SECRET) {
       throw new Error("MISSING_API_CREDENTIALS");
     }
     const auth = Buffer.from(
-      PAYPAL_CLIENT_ID + ":" + PAYPAL_CLIENT_SECRET,
+      NEXT_PUBLIC_PAYPAL_CLIENT_ID + ":" + NEXT_PUBLIC_PAYPAL_CLIENT_SECRET,
     ).toString("base64");
     const response = await fetch(`${base}/v1/oauth2/token`, {
       method: "POST",

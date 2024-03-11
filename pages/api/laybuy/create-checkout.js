@@ -31,12 +31,12 @@ export default async function handler(req, res) {
        res.status(500).json({ error: 'Required data not sent' });
             
     }
-    var stringData = process.env.LAYBUY_MERCHANT_ID+':'+process.env.LAYBUY_API_KEY;
+    var stringData = process.env.NEXT_PUBLIC_LAYBUY_MERCHANT_ID+':'+process.env.NEXT_PUBLIC_LAYBUY_API_KEY;
     let bufferObj = Buffer.from(stringData, "utf8"); 
     let base64StringAuth = bufferObj.toString("base64");
   const options = {
     method: 'POST',
-    url: process.env.LAYBUY_API_URL+'/order/create',
+    url: process.env.NEXT_PUBLIC_LAYBUY_API_URL+'/order/create',
     headers: {
       accept: 'application/json',
       'content-type': 'application/json',
