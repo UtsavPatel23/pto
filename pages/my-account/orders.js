@@ -10,8 +10,6 @@ import Loader from "./../../public/loader.gif";
 import Router from "next/router";
 import Sidebar from '../../src/components/my-account/sidebar';
 import { capitalizeFirstLetter, get_points } from '../../src/utils/customjs/custome';
-import { confirmAlert } from 'react-confirm-alert'; // Import
-import 'react-confirm-alert/src/react-confirm-alert.css'; // Import css
 import {create_invoice_pdf} from '../../src/utils/my-account/create-pdf-invoice'
 import { getStates } from '../../src/utils/checkout';
 import ButtonOrderTracking from '../../src/components/my-account/button-order-tracking';
