@@ -1,15 +1,19 @@
 import ImageGallery from 'react-image-gallery';
-const ProductGallery = ( { items } ) => {
+const ProductGallery = ({ items }) => {
 	// Construct Images.
-	const images = items.map( ( item ) => {
-			return {
-				original: item.src,
-				thumbnail: item.src,
-			};
-		},
+	const images = items.map((item) => {
+		return {
+			original: item.src,
+			thumbnail: item.src,
+		};
+	},
 	);
-	
-	return <ImageGallery items={images} />;
+
+	return <ImageGallery
+		items={images}
+		infinite={true}
+		showThumbnails={true}
+	/>;
 };
 
 export default ProductGallery;

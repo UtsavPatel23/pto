@@ -8,8 +8,8 @@ export default NextAuth({
   providers: [
     // OAuth authentication providers...
     /*AppleProvider({
-      clientId: process.env.NEXT_PUBLIC_APPLE_ID,
-      clientSecret: process.env.NEXT_PUBLIC_APPLE_SECRET
+      clientId: process.env.APPLE_ID,
+      clientSecret: process.env.APPLE_SECRET
     }),
     FacebookProvider({
       clientId: process.env.NEXT_PUBLIC_FACEBOOK_ID,

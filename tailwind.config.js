@@ -1,25 +1,53 @@
+/** @type {import('tailwindcss').Config} */
 module.exports = {
-	purge: [
-		'./src/components/**/*.js',
-		'./pages/**/*.js'],
+	content: [
+		"./pages/**/*.{js,ts,jsx,tsx,mdx}",
+		"./src/components/**/*.{js,ts,jsx,tsx,mdx}",
+		"./src/app/**/*.{js,ts,jsx,tsx,mdx}",
+	],
 	theme: {
 		extend: {
 			colors: {
 				brand: {
-					'orange': '#fd7e35',
-					'platinum-black': '#333',
-					'bright-grey': '#b1b1b1',
-					'gunsmoke-grey': '#8d8d8d',
-					'royal-blue': '#3b82f6',
-					'wild-blue': '#858Fbb',
-					'gun-powder': '#434656',
-				}
+					'primary': '#4e4a88',
+				},
+				victoria: {
+					50: '#f4f5fa',
+					100: '#e5e7f4',
+					200: '#d1d5ec',
+					300: '#b2bade',
+					400: '#8d97cd',
+					500: '#7177c0',
+					600: '#5f60b1',
+					700: '#5653a2',
+					800: '#4e4a88',
+					900: '#3f3d6b',
+					950: '#2a2942',
+				},
+				'chelsea': {
+					50: '#f3f8ed',
+					100: '#e4efd8',
+					200: '#cae1b5',
+					300: '#a7ce88',
+					400: '#88b962',
+					500: '#72aa4a',
+					600: '#507d33',
+					700: '#3f602b',
+					800: '#344e26',
+					900: '#2f4324',
+					950: '#16240f',
+				},
 			},
 			fontFamily: {
-				'lato': [ 'Lato', 'Helvetica', 'Verdana', 'Tahoma', 'sans-serif' ],
-				'lato-bold': [ 'Lato Bold', 'Helvetica', 'Verdana', 'Tahoma', 'sans-serif' ],
-				'lato-heavy': [ 'Lato Heavy', 'Helvetica', 'Verdana', 'Tahoma', 'sans-serif' ],
-				'lato-heavy-italic': [ 'Lato Heavy Italic', 'Helvetica', 'Verdana', 'Tahoma', 'sans-serif' ],
+				'lato': ['Lato', 'Helvetica', 'Verdana', 'Tahoma', 'sans-serif'],
+				'lato-bold': ['Lato Bold', 'Helvetica', 'Verdana', 'Tahoma', 'sans-serif'],
+				cabin: ['Cabin', 'sans-serif'],
+				jost: ['Jost', 'sans-serif'],
+				inter: ['Inter', 'sans-serif'],
+				awesome: ['Font Awesome 6 Brands'],
+			},
+			rotate: {
+				'360': '360deg',
 			},
 			fontSize: {
 				'8px': '8px',
@@ -60,28 +88,6 @@ module.exports = {
 			lineHeight: {
 				'0': '0',
 				'1.6': '1.6',
-				'12px': '12px',
-				'13px': '13px',
-				'14px': '14px',
-				'16px': '16px',
-				'17px': '17px',
-				'18px': '18px',
-				'19px': '19px',
-				'20px': '20px',
-				'22px': '22px',
-				'24px': '24px',
-				'26px': '26px',
-				'28px': '28px',
-				'30px': '30px',
-				'32px': '32px',
-				'35px': '35px',
-				'36px': '36px',
-				'40px': '40px',
-				'42px': '42px',
-				'48px': '48px',
-				'50px': '50px',
-				'56px': '56px',
-				'72px': '72px',
 			},
 			letterSpacing: {
 				'0.5px': '0.5px',
@@ -89,19 +95,22 @@ module.exports = {
 			},
 		},
 		container: {
-			padding: {
-				DEFAULT: '1rem',
-				md: '2rem',
-				lg: '4rem',
-				xl: '5rem',
-				'2xl': '6rem',
+			padding: '12px',
+			center: true,
+			screens: {
+				sm: '100%',
+				md: '100%',
+				lg: '1100px', // You can adjust this value as needed
+				xl: '1280px', // You can adjust this value as needed
+				'2xl': '1350px', // You can adjust this value as needed
+				'3xl': '1536px', // You can adjust this value as needed
 			},
 		},
 	},
 	variants: {},
 	plugins: [
-		require( 'tailwindcss' ),
-		require( 'precss' ),
-		require( 'autoprefixer' )
-	]
-}
+		require('tailwindcss'),
+		require('precss'),
+		require('autoprefixer'),
+	],
+};

@@ -40,7 +40,7 @@ function Sidebar({setTokenValid}) {
 
             </li>
 			<li>
-                <Link href="/my-account/#rewards/">
+                <Link href="/my-account/rewards/">
                     Reward Points
                 </Link>
             </li>
@@ -66,7 +66,7 @@ function Sidebar({setTokenValid}) {
 
             </li>
             <li>
-                <Link href="#/faqs/">
+                <Link href="/faqs/">
                     FAQs
                 </Link>
             </li>
