@@ -12,7 +12,8 @@ import Slider from '@mui/material/Slider';
 import Router, { useRouter } from 'next/router';
 import { get_count_total_discount, go_to_main_filter, selectattributdefault } from '../../utils/customjs/custome';
 import { WEB_DEVICE } from '../../utils/constants/endpoints';
-
+import Image from 'next/image';
+import Link from 'next/link';
 
 
 
@@ -52,6 +53,10 @@ const Products = ({ products, options, tokenValid }) => {
 	const [priceValueTMP, setPriceValueTMP] = React.useState([minPrice, maxPrice]);
 	const [searchBoxText, setSearchBoxText] = useState('');
 	const [customerData, setCustomerData] = useState(0);
+
+	// Banner 
+	const { product_sale_banner_in_gridview } = options ?? '';
+
 
 	useEffect(() => {
 		if (localStorage.getItem('token')) {
@@ -128,10 +133,10 @@ const Products = ({ products, options, tokenValid }) => {
 	const remove_attributes_selected = (selected) => {
 		var remove_attr_name = selected.target.getAttribute("data-attr_name");
 		var remove_attr_arr = filter_option['attributes'];
-		const idxObj_att_name = filter_option['attributes'][remove_attr_name].findIndex(object => {
+		const idxObj_att_name = filter_option['attributes'][remove_attr_name]?.findIndex(object => {
 			return object == selected.target.value;
 		});
-		remove_attr_arr[remove_attr_name].splice(idxObj_att_name, 1);
+		remove_attr_arr[remove_attr_name]?.splice(idxObj_att_name, 1);
 
 		if (isEmpty(remove_attr_arr[remove_attr_name])) {
 			delete remove_attr_arr[remove_attr_name];
@@ -430,15 +435,33 @@ const Products = ({ products, options, tokenValid }) => {
 			}
 			//Router.push(newLocation);
 		}
+
+
 		go_to_main_filter();
 	}, [currentProduct]); // <- add empty brackets here
 
-	var i = 1;
+	var i = 0;
+	const perChunk = 3 // items per chunk    
+	var BoxBanner = false;
+	var productBoxs = null;
+	if (product_sale_banner_in_gridview?.length) {
+		const toDay = new Date();
+		var start_date = new Date(product_sale_banner_in_gridview[0]?.start_date);
+		var end_date = new Date(product_sale_banner_in_gridview[0]?.end_date);
+		if (start_date <= toDay && toDay <= end_date) {
+			BoxBanner = true;
+			productBoxs = currentProduct.reduce((resultArray, item, index) => {
+				const chunkIndex = Math.floor(index / perChunk)
+				if (!resultArray[chunkIndex]) {
+					resultArray[chunkIndex] = [] // start a new chunk
+				}
+				resultArray[chunkIndex].push(item)
+				return resultArray
+			}, [])
+		}
+	}
 
-	const [isMenuOpen, setIsMenuOpen] = useState(false);
-	const toggleMenu = () => {
-		setIsMenuOpen(!isMenuOpen);
-	};
+
 
 
 	const [isFilterOpen, setIsFilterOpen] = useState(false);
@@ -491,7 +514,7 @@ const Products = ({ products, options, tokenValid }) => {
 						className={`fixed top-0 left-0 h-full w-full opacity-50 bg-black z-10 ${isFilterOpen ? 'block' : 'hidden'}`} onClick={closeFilter}
 					></div>
 					<div id='mobfilter-wrp' className={`md:col-span-4 lg:col-span-3 bg-white ${isFilterOpen ? 'right-0' : '-right-full'}`}>
-						<div className='shadow-[0_0_6px_0_#ddd] p-3 relative profilter overflow-y-auto scroll-smooth theme-scroll'>
+						<div className='shadow-full p-3 relative profilter overflow-y-auto scroll-smooth theme-scroll'>
 							<div className='flex justify-between items-center pb-2 mb-2 border-b border-slate-200'>
 								<span className='text-xl font-medium'>Filter</span>
 								<div className='flex items-center'>
@@ -513,11 +536,11 @@ const Products = ({ products, options, tokenValid }) => {
 											Min Price :
 											{
 												<>
-													<button className='mx-1 bg-slate-200 border hover:border-red-600  hover:text-red-600 py-1 px-2 rounded' value={priceValue[0]} onClick={remove_minprice_selected}>
+													<button className='mx-1 bg-slate-200 border hover:border-red-600 hover:text-red-600 py-1 px-2 rounded relative filter-remove' value={priceValue[0]} onClick={remove_minprice_selected}>
 														Price {priceValue[0]}
-														<i className="fa-solid fa-trash text-red-600 ms-2"></i>
 													</button>
 												</>
+
 											}
 										</div> : null
 								}
@@ -528,8 +551,7 @@ const Products = ({ products, options, tokenValid }) => {
 											Max Price :
 											{
 												<>
-													<button className='mx-1 bg-slate-200 border hover:border-red-600  hover:text-red-600 py-1 px-2 rounded' value={priceValue[1]} onClick={remove_maxprice_selected}> Price {priceValue[1]}
-														<i className="fa-solid fa-trash text-red-600 ms-2"></i>
+													<button className='mx-1 bg-slate-200 border hover:border-red-600 hover:text-red-600 py-1 px-2 rounded relative filter-remove' value={priceValue[1]} onClick={remove_maxprice_selected}> Price {priceValue[1]}
 													</button>
 												</>
 											}
@@ -540,11 +562,10 @@ const Products = ({ products, options, tokenValid }) => {
 									// Category selected box
 									cat_name != '' ?
 										<div className='gap-1 flex flex-wrap items-center mb-1'>
-											Category :  <button className='mx-1 bg-slate-200 border hover:border-red-600  hover:text-red-600 py-1 px-2 rounded' onClick={(e) => {
+											Category :  <button className='mx-1 bg-slate-200 border hover:border-red-600  hover:text-red-600 py-1 px-2 rounded relative filter-remove' onClick={(e) => {
 												setCat_name('');
 												setFilter_option({ ...filter_option, categories: [] });
-											}}>{cat_name}
-												<i className="fa-solid fa-trash text-red-600 ms-2"></i></button>
+											}}>{cat_name}</button>
 										</div> : null
 								}
 
@@ -556,8 +577,7 @@ const Products = ({ products, options, tokenValid }) => {
 											{filter_option['discount'].map(function (discount) {
 												return (
 													<>
-														<button className='mx-1 bg-slate-200 border hover:border-red-600  hover:text-red-600 py-1 px-2 rounded' value={discount} onClick={remove_discount_selected}> {discount.split("to")[1]}%
-															<i className="fa-solid fa-trash text-red-600 ms-2"></i>
+														<button className='mx-1 bg-slate-200 border hover:border-red-600  hover:text-red-600 py-1 px-2 rounded relative filter-remove' value={discount} onClick={remove_discount_selected}> {discount.split("to")[1]}%
 														</button>
 													</>
 												);
@@ -577,12 +597,9 @@ const Products = ({ products, options, tokenValid }) => {
 															Object.keys(filter_option['attributes'][attribut]).length ?
 																Object.keys(filter_option['attributes'][attribut]).map(function (attr_key) {
 																	return (
-																		<>
-																			<button className='mx-1 bg-slate-200 border hover:border-red-600  hover:text-red-600 py-1 px-2 rounded' data-attr_name={attribut} value={filter_option['attributes'][attribut][attr_key]} onClick={remove_attributes_selected}>
-																				{filter_option['attributes'][attribut][attr_key]}
-																				<i className="fa-solid fa-trash text-red-600 ms-2"></i>
-																			</button>
-																		</>
+																		<button className='mx-1 bg-slate-200 border hover:border-red-600  hover:text-red-600 py-1 px-2 rounded relative filter-remove' data-attr_name={attribut} value={filter_option['attributes'][attribut][attr_key]} onClick={remove_attributes_selected}>
+																			{filter_option['attributes'][attribut][attr_key]}
+																		</button>
 																	);
 																})
 																: null
@@ -601,8 +618,8 @@ const Products = ({ products, options, tokenValid }) => {
 											{filter_option['tags'].map(function (tag) {
 												return (
 													<>
-														<button className='mx-1 bg-slate-200 border hover:border-red-600  hover:text-red-600 py-1 px-2 rounded' value={tag} onClick={remove_tags_selected}> {tag}
-															<i className="fa-solid fa-trash text-red-600 ms-2"></i>
+														<button className='mx-1 bg-slate-200 border hover:border-red-600  hover:text-red-600 py-1 px-2 rounded relative filter-remove' value={tag} onClick={remove_tags_selected}> {tag}
+
 														</button>
 													</>
 												);
@@ -619,8 +636,7 @@ const Products = ({ products, options, tokenValid }) => {
 											{filter_option['average_rating'].map(function (average_rating) {
 												return (
 													<>
-														<button className='mx-1 bg-slate-200 border hover:border-red-600  hover:text-red-600 py-1 px-2 rounded' value={average_rating} onClick={remove_average_rating_selected}> {average_rating}
-															<i className="fa-solid fa-trash text-red-600 ms-2"></i>
+														<button className='mx-1 bg-slate-200 border hover:border-red-600  hover:text-red-600 py-1 px-2 rounded relative filter-remove' value={average_rating} onClick={remove_average_rating_selected}> {average_rating}
 														</button>
 													</>
 												);
@@ -636,8 +652,7 @@ const Products = ({ products, options, tokenValid }) => {
 											{filter_option['shipping'].map(function (shipping) {
 												return (
 													<>
-														<button className='mx-1 bg-slate-200 border hover:border-red-600  hover:text-red-600 py-1 px-2 rounded' value={shipping} onClick={remove_shipping_selected}> {shipping.replace('-', ' ')}
-															<i className="fa-solid fa-trash text-red-600 ms-2"></i>
+														<button className='mx-1 bg-slate-200 border hover:border-red-600  hover:text-red-600 py-1 px-2 rounded relative filter-remove' value={shipping} onClick={remove_shipping_selected}> {shipping.replace('-', ' ')}
 														</button>
 													</>
 												);
@@ -653,8 +668,7 @@ const Products = ({ products, options, tokenValid }) => {
 											{filter_option['availability'].map(function (availability) {
 												return (
 													<>
-														<button className='mx-1 bg-slate-200 border hover:border-red-600  hover:text-red-600 py-1 px-2 rounded' value={availability} onClick={remove_availability_selected}> {availability}
-															<i className="fa-solid fa-trash text-red-600 ms-2"></i>
+														<button className='mx-1 bg-slate-200 border hover:border-red-600  hover:text-red-600 py-1 px-2 rounded relative filter-remove' value={availability} onClick={remove_availability_selected}> {availability}
 														</button>
 													</>
 												);
@@ -678,7 +692,7 @@ const Products = ({ products, options, tokenValid }) => {
 										>
 											<span className="text-base font-semibold"> Price Range </span>
 											<span className="transition group-open:-rotate-180">
-												<i class="fa-light fa-angle-down fa-lg"></i>
+												<i className="fa-light fa-angle-down fa-lg"></i>
 											</span>
 										</summary>
 
@@ -706,14 +720,14 @@ const Products = ({ products, options, tokenValid }) => {
 									>
 										<span className="text-base font-semibold"> Categories </span>
 										<span className="transition group-open:-rotate-180">
-											<i class="fa-light fa-angle-down fa-lg"></i>
+											<i className="fa-light fa-angle-down fa-lg"></i>
 										</span>
 									</summary>
 
 									<div className="border-t border-gray-200 px-3 py-2">
 										{Object.keys(attr_count_data_final_list['categories']).length > 5 ?
 											<>
-												<input type="text" placeholder="Search Category" onKeyUp={side_bar_li_search} data-inputulclass="li_search_res_cat" className='outline-none block w-full py-2 px-3 text-base text-gray-900 border border-gray-300 focus:border-victoria-400 mb-3' />
+												<input type="text" placeholder="Search Category" onKeyUp={side_bar_li_search} data-inputulclassName="li_search_res_cat" className='outline-none block w-full py-2 px-3 text-base text-gray-900 border border-gray-300 focus:border-victoria-400 mb-3' />
 											</> : null
 										}
 										{
@@ -732,7 +746,7 @@ const Products = ({ products, options, tokenValid }) => {
 											>
 												<span className="text-base font-semibold"> Discount </span>
 												<span className="transition group-open:-rotate-180">
-													<i class="fa-light fa-angle-down fa-lg"></i>
+													<i className="fa-light fa-angle-down fa-lg"></i>
 												</span>
 											</summary>
 
@@ -791,7 +805,7 @@ const Products = ({ products, options, tokenValid }) => {
 													>
 														<span className="text-base font-semibold capitalize"> {key} </span>
 														<span className="transition group-open:-rotate-180">
-															<i class="fa-light fa-angle-down fa-lg"></i>
+															<i className="fa-light fa-angle-down fa-lg"></i>
 														</span>
 													</summary>
 													<div className="border-t border-gray-200 px-3 py-2">
@@ -865,7 +879,7 @@ const Products = ({ products, options, tokenValid }) => {
 											>
 												<span className="text-base font-semibold"> Tags </span>
 												<span className="transition group-open:-rotate-180">
-													<i class="fa-light fa-angle-down fa-lg"></i>
+													<i className="fa-light fa-angle-down fa-lg"></i>
 												</span>
 											</summary>
 
@@ -876,7 +890,7 @@ const Products = ({ products, options, tokenValid }) => {
 															type="text"
 															placeholder="Search Tag"
 															onKeyUp={side_bar_li_search}
-															data-inputulclass="li_search_res_tag"
+															data-inputulclassName="li_search_res_tag"
 															className='outline-none block w-full py-2 px-3 text-base text-gray-900 border border-gray-300  focus:border-victoria-400 mb-2'
 														/>
 													</> : null
@@ -928,7 +942,7 @@ const Products = ({ products, options, tokenValid }) => {
 											>
 												<span className="text-base font-semibold"> Review </span>
 												<span className="transition group-open:-rotate-180">
-													<i class="fa-light fa-angle-down fa-lg"></i>
+													<i className="fa-light fa-angle-down fa-lg"></i>
 												</span>
 											</summary>
 
@@ -978,7 +992,7 @@ const Products = ({ products, options, tokenValid }) => {
 											<summary className="flex cursor-pointer items-center justify-between gap-2 bg-white px-3 py-2 text-gray-900 transition">
 												<span className="text-base font-semibold"> Shipping </span>
 												<span className="transition group-open:-rotate-180">
-													<i class="fa-light fa-angle-down fa-lg"></i>
+													<i className="fa-light fa-angle-down fa-lg"></i>
 												</span>
 											</summary>
 											<div className="border-t border-gray-200 px-3 py-2">
@@ -1027,7 +1041,7 @@ const Products = ({ products, options, tokenValid }) => {
 											<summary className="flex cursor-pointer items-center justify-between gap-2 bg-white px-3 py-2 text-gray-900 transition">
 												<span className="text-base font-semibold"> Availability </span>
 												<span className="transition group-open:-rotate-180">
-													<i class="fa-light fa-angle-down fa-lg"></i>
+													<i className="fa-light fa-angle-down fa-lg"></i>
 												</span>
 											</summary>
 											<div className="border-t border-gray-200 px-3 py-2">
@@ -1071,7 +1085,13 @@ const Products = ({ products, options, tokenValid }) => {
 					</div>
 					<div className="md:col-span-8 lg:col-span-9">
 						{
-							currentProduct.length ?
+							currentProduct.length ? null :
+								<div className='grid gap-4'>
+									<p>No products were found matching your selection.</p>
+								</div>
+						}
+						{
+							currentProduct.length && !BoxBanner ?
 								<>
 									<div className='grid grid-cols-2 lg:grid-cols-3 gap-2 gap-y-3 sm:gap-4 lg:ms-7'>
 										{
@@ -1084,9 +1104,57 @@ const Products = ({ products, options, tokenValid }) => {
 									</div>
 								</>
 								:
-								<div className='grid gap-4'>
-									<p>No products were found matching your selection.</p>
-								</div>
+								null
+						}
+
+						{
+							currentProduct.length && BoxBanner ?
+								<>
+
+									{
+										productBoxs.length ?
+											productBoxs.map(productBox => {
+
+												return (
+													<>
+														{(() => {
+															if (i == (product_sale_banner_in_gridview[0]?.please_select_the_row_number / 3)) {
+																i = 1;
+																return (
+																	<div className='grid md:grid-cols-1 gap-4'>
+																		<Link href={product_sale_banner_in_gridview[0]?.category_url}>
+																			<Image
+																				src={product_sale_banner_in_gridview[0]?.category_image}
+																				alt="Top banner"
+																				width={1320}
+																				height={300}
+																				className='mx-auto'
+																			/>
+																		</Link>
+																	</div>
+																);
+															}
+															i++
+														})()}
+														<div className='grid md:grid-cols-3 gap-4'>
+															{
+																productBox.map(product => {
+																	return (
+																		<Product key={product?.id} product={product} tokenValid={tokenValid} options={options} customerData={customerData} setCustomerData={setCustomerData} />
+																	)
+																})
+															}
+														</div>
+													</>
+
+												)
+											})
+											: null
+									}
+
+								</>
+								:
+								null
 						}
 
 						<div className="rpagination">
@@ -1100,8 +1168,8 @@ const Products = ({ products, options, tokenValid }) => {
 										pageCount={max_num_pages}
 										renderOnZeroPageCount={null}
 										forcePage={itemOffset}
-										previousLabel={<i class="fa-sharp fa-solid fa-chevron-left"></i>}
-										nextLabel={<i class="fa-sharp fa-solid fa-chevron-right"></i>}
+										previousLabel={<i className="fa-sharp fa-solid fa-chevron-left"></i>}
+										nextLabel={<i className="fa-sharp fa-solid fa-chevron-right"></i>}
 										className='flex justify-center items-center gap-2 text-md font-medium my-5'
 										pageLinkClassName='inline-flex size-9 items-center justify-center border border-slate-200 text-gray-900 hover:bg-victoria-800 hover:text-white hover:border-victoria-800'
 										activeLinkClassName='border-victoria-800 bg-victoria-800 text-white'
@@ -1117,8 +1185,8 @@ const Products = ({ products, options, tokenValid }) => {
 										marginPagesDisplayed={1}
 										pageCount={max_num_pages}
 										renderOnZeroPageCount={null}
-										previousLabel={<i class="fa-sharp fa-solid fa-chevron-left"></i>}
-										nextLabel={<i class="fa-sharp fa-solid fa-chevron-right"></i>}
+										previousLabel={<i className="fa-sharp fa-solid fa-chevron-left"></i>}
+										nextLabel={<i className="fa-sharp fa-solid fa-chevron-right"></i>}
 										className='flex justify-center items-center gap-2 text-md font-medium my-5'
 										pageLinkClassName='inline-flex size-9 items-center justify-center border border-slate-200 text-gray-900 hover:bg-victoria-800 hover:text-white hover:border-victoria-800'
 										activeLinkClassName='border-victoria-800 bg-victoria-800 text-white'

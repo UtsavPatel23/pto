@@ -1,13 +1,12 @@
 import React from 'react'
 import { useState } from 'react';
-import Loader from "./../../../public/loader.gif";
+import Loaderspin from "../loaderspin";
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
 import { get_customer } from '../../utils/customer';
 import axios from 'axios';
 import { USER_LOGIN } from '../../utils/constants/endpoints';
-;
 import { Link } from '@mui/material';
 import { CAPTCHA_SITE_KEY, USER_REGIS } from '../../utils/constants/endpoints';
 import ReCAPTCHA from "react-google-recaptcha"
@@ -117,16 +116,16 @@ function LoginForm({ setTokenValid, tokenValid, setCustomerData }) {
     return (
         <React.Fragment>
             <div className='mb-3'>
-                {error && <div className="alert alert-danger" dangerouslySetInnerHTML={createMarkup(error)} />}
+                {error && <div className="text-red-500" dangerouslySetInnerHTML={createMarkup(error)} />}
                 <form onSubmit={handleSubmit_l(onFormSubmitLogin)}>
                     <label className="block mb-4">
                         <span className='block text-base mb-1'>Username</span>
-                        <input name="username" type="text" {...register_l('username')} className={` ${errorsLogin.username ? 'is-invalid' : ''} outline-none block w-full py-2 px-3 text-base  border border-gray-300 focus:border-victoria-400`} />
+                        <input name="username" type="text" {...register_l('username')} className='outline-none block w-full py-2 px-3 text-base  border border-gray-300 focus:border-victoria-400' />
                         <div className="d-block text-red-500">{errorsLogin.username?.message}</div>
                     </label>
                     <label className="block mb-4">
                         <span className='block text-base mb-1'>Password</span>
-                        <input name="password" type="password" {...register_l('password')} className={`form-control ${errorsLogin.password ? 'is-invalid' : ''} outline-none block w-full py-2 px-3 text-base border border-gray-300  focus:border-victoria-400`} />
+                        <input name="password" type="password" {...register_l('password')} className='outline-none block w-full py-2 px-3 text-base  border border-gray-300 focus:border-victoria-400' />
                         <div className="d-block text-red-500">{errorsLogin.password?.message}</div>
                     </label>
                     <ReCAPTCHA
@@ -135,8 +134,9 @@ function LoginForm({ setTokenValid, tokenValid, setCustomerData }) {
                         theme="dark"
                     />
                     <div className='text-center mt-5 mb-2'>
-                        <button className="bg-victoria-800 inline-block px-2 py-3 text-white text-center w-60 text-lg cursor-pointer" type="submit" disabled={loginFields.captcha === ""}>Login</button>
-                        {loading && <img className="loader" src={Loader.src} alt="Loader" />}
+                        <button className={`bg-victoria-800 inline-block px-2 py-3 text-white text-center w-60 text-lg cursor-pointer ${loginFields.captcha === "" ? 'opacity-50' : ''}`} type="submit" disabled={loginFields.captcha === ""}>
+                            {loading ? <div className='py-[3px]'><Loaderspin></Loaderspin></div> : 'Login'}
+                        </button>
                     </div>
                 </form>
                 <Link href="/my-account/lost-password/" className='text-black hover:text-victoria-800'>Lost your password?</Link>

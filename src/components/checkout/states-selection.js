@@ -1,31 +1,31 @@
 
 import PropTypes from 'prop-types';
-import {memo} from 'react';
+import { memo } from 'react';
 import cx from 'classnames';
 
 import Abbr from "./form-elements/abbr";
 import Error from './error';
 
-const StateSelection = ({handleOnChange, input, states, isFetchingStates, isShipping}) => {
-	
-	const {state, errors} = input || {};
-	
+const StateSelection = ({ handleOnChange, input, states, isFetchingStates, isShipping }) => {
+
+	const { state, errors } = input || {};
+
 	const inputId = `state_${isShipping ? 'shipping' : 'billing'}`;
-	
+
 	if (isFetchingStates) {
 		// Show loading component.
 		return (
-			<div className="mb-3">
-				<label className="leading-7 text-sm text-gray-700">
+			<div>
+				<label className="block text-base mb-1">
 					State/Country
-					<Abbr required/>
+					<Abbr required />
 				</label>
 				<div className="relative w-full border-none">
 					<select
 						disabled
 						value=""
 						name="state"
-						className="opacity-50 bg-gray-100 bg-opacity-50 border border-gray-500 text-gray-500 appearance-none inline-block py-3 pl-3 pr-8 rounded leading-tight w-full"
+						className="outline-none block w-full py-2 px-3 text-base border border-gray-300 focus:border-victoria-400 appearance-none"
 					>
 						<option value="">Loading...</option>
 					</select>
@@ -38,12 +38,12 @@ const StateSelection = ({handleOnChange, input, states, isFetchingStates, isShip
 	if (!states.length) {
 		return null;
 	}
-	
+
 	return (
-		<div className="mb-3">
-			<label className="leading-7 text-sm text-gray-600" htmlFor={inputId}>
+		<div>
+			<label className="block text-base mb-1" htmlFor={inputId}>
 				State
-				<Abbr required/>
+				<Abbr required />
 			</label>
 			<div className="relative w-full border-none">
 				<select
@@ -51,10 +51,7 @@ const StateSelection = ({handleOnChange, input, states, isFetchingStates, isShip
 					onChange={handleOnChange}
 					value={state}
 					name="state"
-					className={cx(
-						'bg-gray-100 bg-opacity-50 border border-gray-400 text-gray-500 appearance-none inline-block py-3 pl-3 pr-8 rounded leading-tight w-full',
-						{'opacity-50': isFetchingStates}
-					)}
+					className={`outline-none block w-full py-2 px-3 text-base border border-gray-300 focus:border-victoria-400 appearance-none ${isFetchingStates ? 'opacity-50' : ''}`}
 					id={inputId}
 				>
 					<option value="">Select a state...</option>
@@ -65,7 +62,7 @@ const StateSelection = ({handleOnChange, input, states, isFetchingStates, isShip
 					))}
 				</select>
 			</div>
-			<Error errors={errors} fieldName={'state'}/>
+			<Error errors={errors} fieldName={'state'} />
 		</div>
 	)
 }

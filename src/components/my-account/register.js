@@ -1,6 +1,6 @@
 import React from 'react'
 import { useState } from 'react';
-import Loader from "./../../../public/loader.gif";
+import Loaderspin from '../../components/loaderspin';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
@@ -232,7 +232,7 @@ function RegisterForm() {
 										<option value='+91'>IN +91</option>
 									</select>
 									<div className='relative w-full'>
-										<input name="phone" autoComplete='off' label='Phone Number'  {...register('phone')} className={`form-control ${errors.phone ? 'is-invalid' : ''} outline-none w-full block py-2 px-3 text-base  border border-gray-300 focus:border-victoria-400`} onChange={phoneChange} />
+										<input name="phone" autoComplete='off' label='Phone Number'  {...register('phone')} className='outline-none block w-full py-2 px-3 text-base  border border-gray-300 focus:border-victoria-400' onChange={phoneChange} />
 										<span onClick={handleSendOTP} className='absolute inset-y-0 right-0 flex items-center me-2 text-blue-500 cursor-pointer block underline underline-offset-4'>Verify</span>
 									</div>
 								</div>
@@ -255,17 +255,17 @@ function RegisterForm() {
 					</div>
 					<label className="block mb-4">
 						<span className='block text-base mb-1'>Email</span>
-						<input name="user_email" type="text" {...register('user_email')} className={`form-control ${errors.user_email ? 'is-invalid' : ''} outline-none block w-full py-2 px-3 text-base  border border-gray-300 focus:border-victoria-400`} />
+						<input name="user_email" type="text" {...register('user_email')} className='outline-none block w-full py-2 px-3 text-base  border border-gray-300 focus:border-victoria-400' />
 						<div className="d-block text-red-500">{errors.user_email?.message}</div>
 					</label>
 					<label className="block mb-4">
 						<span className='block text-base mb-1'>Password</span>
-						<input name="password" type="password" {...register('password')} className={`form-control ${errors.password ? 'is-invalid' : ''} outline-none block w-full py-2 px-3 text-base  border border-gray-300 focus:border-victoria-400`} />
+						<input name="password" type="password" {...register('password')} className='outline-none block w-full py-2 px-3 text-base  border border-gray-300 focus:border-victoria-400' />
 						<div className="d-block text-red-500">{errors.password?.message}</div>
 					</label>
 					<label className="block mb-4">
 						<span className='block text-base mb-1'>Confirm Password</span>
-						<input name="confirmPassword" type="password" {...register('confirmPassword')} className={`form-control ${errors.confirmPassword ? 'is-invalid' : ''} outline-none block w-full py-2 px-3 text-base  border border-gray-300 focus:border-victoria-400`} />
+						<input name="confirmPassword" type="password" {...register('confirmPassword')} className='outline-none block w-full py-2 px-3 text-base  border border-gray-300 focus:border-victoria-400' />
 						<div className="d-block text-red-500">{errors.confirmPassword?.message}</div>
 					</label>
 					<ReCAPTCHA
@@ -274,9 +274,9 @@ function RegisterForm() {
 						theme="dark"
 					/>
 					<div className='text-center mt-5 mb-2'>
-						<button className="bg-victoria-800 inline-block px-2 py-3 text-white text-center w-60 text-lg cursor-pointer" type="submit" disabled={regisFields.captcha === ""}>Register
+						<button className={`bg-victoria-800 inline-block px-2 py-3 text-white text-center w-60 text-lg cursor-pointer ${regisFields.captcha === "" ? 'opacity-50' : ''}`} type="submit" disabled={regisFields.captcha === ""}>
+							{regis_loading ? <div className='py-[3px]'><Loaderspin /></div> : 'Register'}
 						</button>
-						{regis_loading && <img className="loader" src={Loader.src} alt="Loader" />}
 					</div>
 				</form>
 			</div>

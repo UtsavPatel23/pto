@@ -191,6 +191,7 @@ function get_chield_by_parent_id(categories, parent) {
 
 
 export function localstorage_cookiesClear() {
+  var setClearCartProcessing = '';
   setTimeout(function () {
     var hours = 20; // to clear the localStorage after 1 hour
     // (if someone want to clear after 8hrs simply change hours=8)
@@ -206,7 +207,7 @@ export function localstorage_cookiesClear() {
           localStorage.setItem("user_lgdt", '');
           localStorage.setItem('customerData', '');
           localStorage.setItem('coutData', '');
-          clearCart(null, false);
+          clearCart(null, setClearCartProcessing);
 
         }
         localStorage.clear()
@@ -696,3 +697,4 @@ export function get_discount_bundle(cartItems, options, totalPrice, coutData) {
   }
   return parseFloat(returnValue).toFixed(2);;
 }
+

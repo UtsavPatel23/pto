@@ -7,7 +7,6 @@ import ExternalLink from '../products/external-link';
 import ProductGallery from './product-gallery';
 import axios from 'axios';
 import Link from 'next/link';
-import jQuery, { queue } from "jquery";
 import { useEffect } from 'react';
 import Warranty_tab from './Warranty_tab';
 import Shipping_guide_tab from './Shipping_guide_tab';
@@ -29,12 +28,16 @@ import 'slick-carousel/slick/slick-theme.css';
 import Image from 'next/image';
 import splashlogo from '../../../public/assets/img/logo-splash.webp';
 import bronzetrophy from '../../../public/assets/img/bronze.webp';
+import { useRouter } from 'next/router';
+import Enquiry from '../enquiry'
+
 
 
 const SingleProduct = ({ singleProduct, reviews, options }) => {
 	const [product, setProduct] = useState(singleProduct);
 	const { attributes_new } = singleProduct;
 	const paymentOptions = options?.payments;
+	const { top_banner, footer_banner } = options ?? '';
 	const [timer, setTimer] = useState(0);
 	const [shippingCharge, setShippingCharge] = useState('<span>Calculate Shipping</span>');
 	const [inputshipdisabled, setInputshipdisabled] = useState(false);
@@ -47,6 +50,35 @@ const SingleProduct = ({ singleProduct, reviews, options }) => {
 	const [productCountQty, setProductCountQty] = useState(1);
 	const [att_selected, setAtt_selected] = useState('');
 
+	const [isEnquiryOpen, setEnquiryOpen] = useState(false);
+	const [default_attr_val, setDefault_attr_val] = useState(null);
+
+	const openEnquiry = () => {
+		setEnquiryOpen(true);
+	};
+
+	const closeEnquiry = () => {
+		setEnquiryOpen(false);
+	};
+
+	const router = useRouter();
+	//console.log('router',router);
+	//console.log('le ',Object.keys(router.query).length);
+
+
+	useEffect(() => {
+		// Disable body scrolling when the popup is open
+		if (isEnquiryOpen) {
+			document.body.classList.add('overflow-hidden');
+		} else {
+			document.body.classList.remove('overflow-hidden');
+		}
+
+		// Clean up the effect
+		return () => {
+			document.body.classList.remove('overflow-hidden');
+		};
+	}, [isEnquiryOpen]);
 
 	useEffect(() => {
 		setProduct(singleProduct)
@@ -119,7 +151,7 @@ const SingleProduct = ({ singleProduct, reviews, options }) => {
 			product_start_date = new Date(product_start_date + ' 00:00:00');
 			product_end_date = new Date(product_end_date + ' 23:59:59');
 			if (product_start_date <= toDay && toDay <= product_end_date) {
-				setTimer(1);
+				/*setTimer(1);
 				var dis_price = ((product.price * product.meta_data.product_discount) / 100);
 				setCashback((Math.round((product.price - dis_price)) / 10));
 				setCashbackpoints((Math.round((product.price - dis_price)) * 10));
@@ -167,7 +199,7 @@ const SingleProduct = ({ singleProduct, reviews, options }) => {
 						//document.getElementById("timer_count_down").remove();
 					}
 
-				}, 1000);
+				}, 1000);*/
 			} else {
 				setTimer(0);
 				setCashback((Math.round((product.price)) / 10));
@@ -221,14 +253,17 @@ const SingleProduct = ({ singleProduct, reviews, options }) => {
 			}
 		});
 		setAtt_selected(att_select);
-		console.log('att_select = ', att_select);
-		console.log('att_select', singleProduct.product_variations[att_select]);
-		console.log('product_variations', singleProduct.product_variations);
-		if (!isEmpty(singleProduct.product_variations[att_select])) {
-			setProduct(singleProduct.product_variations[att_select]);
-		} else {
-			setProduct(singleProduct);
+		//console.log('att_select = ', att_select);
+		//console.log('att_select', singleProduct.product_variations[att_select]);
+		//console.log('product_variations', singleProduct.product_variations);
+		if (!isEmpty(singleProduct)) {
+			if (!isEmpty(singleProduct?.product_variations[att_select])) {
+				setProduct(singleProduct?.product_variations[att_select]);
+			} else {
+				setProduct(singleProduct);
+			}
 		}
+
 	}
 	const clear_drop = async () => {
 		$(".attribut_drop").each(function () {
@@ -253,8 +288,8 @@ const SingleProduct = ({ singleProduct, reviews, options }) => {
 		const { onClick } = props;
 		return (
 			<div className="absolute top-1/2 left-0 transform -translate-y-1/2 cursor-pointer z-10">
-				<p onClick={onClick} className="size-10 bg-victoria-700 inline-block flex items-center justify-center">
-					<i class="fa-light fa-arrow-left text-white fa-lg"></i>
+				<p onClick={onClick} className="size-10 bg-victoria-700 flex items-center justify-center">
+					<i className="fa-light fa-arrow-left text-white fa-lg"></i>
 				</p>
 			</div>
 		);
@@ -264,8 +299,8 @@ const SingleProduct = ({ singleProduct, reviews, options }) => {
 		const { onClick } = props;
 		return (
 			<div className="absolute top-1/2 right-0 transform -translate-y-1/2 cursor-pointer z-10">
-				<p onClick={onClick} className="size-10 bg-victoria-700 inline-block flex items-center justify-center">
-					<i class="fa-light fa-arrow-right text-white fa-lg"></i>
+				<p onClick={onClick} className="size-10 bg-victoria-700  flex items-center justify-center">
+					<i className="fa-light fa-arrow-right text-white fa-lg"></i>
 				</p>
 			</div>
 		);
@@ -295,35 +330,63 @@ const SingleProduct = ({ singleProduct, reviews, options }) => {
 			}
 		],
 	};
-
+	if (typeof window !== "undefined") {
+		useEffect(() => {
+			if (singleProduct.type == 'variable') { attribut_drop(); }
+		}, [Object.keys(router.query).length > 1]);
+	}
 	return Object.keys(product).length ? (
 		<div className="single-product container mx-auto my-10 p-0">
-			<div key="product-top" className="grid md:grid-cols-2 gap-4 mb-10">
-				<div key="product-images" className="product-images relative grid-cols-1">
-					{(() => {
-						if ((singleProduct.type == 'simple' || singleProduct.type == 'variable') && (product.price > 0)) {
-							var offpride = Math.round(((product.regular_price - product.price) * 100) / product.regular_price);
-							if (offpride > 0) {
-								return (
-									<div key="product_info3" className='offinfo absolute bg-victoria-800 text-white text-xs font-medium shadow-lg py-1 px-2 z-10 top-1.5 left-1.5'>
-										{offpride}%Off
-									</div>
-								)
+			<div key='top-banner' className='text-center my-5'>
+				{top_banner?.length ?
+					top_banner?.map(banner => {
+						if (banner.status == 'on' && banner.banner_image != '') {
+							const toDay = new Date();
+							var start_date = new Date(banner.start_date);
+							var end_date = new Date(banner.end_date);
+							if (start_date <= toDay && toDay <= end_date) {
+								return (<Image
+									src={banner.banner_image}
+									alt="Top banner"
+									width={1320}
+									height={300}
+									className='mx-auto'
+								/>)
 							}
 
 						}
-					})()}
-					{product.images.length ? (
-						<ProductGallery items={product?.images} />
-					) : null}
-					{getNewProductTag(singleProduct.date_created) == 1 ? <>New</> : null}
+					})
+					: null}
+			</div>
+			<div key="product-top" className="grid md:grid-cols-2 gap-4 mb-10">
+				<div key="product-images" className="product-images">
+					<div className='relative grid grid-cols-1'>
+						{(() => {
+							if ((singleProduct.type == 'simple' || singleProduct.type == 'variable') && (product.price > 0)) {
+								var offpride = Math.round(((product.regular_price - product.price) * 100) / product.regular_price);
+								if (offpride > 0) {
+									return (
+										<div key="product_info3" className='offinfo absolute bg-victoria-800 text-white text-xs font-medium shadow-lg py-1 px-2 z-10 top-1.5 left-1.5'>
+											{offpride}%Off
+										</div>
+									)
+								}
+
+							}
+						})()}
+						{product.images.length ? (
+
+							<ProductGallery items={product?.images} />
+						) : null}
+						{getNewProductTag(singleProduct.date_created) == 1 ? <>New</> : null}
+					</div>
 				</div>
 				<div key="product-info" className="product-info space-y-2 md:ms-10">
 					<h4 key="product_title"
 						dangerouslySetInnerHTML={{
 							__html: product.name,
 						}}
-						className="text-2xl text-wrap sm:text-3xl	font-semibold capitalize"
+						className="text-xl text-wrap sm:text-3xl font-semibold capitalize"
 					/>
 					{singleProduct.average_rating > 1 ?
 						<div key="average_rating">
@@ -342,28 +405,59 @@ const SingleProduct = ({ singleProduct, reviews, options }) => {
 						product?.type == 'grouped' ?
 							<GroupProduct options={options} product={product} bundle_discount={options?.nj_bundle_discount}></GroupProduct> : null
 					}
-					{
-						!isEmpty(attributes_new) ?
-							attributes_new.map(per_page_no => {
-								if (per_page_no.variation) {
-									return (
-										<div key={per_page_no.id}>
-											{per_page_no.name} :
-											<>
-												<select id={'id_att_' + per_page_no.name} className="attribut_drop" onChange={attribut_drop} name={'nm_att_' + per_page_no.name}>
-													<option key={per_page_no.if} value=''>Choose an option</option>
-													{per_page_no.options.map(attribut_val => (
-														<option key={attribut_val.slug} value={attribut_val.slug}>{attribut_val.name}</option>
-													))}
-												</select>
-											</>
-										</div>
-									)
+					{!isEmpty(attributes_new) ?
+						<>
+							<div className='border border-dashed border-victoria-700 relative p-2 space-y-2'>
+								{
+									!isEmpty(attributes_new) ?
+										attributes_new.map(per_page_no => {
+											if (per_page_no.variation) {
+												//console.log('per_page_no', per_page_no);
+												var default_att_val = '';
+												Object.keys(router.query).map(function (key) {
+													if (key == 'attribute_' + per_page_no?.slug) {
+														default_att_val = router.query[key];
+													}
+												})
+												return (
+													<div key={per_page_no.id} className='flex gap-2 items-center'>
+														<span className='min-w-28'> {per_page_no.name} : </span>
+														<>
+															<div className="relative w-full inline-block">
+																<select id={'id_att_' + per_page_no.name}
+																	className='attribut_drop cursor-pointer block appearance-none w-full bg-white border border-victoria-800 px-2 py-2 pr-6 shadow leading-tight focus:outline-none transition-all duration-300'
+																	onChange={attribut_drop}
+																	name={'nm_att_' + per_page_no.name}
+																>
+																	<option key={per_page_no.if} value=''>Choose an option</option>
+																	{per_page_no.options.map(attribut_val => {
+																		if (default_att_val != '' && default_att_val == attribut_val.slug) {
+																			return (<option selected key={attribut_val.slug} value={attribut_val.slug}>{attribut_val.name}</option>)
+																		} else {
+																			return (<option key={attribut_val.slug} value={attribut_val.slug}>{attribut_val.name}</option>)
+																		}
+																	}
+																	)}
+																</select>
+																<div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-1">
+																	<i className="fa-solid fa-caret-down fa-lg"></i>
+																</div>
+															</div>
+														</>
+													</div>
+												)
+											}
+										})
+										: ''
 								}
-							})
-							: ''
-					}
-					{att_selected != '' ? <><button onClick={clear_drop}>Clear</button></> : null}
+								{
+									att_selected != '' ? <>
+										<button onClick={clear_drop} className='absolute right-2 -top-6 bg-slate-200 text-red-600 px-2 text-sm hover:bg-red-600 hover:text-white'>Clear</button>
+									</>
+										: null
+								}
+							</div>
+						</> : null}
 					<div key="product_info2">
 						{timer != 0 ? <div id="timer_count_down"></div> : null}
 						{timer != 0 ? <div>Extra Discount{product.meta_data.product_discount}%Off</div> : null}
@@ -382,7 +476,36 @@ const SingleProduct = ({ singleProduct, reviews, options }) => {
 							);
 						}
 					})()}
-					<div key="product_info4">
+					{(() => {
+						if (product.type == 'simple' || product.type == 'variation') {
+							if (product.stock_quantity < 1) {
+								return (
+									<div>
+										<p className='text-red-600 mb-3'>Get an alert when the product is in stock:</p>
+										<div className='relative mb-3'>
+											<input
+												type="text"
+												placeholder="Enter Email"
+												className='outline-none block w-full py-2 px-3 pr-28 text-base text-gray-900 border border-gray-300  focus:border-victoria-400'
+											/>
+											<button className='bg-red-600 text-base text-white p-2 text-center cursor-pointer absolute top-0 right-0 h-[42px]'>Get an alert</button>
+										</div>
+									</div>
+								)
+							}
+						}
+					})()}
+					<div key="product_info4" className='flex gap-3 items-center py-2 flex-wrap'>
+						{(() => {
+							if (product.meta_data.short_description_badge != '' && product.meta_data.short_description_badge != 0 && product.meta_data.short_description_badge != undefined) {
+								return (
+									<div key="product_info5"
+										className={`single-badge border-b border-current font-medium text-green-600 w-max !bg-transparent ${product.meta_data.short_description_badge}`}>
+										{product.meta_data.short_description_badge.replace('-', ' ')}
+									</div>
+								)
+							}
+						})()}
 						{(() => {
 							if (product.type == 'simple' || product.type == 'variation') {
 								if (product.stock_quantity < 1) {
@@ -394,8 +517,7 @@ const SingleProduct = ({ singleProduct, reviews, options }) => {
 									)
 								} else if (product.stock_quantity <= 20) {
 									return (
-										<div className='text-red-500 text-base font-mediam border-b border-red-500 w-fit'>
-											<i className="fa-light fa-clock fa-lg me-2 pb-4"></i>
+										<div className='text-red-500 text-base font-mediam border-b border-red-500 w-fit font-medium limited-stock'>
 											Hurry Up, Limited Stock available!
 										</div>
 									)
@@ -408,14 +530,6 @@ const SingleProduct = ({ singleProduct, reviews, options }) => {
 							}
 						})()}
 					</div>
-					{(() => {
-						if (product.meta_data.short_description_badge != '' && product.meta_data.short_description_badge != 0 && product.meta_data.short_description_badge != undefined) {
-							return (
-								<div key="product_info5" className={product.meta_data.short_description_badge}>{product.meta_data.short_description_badge.replace('-', ' ')}</div>
-							)
-						}
-					})()}
-
 					{(() => {
 						if (product?.type == 'simple' || product?.type == 'variation' || product?.type == 'grouped') {
 							return (
@@ -434,7 +548,7 @@ const SingleProduct = ({ singleProduct, reviews, options }) => {
 											</>
 											: null
 										}
-										<WishlistButton customerData={customerData} setCustomerData={setCustomerData} product={product} tokenValid={tokenValid} />
+										<WishlistButton customerData={customerData} setCustomerData={setCustomerData} product={product} tokenValid={tokenValid} listing={false} />
 									</div>
 								</div>
 							);
@@ -485,7 +599,7 @@ const SingleProduct = ({ singleProduct, reviews, options }) => {
 										size="4"
 										name="product_code"
 										placeholder="Enter Postcode"
-										className='w-36 outline-none py-1 px-2 text-sm text-gray-900 border border-gray-300  focus:border-victoria-400'
+										className='w-36 outline-none py-1 px-2 text-sm border border-gray-300  focus:border-victoria-400'
 										disabled={inputshipdisabled}
 									/>
 									<span
@@ -521,6 +635,29 @@ const SingleProduct = ({ singleProduct, reviews, options }) => {
 								/> : null
 						}
 					</div>
+					<div
+						onClick={openEnquiry}
+						className='border border-victoria-700 bg-victoria-800 inline-block p-2 px-3 text-white text-lg cursor-pointer hover:text-victoria-800 hover:bg-transparent'>
+						Product Enquiry
+					</div>
+					{isEnquiryOpen && (
+						<section className='enquiry-popup fixed z-20 top-0 left-0 flex h-full w-full min-h-screen items-center justify-center'>
+							<div onClick={closeEnquiry} className="fixed z-20 top-0 left-0 flex h-full min-h-screen w-full bg-black bg-opacity-90 close-cursor"></div>
+							<div className="z-30 w-full mx-3 sm:max-w-[570px] bg-white p-5 relative ">
+								<span onClick={closeEnquiry} className="flex items-center justify-center absolute -top-3 -right-2 size-8 bg-red-600 text-xl cursor-pointer"
+								>
+									<i class="fa-light fa-xmark text-2xl text-white"></i>
+								</span>
+								<h4 key="product_title"
+									dangerouslySetInnerHTML={{
+										__html: product.name,
+									}}
+									className="text-lg text-wrap font-semibold capitalize"
+								/>
+								<Enquiry product={ product }></Enquiry>
+							</div>
+						</section>
+					)}
 				</div>
 			</div>
 			<div key="product-top" className="grid grid-cols-1 gap-8">
@@ -563,17 +700,17 @@ const SingleProduct = ({ singleProduct, reviews, options }) => {
 				})()}
 				<div className="space-y-4 mb-5">
 					<details className="group shadow-[0_0_6px_1px_#ddd] [&_summary::-webkit-details-marker]:hidden" open>
-						<summary className="py-3 px-4 flex py-3 px-4 cursor-pointer items-center justify-between gap-1.5 text-gray-900">
+						<summary className="py-3 px-4 flex cursor-pointer items-center justify-between gap-1.5">
 							<h2 className="font-medium">Description</h2>
 							<span className="relative size-5 shrink-0">
 								<svg
-									class="size-5 shrink-0 transition duration-300 group-open:-rotate-180"
+									className="size-5 shrink-0 transition duration-300 group-open:-rotate-180"
 									xmlns="http://www.w3.org/2000/svg"
 									fill="none"
 									viewBox="0 0 24 24"
 									stroke="currentColor"
 								>
-									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+									<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
 								</svg>
 							</span>
 						</summary>
@@ -582,7 +719,7 @@ const SingleProduct = ({ singleProduct, reviews, options }) => {
 							dangerouslySetInnerHTML={{
 								__html: product.description,
 							}}
-							className="py-3 px-4 border-t border-gray-200 leading-relaxed text-gray-700 product-description"
+							className="py-3 px-4 border-t border-gray-200 leading-relaxed product-description"
 						/>
 						<div className="space-y-4 p-4">
 							{/*Accordion 1 */}
@@ -600,7 +737,7 @@ const SingleProduct = ({ singleProduct, reviews, options }) => {
 											viewBox="0 0 24 24"
 											stroke="currentColor"
 										>
-											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+											<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
 										</svg>
 									</button>
 									<div className={`py-3 px-4 border-t border-gray-200 ${accordionOpen[0] ? '' : 'hidden'}`} dangerouslySetInnerHTML={{ __html: product.meta_data.product_features }} />
@@ -622,7 +759,7 @@ const SingleProduct = ({ singleProduct, reviews, options }) => {
 											viewBox="0 0 24 24"
 											stroke="currentColor"
 										>
-											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+											<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
 										</svg>
 									</button>
 									<div className={`py-3 px-4 border-t border-gray-200 ${accordionOpen[1] ? '' : 'hidden'}`} dangerouslySetInnerHTML={{ __html: product.meta_data.dimensions_and_specification }} />
@@ -644,7 +781,7 @@ const SingleProduct = ({ singleProduct, reviews, options }) => {
 											viewBox="0 0 24 24"
 											stroke="currentColor"
 										>
-											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+											<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
 										</svg>
 									</button>
 									<div className={`py-3 px-4 border-t border-gray-200 ${accordionOpen[2] ? '' : 'hidden'}`} dangerouslySetInnerHTML={{ __html: product.meta_data.whats_included }} />
@@ -657,21 +794,21 @@ const SingleProduct = ({ singleProduct, reviews, options }) => {
 						if (product.weight != '' && product.dimensions.length != '') {
 							return (
 								<details key='additional-information' className="group shadow-[0_0_6px_1px_#ddd] [&_summary::-webkit-details-marker]:hidden">
-									<summary className="flex py-3 px-4 cursor-pointer items-center justify-between gap-1.5 text-gray-900">
+									<summary className="flex py-3 px-4 cursor-pointer items-center justify-between gap-1.5">
 										<h2 className="font-medium">Additional information</h2>
 										<span className="relative size-5 shrink-0">
 											<svg
-												class="size-5 shrink-0 transition duration-300 group-open:-rotate-180"
+												className="size-5 shrink-0 transition duration-300 group-open:-rotate-180"
 												xmlns="http://www.w3.org/2000/svg"
 												fill="none"
 												viewBox="0 0 24 24"
 												stroke="currentColor"
 											>
-												<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+												<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
 											</svg>
 										</span>
 									</summary>
-									<div className="py-3 px-4 border-t border-gray-200 leading-relaxed text-gray-700">
+									<div className="py-3 px-4 border-t border-gray-200 leading-relaxed">
 										{product.weight ? <><b>Weight</b> : {product.weight}</> : null}
 										{product.dimensions.length ?
 											<><b>Dimensions</b>
@@ -685,21 +822,21 @@ const SingleProduct = ({ singleProduct, reviews, options }) => {
 					})()}
 					{reviews.length ?
 						<details key="reviews_list" className="group shadow-[0_0_6px_1px_#ddd] [&_summary::-webkit-details-marker]:hidden">
-							<summary className="flex py-3 px-4 cursor-pointer items-center justify-between gap-1.5 text-gray-900">
+							<summary className="flex py-3 px-4 cursor-pointer items-center justify-between gap-1.5">
 								<h2 className="font-medium">Review ({reviews.length})</h2>
 								<span className="relative size-5 shrink-0">
 									<svg
-										class="size-5 shrink-0 transition duration-300 group-open:-rotate-180"
+										className="size-5 shrink-0 transition duration-300 group-open:-rotate-180"
 										xmlns="http://www.w3.org/2000/svg"
 										fill="none"
 										viewBox="0 0 24 24"
 										stroke="currentColor"
 									>
-										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+										<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
 									</svg>
 								</span>
 							</summary>
-							<div className="py-3 px-4 border-t border-gray-200 leading-relaxed text-gray-700">
+							<div className="py-3 px-4 border-t border-gray-200 leading-relaxed">
 								<h3
 									key="product_title"
 									className="text-2xl mb-4"
@@ -721,60 +858,60 @@ const SingleProduct = ({ singleProduct, reviews, options }) => {
 						: null
 					}
 					<details className="group shadow-[0_0_6px_1px_#ddd] [&_summary::-webkit-details-marker]:hidden">
-						<summary className="flex py-3 px-4 cursor-pointer items-center justify-between gap-1.5 text-gray-900">
+						<summary className="flex py-3 px-4 cursor-pointer items-center justify-between gap-1.5">
 							<h2 className="font-medium">Splash Pass Rewards</h2>
 							<span className="relative size-5 shrink-0">
 								<svg
-									class="size-5 shrink-0 transition duration-300 group-open:-rotate-180"
+									className="size-5 shrink-0 transition duration-300 group-open:-rotate-180"
 									xmlns="http://www.w3.org/2000/svg"
 									fill="none"
 									viewBox="0 0 24 24"
 									stroke="currentColor"
 								>
-									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+									<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
 								</svg>
 							</span>
 						</summary>
-						<div className="py-3 px-4 border-t border-gray-200 leading-relaxed text-gray-700">
+						<div className="py-3 px-4 border-t border-gray-200 leading-relaxed">
 							<Reward_points_tab />
 						</div>
 					</details>
 					<details className="group shadow-[0_0_6px_1px_#ddd] [&_summary::-webkit-details-marker]:hidden">
-						<summary className="flex py-3 px-4 cursor-pointer items-center justify-between gap-1.5 text-gray-900">
+						<summary className="flex py-3 px-4 cursor-pointer items-center justify-between gap-1.5">
 							<h2 className="font-medium">Warranty & Return Policy</h2>
 							<span className="relative size-5 shrink-0">
 								<svg
-									class="size-5 shrink-0 transition duration-300 group-open:-rotate-180"
+									className="size-5 shrink-0 transition duration-300 group-open:-rotate-180"
 									xmlns="http://www.w3.org/2000/svg"
 									fill="none"
 									viewBox="0 0 24 24"
 									stroke="currentColor"
 								>
-									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+									<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
 								</svg>
 							</span>
 						</summary>
-						<div className="py-3 px-4 border-t border-gray-200 leading-relaxed text-gray-700">
+						<div className="py-3 px-4 border-t border-gray-200 leading-relaxed">
 							<Warranty_tab />
 						</div>
 					</details>
 					<details className="group shadow-[0_0_6px_1px_#ddd] [&_summary::-webkit-details-marker]:hidden">
-						<summary className="flex py-3 px-4 cursor-pointer items-center justify-between gap-1.5 text-gray-900">
+						<summary className="flex py-3 px-4 cursor-pointer items-center justify-between gap-1.5">
 							<h2 className="font-medium">Shipping Guide</h2>
 							<span className="relative size-5 shrink-0">
 								<svg
-									class="size-5 shrink-0 transition duration-300 group-open:-rotate-180"
+									className="size-5 shrink-0 transition duration-300 group-open:-rotate-180"
 									xmlns="http://www.w3.org/2000/svg"
 									fill="none"
 									viewBox="0 0 24 24"
 									stroke="currentColor"
 								>
-									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+									<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
 								</svg>
 							</span>
 						</summary>
 
-						<div className="py-3 px-4 border-t border-gray-200 leading-relaxed text-gray-700">
+						<div className="py-3 px-4 border-t border-gray-200 leading-relaxed">
 							<Shipping_guide_tab />
 						</div>
 					</details>
@@ -864,6 +1001,28 @@ const SingleProduct = ({ singleProduct, reviews, options }) => {
 						}
 					})()
 				}
+			</div>
+			<div key='footer-banner' className='text-center my-5'>
+				{footer_banner?.length ?
+					footer_banner?.map(banner => {
+						if (banner.footer_status == 'on' && banner.footer_banner_image != '') {
+							const toDay = new Date();
+							var start_date = new Date(banner.footer_start_date);
+							var end_date = new Date(banner.footer_end_date);
+							if (start_date <= toDay && toDay <= end_date) {
+								return (<Image
+									src={banner.footer_banner_image}
+									alt="Footer banner"
+									width={1320}
+									height={300}
+									className='mx-auto'
+								/>)
+							}
+
+						}
+					})
+					: null}
+
 			</div>
 		</div >
 	) : null;

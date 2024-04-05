@@ -15,31 +15,30 @@ import PostMeta from '../post-meta';
  *
  * @param {Object} post Post.
  */
-const Post = ( { post } ) => {
+const Post = ({ post }) => {
 	return (
-		<div className="mb-8">
-			<Link href={ `/blog/${ post?.slug }/` }>
-				
-					<figure className="overflow-hidden mb-4">
-						<Image
-							sourceUrl={ post?.attachment_image?.img_src?.[ 0 ] ?? '' }
-							title={ post?.title ?? '' }
-							width="400"
-							height="225"
-							layout="fill"
-							containerClassNames="w-96 sm:-w-600px md:w-400px h-56 sm:h-338px md:h-225px"
-						/>
-					</figure>
-				
+		<div className='h-full relative group'>
+			<Link href={`/blog/${post?.slug}/`}>
+				<figure className="overflow-hidden mb-4">
+					<Image
+						sourceUrl={post?.attachment_image?.img_src?.[0] ?? ''}
+						title={post?.title ?? ''}
+						width="380"
+						height="225"
+						className='mx-auto group-hover:scale-110 duration-300'
+					/>
+				</figure>
 			</Link>
-			<PostMeta date={ post?.date ?? '' } authorName={ post?.meta?.author_name ?? '' }/>
-			<Link href={ `/blog/${ post?.slug }/` }>
-				
-					<h2 className="font-bold mb-3 text-lg text-brand-gun-powder font-bold uppercase hover:text-blue-500"
-					    dangerouslySetInnerHTML={ { __html: sanitize( post?.title ?? '' ) } }/>
-				
-			</Link>
-			<div dangerouslySetInnerHTML={ { __html: sanitize( post?.excerpt ?? '' ) } }/>
+			<div className='p-3 border-t border-grey-200'>
+				<PostMeta date={post?.date ?? ''} authorName={post?.meta?.author_name ?? ''} />
+				<h2 className="font-semibold mb-3 text-lg hover:text-victoria-700">
+					<Link href={`/blog/${post?.slug}/`} dangerouslySetInnerHTML={{ __html: sanitize(post?.title ?? '') }} />
+				</h2>
+				<p className='line-clamp-2' dangerouslySetInnerHTML={{ __html: sanitize(post?.excerpt ?? '') }} />
+				<Link href={`/blog/${post?.slug}/`} className='mt-2 flex gap-2 items-center border-b border-victoria-700 w-fit hover:text-victoria-700 font-medium'>
+					Read More <i className="far fa-chevron-double-right"></i>
+				</Link>
+			</div>
 		</div>
 	);
 };

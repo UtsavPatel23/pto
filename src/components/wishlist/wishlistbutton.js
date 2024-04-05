@@ -7,7 +7,7 @@ import Router from "next/router";
 
 
 var spiner = '';
-function wishlistButton({ customerData, setCustomerData, product, tokenValid }) {
+function wishlistButton({ customerData, setCustomerData, product, tokenValid, listing }) {
 
     const [wishlist, setWishlist] = useState(0);
     const router = useRouter();
@@ -43,7 +43,7 @@ function wishlistButton({ customerData, setCustomerData, product, tokenValid }) 
 
 
     return (
-        <div key='wishlist' className='border border-victoria-700 flex items-center justify-center'>
+        <div key='wishlist' className={`border border-victoria-700 flex items-center justify-center ${listing ? 'w-fit mx-auto' : ''}`}>
             {/* Wishlist : */}
             {router?.pathname != '/wishlist' ?
                 <>{wishlist == '1' ?
@@ -51,7 +51,9 @@ function wishlistButton({ customerData, setCustomerData, product, tokenValid }) 
                     :
                     <button onClick={addWishlistPro} className='size-10 inline-block'><i className="fa-light fa-heart text-2xl text-victoria-700"></i></button>
                 }</>
-                : <button onClick={removeWishlistPro} className='size-10 inline-block'><i className="fa-solid fa-heart text-2xl text-victoria-700"></i></button>}
+                : <button onClick={removeWishlistPro} className='size-10 inline-block'>
+                    {listing ? <i className="fa-solid fa-trash text-red-600"></i> : <i className="fa-solid fa-heart text-2xl text-victoria-700"></i>}
+                </button>}
             {wishlistLoding ?
                 <>
                     <div className='size-10 absolute bg-white flex items-center justify-center'>
@@ -114,7 +116,7 @@ function wishlistButton({ customerData, setCustomerData, product, tokenValid }) 
                     </section>
                     : null
             }
-        </div >
+        </div>
     )
 }
 

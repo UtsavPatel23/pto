@@ -10,38 +10,31 @@ import { useRouter } from 'next/router';
 import Layout from '../src/components/layout';
 import { FALLBACK, handleRedirectsAndReturnData, isCustomPageUri } from '../src/utils/slug';
 import { getFormattedDate, getPathNameFromUrl, sanitize } from '../src/utils/miscellaneous';
-import { getPage} from '../src/utils/blog';
+import { getPage } from '../src/utils/blog';
 import axios from 'axios';
 import { HEADER_FOOTER_ENDPOINT } from '../src/utils/constants/endpoints';
 import Image from '../src/components/image';
 import PostMeta from '../src/components/post-meta';
 import { getPagesAPI } from '../src/utils/apiFun/pages';
 
-const Page = ( { headerFooter, pageData } ) => {
+const Page = ({ headerFooter, pageData }) => {
 	const router = useRouter();
-	
+
 	// If the page is not yet generated, this will be displayed
 	// initially until getStaticProps() finishes running
-	if ( router.isFallback ) {
+	if (router.isFallback) {
 		return <div>Loading...</div>;
 	}
-	
+
 	return (
-		<Layout headerFooter={ headerFooter || {} } seo={ pageData?.yoast_head_json ?? {} }>
+		<Layout headerFooter={headerFooter || {}} seo={pageData?.yoast_head_json ?? {}}>
 			<div className="mb-8 w-4/5 m-auto">
-				<figure className="overflow-hidden mb-4">
-					<Image
-						sourceUrl={ pageData?._embedded[ 'wp:featuredmedia' ]?.[ 0 ]?.source_url ?? '' }
-						title={ pageData?.title?.rendered ?? '' }
-						width="600"
-						height="400"
-						layout="fill"
-						containerClassNames="w-full h-600px"
-					/>
-				</figure>
-				<PostMeta date={ getFormattedDate( pageData?.date ?? '' ) } authorName={ pageData?._embedded?.author?.[0]?.name ?? '' }/>
-				<h1 dangerouslySetInnerHTML={ { __html: sanitize( pageData?.title?.rendered ?? '' ) } }/>
-				<div dangerouslySetInnerHTML={ { __html: sanitize( pageData?.content?.rendered ?? '' ) } }/>
+				{/* <PostMeta date={getFormattedDate(pageData?.date ?? '')} authorName={pageData?._embedded?.author?.[0]?.name ?? ''} /> */}
+				<h1
+					className='relative pb-2 text-center font-jost text-2xl md:text-3xl lg:text-4xl font-semibold mb-5 title-border'
+					dangerouslySetInnerHTML={{ __html: sanitize(pageData?.title?.rendered ?? '') }}
+				/>
+				<div dangerouslySetInnerHTML={{ __html: pageData?.content?.rendered ?? '' }} />
 			</div>
 		</Layout>
 	);
@@ -49,11 +42,11 @@ const Page = ( { headerFooter, pageData } ) => {
 
 export default Page;
 
-export async function getStaticProps( { params } ) {
-	
-	const { data: headerFooterData } = await axios.get( HEADER_FOOTER_ENDPOINT );
-	const pageData = await getPage( params?.slug.pop() ?? '' );
-	
+export async function getStaticProps({ params }) {
+
+	const { data: headerFooterData } = await axios.get(HEADER_FOOTER_ENDPOINT);
+	const pageData = await getPage(params?.slug.pop() ?? '');
+
 	const defaultProps = {
 		props: {
 			headerFooter: headerFooterData?.data ?? {},
@@ -64,10 +57,10 @@ export async function getStaticProps( { params } ) {
 		 * if the data is changed, if it is changed then it will update the
 		 * static file inside .next folder with the new data, so that any 'SUBSEQUENT' requests should have updated data.
 		 */
-		
+
 	};
-	
-	return handleRedirectsAndReturnData( defaultProps, pageData );
+
+	return handleRedirectsAndReturnData(defaultProps, pageData);
 }
 
 /**
@@ -91,9 +84,9 @@ export async function getStaticPaths() {
 	//const pagesData = await getPages();
 	const pagesData = await getPagesAPI();
 	const pathsData = [];
-	
-	isArray( pagesData ) && pagesData.map( page => {
-		
+
+	isArray(pagesData) && pagesData.map(page => {
+
 		/**
 		 * Extract pathname from url.
 		 * e.g.
@@ -101,15 +94,15 @@ export async function getStaticPaths() {
 		 * getPathNameFromUrl( 'https://example.com' ) will return '/'
 		 * @type {String}
 		 */
-		const pathName = getPathNameFromUrl( page?.link ?? '' );
-		
+		const pathName = getPathNameFromUrl(page?.link ?? '');
+
 		// Build paths data.
-		if ( ! isEmpty( pathName ) && ! isCustomPageUri( pathName ) ) {
-			const slugs = pathName?.split( '/' ).filter( pageSlug => pageSlug );
-			pathsData.push( { params: { slug: slugs } } );
+		if (!isEmpty(pathName) && !isCustomPageUri(pathName)) {
+			const slugs = pathName?.split('/').filter(pageSlug => pageSlug);
+			pathsData.push({ params: { slug: slugs } });
 		}
-	} );
-	
+	});
+
 	return {
 		paths: pathsData,
 		fallback: FALLBACK,

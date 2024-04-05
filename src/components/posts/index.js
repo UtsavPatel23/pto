@@ -10,25 +10,23 @@ import { isEmpty, isArray } from 'lodash';
 import Post from './post';
 
 
-const Posts = ( { posts } ) => {
-	
-	if ( isEmpty( posts ) && ! isArray( posts ) ) {
+const Posts = ({ posts }) => {
+
+	if (isEmpty(posts) && !isArray(posts)) {
 		return null;
 	}
-	
+
 	return (
-		<div className="flex flex-wrap -mb-4">
+		<div className="grid sm:grid-cols-2 md:grid-cols-3 gap-5 lg:mx-28">
 			{
-				posts.map( ( post, index ) => {
+				posts.map((post, index) => {
 					return (
-						<div
-							key={ `${ post?.id ?? '' }-${ index }` ?? '' }
-							className="w-full md:w-1/2 lg:w-1/3 mb-4 px-2"
+						<div key={`${post?.id ?? ''}-${index}` ?? ''} className="shadow-full"
 						>
-							<Post post={ post }/>
+							<Post post={post} />
 						</div>
 					);
-				} )
+				})
 			}
 		</div>
 	);

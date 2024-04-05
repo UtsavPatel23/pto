@@ -42,7 +42,7 @@ const Product = ({ product, tokenValid, options, customerData, setCustomerData }
 	}
 
 	return (
-		<div className='h-full shadow-[0_0_6px_0_#ddd] group relative pb-14'>
+		<div className='h-full shadow-full group relative pb-14'>
 			{(() => {
 				if ((product.type == 'simple') && (product.price > 0)) {
 					var offpride = Math.round(((product.regular_price - product.price) * 100) / product.regular_price);
@@ -78,7 +78,7 @@ const Product = ({ product, tokenValid, options, customerData, setCustomerData }
 				{(() => {
 					if (product.meta_data.short_description_badge != '' && product.meta_data.short_description_badge != 0 && product.meta_data.short_description_badge != undefined) {
 						return (
-							<p className='bg-green-600 px-2  text-white w-max' >{product.meta_data.short_description_badge.replace('-', ' ')}</p>
+							<p className={`px-2 text-white w-max ${product.meta_data.short_description_badge}`}>{product.meta_data.short_description_badge.replace('-', ' ')}</p>
 						)
 					}
 				})()}
@@ -224,16 +224,12 @@ const Product = ({ product, tokenValid, options, customerData, setCustomerData }
 
 				<div className='addwish flex items-center justify-center absolute left-0 bottom-0 w-full p-2 border-t border-gray-200 gap-2'>
 					{(() => {
-						var p_slug = '/p/' + product?.slug;
-						if (!WEB_DEVICE) {
-							p_slug = '/product/?sname=' + product?.slug;
-						}
 
 						if ('variable' == productType) {
 							return (
 								<Link href={p_slug} className='sm:w-32 sm:p-2 text-white bg-victoria-700 duration-500 font-medium text-center hover:bg-white border hover:text-victoria-700 border-victoria-700 relative'>
 									<span className='hidden sm:inline-block'>Select options</span>
-									<span className='sm:hidden size-10 inline-block bg-white grid place-content-center'>
+									<span className='sm:hidden size-10 bg-white grid place-content-center'>
 										<i className="fa-sharp fa-light fa-cart-plus text-2xl text-victoria-700"></i>
 									</span>
 								</Link>
@@ -243,16 +239,15 @@ const Product = ({ product, tokenValid, options, customerData, setCustomerData }
 							return (<AddToCart product={product} />)
 						} else {
 							return (<Link href={p_slug} className='sm:w-32 sm:p-2 text-white bg-victoria-700 duration-500 font-medium text-center hover:bg-white border hover:text-victoria-700 border-victoria-700 relative'>
-
 								<span className='hidden sm:inline-block'>Read more</span>
-								<span className='sm:hidden size-10 inline-block bg-white grid place-content-center'>
+								<span className='sm:hidden size-10 bg-white grid place-content-center'>
 									<i className="fa-regular fa-arrow-right text-2xl text-victoria-700"></i>
 								</span>
 							</Link>
 							);
 						}
 					})()}
-					<WishlistButton customerData={customerData} setCustomerData={setCustomerData} product={product} tokenValid={tokenValid} />
+					<WishlistButton customerData={customerData} setCustomerData={setCustomerData} product={product} tokenValid={tokenValid} listing={false} />
 				</div>
 
 				{

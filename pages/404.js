@@ -10,33 +10,20 @@ import axios from 'axios';
 import { HEADER_FOOTER_ENDPOINT } from '../src/utils/constants/endpoints';
 import Layout from '../src/components/layout';
 
-function Error404( { headerFooter } ) {
+function Error404({ headerFooter }) {
 	return (
-		<Layout headerFooter={ headerFooter || {} } seo={ null }>
-			<div className="h-almost-screen">
-				<section className="text-gray-600 body-font">
-					<div className="container mx-auto flex px-5 py-24 md:flex-row flex-col items-center">
-						<div className="lg:flex-grow md:w-1/2 lg:pr-24 md:pr-16 flex flex-col md:items-start md:text-left mb-16 md:mb-0 items-center text-center">
-							<h1 className="title-font sm:text-4xl text-3xl mb-4 font-medium text-gray-900">
-								Sorry No result found
-							</h1>
-							<div className="flex justify-center">
-								<Link href="/">
-									<div className="inline-flex text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded text-lg">
-										Back to Home  
-									</div>
-								</Link>
-							</div>
+		<Layout headerFooter={headerFooter || {}} seo={null}>
+			<div class="w-9/12 m-auto py-10 flex items-center justify-center bg-gray-100">
+				<div class="text-center">
+					<h1 class="text-9xl font-bold text-victoria-700">404</h1>
+					<h1 class="text-6xl font-medium py-8">oops! Page not found</h1>
+					<p class="text-2xl pb-8 px-12 font-medium">Oops! The page you are looking for does not exist. It might have been moved or deleted.</p>
+					<Link href="/">
+						<div className="bg-victoria-800 inline-block px-1 py-3 text-white text-center w-60 text-lg cursor-pointer">
+							Back to Home
 						</div>
-						<div className="lg:max-w-lg lg:w-full md:w-1/2 w-5/6">
-							<img
-								className="object-cover object-center rounded"
-								alt="not found"
-							    src="https://dummyimage.com/620x400"
-							/>
-						</div>
-					</div>
-				</section>
+					</Link>
+				</div>
 			</div>
 		</Layout>
 	);
@@ -45,9 +32,9 @@ function Error404( { headerFooter } ) {
 export default Error404;
 
 export async function getStaticProps() {
-	
-	const { data: headerFooterData } = await axios.get( HEADER_FOOTER_ENDPOINT );
-	
+
+	const { data: headerFooterData } = await axios.get(HEADER_FOOTER_ENDPOINT);
+
 	return {
 		props: {
 			headerFooter: headerFooterData?.data ?? {},

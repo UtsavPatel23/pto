@@ -49,6 +49,7 @@ export const CAPTCHA_SITE_KEY = '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI';
 
 // Wishlist
 export const WISHLIST_URL = `${process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL}/wp-json/shop-nj/v1/wishlist`;
+export const WISHLIST_LIST = `${process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL}/wp-json/shop-nj/v1/wishlist_list`;
 
 // pages list
 export const PAGES_URL = `${process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL}/wp-json/shop-nj/v1/pages`;
@@ -66,3 +67,8 @@ export const WC_CONSUMER_SECRET_API = 'cs_48e3a294c8154d5dd7f2005ff13598838e2c55
 
 export const WCAPI_QUERY_PRM = '?consumer_key=' + WC_CONSUMER_KEY_API + '&consumer_secret=' + WC_CONSUMER_SECRET_API + '&';
 
+// SUBSCRIBE EMAIL API
+export const SUBSCRIBE_EMAIL = `${process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL}/wp-json/shop-nj/v1/subscribe_email`;
+
+// Product Enquiry
+export const PRODUCT_ENQUIRY = `${process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL}/wp-json/shop-nj/v1/product_enquiry`;

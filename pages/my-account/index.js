@@ -2,18 +2,15 @@ import React, { useContext, useEffect, useReducer, useState } from 'react';
 import axios from 'axios';
 import { HEADER_FOOTER_ENDPOINT } from '../../src/utils/constants/endpoints';
 import Layout from '../../src/components/layout';
-;
-
-
 import LoginForm from '../../src/components/my-account/login';
 import RegisterForm from '../../src/components/my-account/register';
 import Sidebar from '../../src/components/my-account/sidebar';
+import MobileBtn from '../../src/components/my-account/My-Account-Mobile-btn';
 import { get_points } from '../../src/utils/customjs/custome';
 import LoginPhone from '../../src/components/my-account/login-phone';
 
 import { useSession, signIn } from "next-auth/react"
 import { get_customer } from '../../src/utils/customer';
-
 
 export default function Login({ headerFooter }) {
 
@@ -86,18 +83,25 @@ export default function Login({ headerFooter }) {
 		<RegisterForm></RegisterForm>,
 	];
 
+	const [isMyaccountOpen, setIsMyaccountOpen] = useState(false);
+
+
+
 	if (tokenValid) {
 		return (
 			<Layout headerFooter={headerFooter || {}} seo={seo}>
-				<div className='grid grid-cols-12 gap-4'>
-					<div className="col-span-4">
-						<Sidebar setTokenValid={setTokenValid}></Sidebar>
-					</div>
-					<div className="col-span-8 ">
-						{customerData?.first_name ? <p>User name: {customerData?.first_name}</p> : null}
-						{rewardPoints > 0 ? <p>Points: {rewardPoints}</p> : null}
-						{customerData?.meta_data?.membership_level ? <p>Membership Level: {customerData?.meta_data?.membership_level}</p> : null}
-
+				<div className='relative'>
+					<h1 class="relative pb-2 text-center font-jost text-2xl md:text-3xl lg:text-4xl font-semibold mb-10 title-border">My Account</h1>
+					<MobileBtn setIsMyaccountOpen={setIsMyaccountOpen} isMyaccountOpen={isMyaccountOpen} />
+				</div>
+				<div className='grid md:grid-cols-3 gap-5'>
+					<Sidebar setTokenValid={setTokenValid} setIsMyaccountOpen={setIsMyaccountOpen} isMyaccountOpen={isMyaccountOpen}></Sidebar>
+					<div className="md:col-span-2">
+						<div className='border border-gray-300 p-2'>
+							{customerData?.first_name ? <p>User name: {customerData?.first_name}</p> : null}
+							{rewardPoints > 0 ? <p>Points: {rewardPoints}</p> : null}
+							{customerData?.meta_data?.membership_level ? <p>Membership Level: {customerData?.meta_data?.membership_level}</p> : null}
+						</div>
 					</div>
 				</div>
 			</Layout>
@@ -129,7 +133,7 @@ export default function Login({ headerFooter }) {
 								role="tabpanel"
 								aria-labelledby={`tab-${index}`}
 							>
-								{content}
+								{activeTab === index ? content : ''}
 							</div>
 						))}
 					</div>

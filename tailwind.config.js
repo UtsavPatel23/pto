@@ -4,6 +4,7 @@ module.exports = {
 		"./pages/**/*.{js,ts,jsx,tsx,mdx}",
 		"./src/components/**/*.{js,ts,jsx,tsx,mdx}",
 		"./src/app/**/*.{js,ts,jsx,tsx,mdx}",
+		"./node_modules/react-tailwindcss-datepicker/dist/index.esm.js",
 	],
 	theme: {
 		extend: {
@@ -93,6 +94,9 @@ module.exports = {
 				'0.5px': '0.5px',
 				'0.1px': '0.1px',
 			},
+			boxShadow: {
+				'full': '0 0 6px 0 #ddd',
+			}
 		},
 		container: {
 			padding: '12px',

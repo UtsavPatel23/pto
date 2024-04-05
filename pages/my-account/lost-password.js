@@ -50,7 +50,8 @@ export default function lostPassword({ headerFooter }) {
 
 	// user login 
 	const onFormSubmitLostPassword = async (event) => {
-
+		setLostError('');
+		setLostSuccess('');
 		const loginData = {
 			login: event.username,
 		};
@@ -60,9 +61,7 @@ export default function lostPassword({ headerFooter }) {
 				console.log('res', res.data);
 				if (res.data.code == '200') {
 					setLostSuccess('Password reset link has been sent to your registered email.');
-					setLostError('');
 				} else {
-					setLostSuccess('');
 					setLostError('User not found');
 				}
 			})
@@ -233,16 +232,17 @@ export default function lostPassword({ headerFooter }) {
 			<Layout headerFooter={headerFooter || {}} seo={seo}>
 				<React.Fragment>
 					<div className="max-w-2xl mx-auto border border-gray-200 p-3 rounded">
-						<h4 className="mb-4">Lost password</h4>
-						{lostError && <div className="alert alert-danger  d-block text-red-500" dangerouslySetInnerHTML={createMarkup(lostError)} />}
+						<h4 className="mb-4 text-center text-2xl font-jost font-semibold">Lost password</h4>
+						{lostError && <div className="d-block text-red-500" dangerouslySetInnerHTML={createMarkup(lostError)} />}
 						{lostSuccess ?
 							<>
-								<div className="alert alert-success" dangerouslySetInnerHTML={createMarkup(lostSuccess)} />
+								<div className="text-green-700" dangerouslySetInnerHTML={createMarkup(lostSuccess)} />
+								<button onClick={(e) => { setLostSuccess(''); }} className="bg-victoria-800 inline-block px-2 py-3 text-white text-center w-60 text-lg cursor-pointer" >Go Back</button>
 							</> :
 							<form onSubmit={handleSubmit_l(onFormSubmitLostPassword)}>
 								<label className="block mb-4">
 									<span className='block text-base mb-1'>Username OR Email</span>
-									<input name="username" type="text" {...register_l('username')} className={`form-control ${errorsLogin.username ? 'is-invalid' : ''} outline-none block w-full py-2 px-3 text-base  border border-gray-300 focus:border-victoria-400`} />
+									<input name="username" type="text" {...register_l('username')} className='outline-none block w-full py-2 px-3 text-base  border border-gray-300 focus:border-victoria-400' />
 									<div className="d-block text-red-500">{errorsLogin.username?.message}</div>
 								</label>
 								<div className='text-center mt-5 mb-2'>
@@ -258,42 +258,39 @@ export default function lostPassword({ headerFooter }) {
 	} else {
 		return (
 			<Layout headerFooter={headerFooter || {}} seo={seo}>
-				<div className="col-span-12 ">
-					<React.Fragment>
-						<div className='shadow-md'>
-							<h4 className="mb-4">Enter a new password below.</h4>
+				<React.Fragment>
+					<div className="max-w-2xl mx-auto border border-gray-200 p-3 rounded">
+						<h4 className="mb-4 text-center text-2xl font-jost font-semibold">Enter a new password below</h4>
 
-							{regisFields.regis_error && <div className="alert alert-danger d-block text-red-500" dangerouslySetInnerHTML={createMarkup(regisFields.regis_error)} />}
-							{regisFields.regis_success ?
-								<>
-									<div className="alert alert-success" dangerouslySetInnerHTML={createMarkup(regisFields.regis_success)} />
-									<GotoLoginBtn></GotoLoginBtn>
-								</>
-								:
-								<form onSubmit={handleSubmit(onFormSubmitForgot)}>
-									<div className="form-row">
-										<div className="form-group col">
-											<label>Password</label>
-											<input name="password" type="password" {...register('password')} className={`form-control ${errors.password ? 'is-invalid' : ''} border border-sky-500`} />
-											<div className="d-block text-red-500">{errors.password?.message}</div>
-										</div>
-										<div className="form-group col">
-											<label>Confirm Password</label>
-											<input name="confirmPassword" type="password" {...register('confirmPassword')} className={`form-control ${errors.confirmPassword ? 'is-invalid' : ''} border border-sky-500`} />
-											<div className="d-block text-red-500">{errors.confirmPassword?.message}</div>
-										</div>
-									</div>
-									<br />
-									<button className="btn btn-primary mb-3 border bg-green-500" type="submit">Save</button>
-									{regis_loading && <img className="loader" src={Loader.src} alt="Loader" />}
-								</form>
-							}
-						</div>
-					</React.Fragment>
-				</div>
-
+						{regisFields.regis_error && <div className="d-block text-red-500" dangerouslySetInnerHTML={createMarkup(regisFields.regis_error)} />}
+						{regisFields.regis_success ?
+							<>
+								<div className="text-green-700" dangerouslySetInnerHTML={createMarkup(regisFields.regis_success)} />
+								<GotoLoginBtn></GotoLoginBtn>
+							</>
+							:
+							<form onSubmit={handleSubmit(onFormSubmitForgot)}>
+								<div className="form-row">
+									<label className="block mb-4">
+										<span className='block text-base mb-1'>Password</span>
+										<input name="password" type="password" {...register('password')} className='outline-none block w-full py-2 px-3 text-base  border border-gray-300 focus:border-victoria-400' />
+										<div className="d-block text-red-500">{errors.password?.message}</div>
+									</label>
+									<label className="block mb-4">
+										<span className='block text-base mb-1'>Confirm Password</span>
+										<input name="confirmPassword" type="password" {...register('confirmPassword')} className='outline-none block w-full py-2 px-3 text-base  border border-gray-300 focus:border-victoria-400' />
+										<div className="d-block text-red-500">{errors.confirmPassword?.message}</div>
+									</label>
+								</div>
+								<div className='text-center mt-5 mb-2'>
+									<button className="bg-victoria-800 inline-block px-2 py-3 text-white text-center w-60 text-lg cursor-pointer" type="submit">Save</button>
+								</div>
+								{regis_loading && <img className="loader" src={Loader.src} alt="Loader" />}
+							</form>
+						}
+					</div>
+				</React.Fragment>
 			</Layout>
-
 		)
 	}
 };

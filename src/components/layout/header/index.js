@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { isEmpty } from 'lodash';
 import { AppContext } from '../../context';
 import { getPathNameFromUrl } from '../../../utils/miscellaneous';
@@ -10,7 +10,9 @@ import menustyles from './topmenu.module.css';
 import playstoreicon from '../../../../public/assets/img/google-play-store.svg';
 import appstoreicon from '../../../../public/assets/img/app-store.svg';
 import CartItem from '../../cart/cart-item-mini';
-
+import { useRouter } from 'next/router';
+import { signOut } from "next-auth/react";
+import Router from "next/router";
 
 const Header = ({ header, footer }) => {
 
@@ -20,11 +22,11 @@ const Header = ({ header, footer }) => {
 	const { cartItems } = cart || {};
 	const [notice, setNotice] = useState('');
 	const [postcodedis, setPostcodedis] = useState('');
-
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
 	const toggleMenu = () => {
 		setIsMenuOpen(!isMenuOpen);
 	};
+	const [tokenValid, setTokenValid] = useState(0);
 
 	const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 	const toggleSidebar = () => {
@@ -36,6 +38,44 @@ const Header = ({ header, footer }) => {
 		document.body.style.overflow = 'auto';
 	};
 
+	const [resultsShow, setResultsShow] = useState(false);
+
+	const router = useRouter();
+	var pageslug = router.asPath.split('/').splice(-1, 1)[0];
+	pageslug = '/' + pageslug;
+	if (pageslug != '/') {
+		pageslug = pageslug + '/';
+	}
+
+	//function logout
+    const logoutHanlder = async () => {
+        let tokenName = localStorage.getItem('token');
+        //remove token from localstorage
+        localStorage.setItem("token", '');
+        localStorage.setItem("user_lgdt", '');
+        localStorage.setItem('customerData', '');
+        localStorage.setItem('coutData', '');
+        if (tokenName == 'logingoogle') {
+            await signOut();
+        } else {
+            setTokenValid(0);
+		}
+		toggleMenu();
+		Router.push("/");
+	};
+	//hook useEffect
+	useEffect(() => {
+		//check token
+		if (localStorage.getItem('token')) {
+			setTokenValid(1)
+		}
+	}, []);
+	console.log('tokenValid', tokenValid)
+	const tokenCheck = () => {
+		if (localStorage.getItem('token')) {
+			setTokenValid(1)
+		}
+	};
 	return (
 		<>
 			<header className='header'>
@@ -65,17 +105,17 @@ const Header = ({ header, footer }) => {
 								}
 							</Link>
 						</div>
-						<div className='pro-search w-1/2 ms-2 md:block hidden'>
-							<Search search={search} />
+						<div className='pro-search w-1/2 ms-2'>
+							<Search search={search} resultsShow={resultsShow} setResultsShow={setResultsShow} />
 						</div>
 						<div className='right-action font-cabin'>
 							<ul className='list-none flex items-center'>
 								<li className='list-none md:hidden block me-3 md:m-0'>
-									<Link href="" className='flex items-center hover:text-victoria-800'>
-										<div className='icon size-11 sm:size-12 border border-victoria-800 rounded flex items-center justify-center hover:bg-victoria-800 hover:text-white'>
-											<i className="fa-light fa-magnifying-glass text-2xl"></i>
-										</div>
-									</Link>
+
+									<div className='icon size-11 sm:size-12 border border-victoria-800 rounded flex items-center justify-center hover:bg-victoria-800 hover:text-white'>
+										<i onClick={() => setResultsShow(true)} className="fa-light fa-magnifying-glass text-2xl"></i>
+									</div>
+
 								</li>
 								<li className='list-none mx-2 xl:m-0 md:block hidden'>
 									<Link href="/wishlist" className='flex items-center hover:text-victoria-800'>
@@ -126,7 +166,7 @@ const Header = ({ header, footer }) => {
 												<i className="fa-light fa-xmark text-2xl"></i>
 											</button>
 										</div>
-										<div className="space-y-6 h-[calc(100vh_-_140px)] overflow-y-auto scroll-smooth p-2 theme-scroll">
+										<div className="h-[calc(100vh_-_140px)] overflow-y-auto scroll-smooth p-2 theme-scroll space-y-5">
 											{
 												!isEmpty(cartItems) && cartItems.length &&
 												cartItems.map((item) => (
@@ -144,14 +184,14 @@ const Header = ({ header, footer }) => {
 										<div className="space-y-4 text-center sticky bottom-0 bg-white p-3 border-t border-slate-200">
 											<div className='flex justify-between items-center space-x-4'>
 												<Link
-													href="/cart"
+													href="/cart" onClick={closeSidebar}
 													className="block rounded border border-victoria-800 p-3 text-base text-victoria-800 transition  hover:bg-victoria-800 hover:text-white w-full"
 												>
 													View Cart {cart?.totalQty ? `(${cart?.totalQty})` : null}
 												</Link>
 
 												<Link
-													href="/checkout"
+													href="/checkout" onClick={closeSidebar}
 													className="block rounded border border-victoria-800 p-3 text-base text-victoria-800 transition  hover:bg-victoria-800 hover:text-white w-full"
 												>
 													Checkout
@@ -162,7 +202,7 @@ const Header = ({ header, footer }) => {
 								</li>
 								<li className='list-none relative md:hidden block '>
 									<div className={menustyles.hamburger} onClick={toggleMenu}>
-										<button className="flex flex-col justify-center items-center size-11 sm:size-12 border border-victoria-800 rounded">
+										<button  onClick={tokenCheck} className="flex flex-col justify-center items-center size-11 sm:size-12 border border-victoria-800 rounded">
 											<span className={`bg-victoria-800 block transition-all duration-300 ease-out h-[3px] w-8 rounded-sm ${isMenuOpen ? 'rotate-45 translate-y-1' : '-translate-y-1'}`} > </span>
 											<span className={`bg-victoria-800 block transition-all duration-300 ease-out h-[3px] w-8 rounded-sm my-0.5 ${isMenuOpen ? 'opacity-0' : 'opacity-100'}`} > </span>
 											<span className={`bg-victoria-800 block transition-all duration-300 ease-out h-[3px] w-8 rounded-sm ${isMenuOpen ? '-rotate-45 -translate-y-1.5' : 'translate-y-1'}`} > </span>
@@ -177,17 +217,33 @@ const Header = ({ header, footer }) => {
 					<div className='container mx-auto flex items-center justify-between text-white'>
 						<ul className='lmenu'>
 							{!isEmpty(headerMenuItems) && headerMenuItems.length ? headerMenuItems.map(menuItem => {
-								if (menuItem?.title == 'Categories') {
+								if (menuItem?.classes == 'external') {
 									return (
 										<li className='inline-block relative hover:before:content-[" "] hover:before:w-[80%] hover:before:h-[2px] hover:before:absolute hover:before:top-0 hover:before:left-0 hover:before:right-0 hover:before:mx-auto hover:before:bg-victoria-800'>
+											<Link href={menuItem?.url ?? ''} target="_blank" className="inline-block py-3 px-4 font-medium font-jost hover:bg-chelsea-500" dangerouslySetInnerHTML={{ __html: menuItem.title }} />
+										</li>
+
+									)
+								} else if (menuItem?.title == 'Categories') {
+									var clsActive = '';
+									if ('/cat?sname=all/' == pageslug || '/c/' == pageslug) {
+										clsActive = 'bg-chelsea-500 before:content-[" "] before:w-[80%] before:h-[2px] before:absolute before:top-0 before:left-0 before:right-0 before:mx-auto before:bg-victoria-800';
+									}
+									return (
+										<li className={'inline-block relative hover:before:content-[" "] hover:before:w-[80%] hover:before:h-[2px] hover:before:absolute hover:before:top-0 hover:before:left-0 hover:before:right-0 hover:before:mx-auto hover:before:bg-victoria-800 ' + clsActive} >
 											<Link href={!WEB_DEVICE ? '/cat?sname=all' : '/c'} className="inline-block py-3 px-4 font-medium font-jost hover:bg-chelsea-500" dangerouslySetInnerHTML={{ __html: menuItem.title }} />
 										</li>
 
 									)
 								} else {
+									var menu_slug = getPathNameFromUrl(menuItem?.url ?? '') || '/';
+									var clsActive = '';
+									if (menu_slug == pageslug) {
+										clsActive = 'bg-chelsea-500 before:content-[" "] before:w-[80%] before:h-[2px] before:absolute before:top-0 before:left-0 before:right-0 before:mx-auto before:bg-victoria-800';
+									}
 									return (
-										<li className='inline-block relative hover:before:content-[" "] hover:before:w-[80%] hover:before:h-[2px] hover:before:absolute hover:before:top-0 hover:before:left-0 hover:before:right-0 hover:before:mx-auto hover:before:bg-victoria-800'>
-											<Link href={getPathNameFromUrl(menuItem?.url ?? '') || '/'} className="inline-block py-3 px-4 font-medium font-jost hover:bg-chelsea-500" dangerouslySetInnerHTML={{ __html: menuItem.title }} />
+										<li className={'inline-block relative hover:before:content-[" "] hover:before:w-[80%] hover:before:h-[2px] hover:before:absolute hover:before:top-0 hover:before:left-0 hover:before:right-0 hover:before:mx-auto hover:before:bg-victoria-800 ' + clsActive}>
+											<Link href={menu_slug} className="inline-block py-3 px-4 font-medium font-jost hover:bg-chelsea-500" dangerouslySetInnerHTML={{ __html: menuItem.title }} />
 										</li>
 									)
 								}
@@ -200,9 +256,14 @@ const Header = ({ header, footer }) => {
 						<div className='rmenu'>
 							<ul>
 								{!isEmpty(headerTopMenuItems) && headerTopMenuItems.length ? headerTopMenuItems.map(menuItem => {
+									var menu_slug = getPathNameFromUrl(menuItem?.url ?? '') || '/';
+									var clsActive = '';
+									if (menu_slug == pageslug) {
+										clsActive = 'bg-chelsea-500 before:content-[" "] before:w-[80%] before:h-[2px] before:absolute before:top-0 before:left-0 before:right-0 before:mx-auto before:bg-victoria-800';
+									}
 									return (
-										<li className='inline-block relative hover:before:content-[" "] hover:before:w-[80%] hover:before:h-[2px] hover:before:absolute hover:before:top-0 hover:before:left-0 hover:before:right-0 hover:before:mx-auto hover:before:bg-victoria-800'>
-											<Link href={getPathNameFromUrl(menuItem?.url ?? '') || '/'} className="inline-block py-3 px-4 font-medium font-jost hover:bg-chelsea-500" dangerouslySetInnerHTML={{ __html: menuItem.title }} />
+										<li className={'inline-block relative hover:before:content-[" "] hover:before:w-[80%] hover:before:h-[2px] hover:before:absolute hover:before:top-0 hover:before:left-0 hover:before:right-0 hover:before:mx-auto hover:before:bg-victoria-800 ' + clsActive}>
+											<Link href={menu_slug} className="inline-block py-3 px-4 font-medium font-jost hover:bg-chelsea-500" dangerouslySetInnerHTML={{ __html: menuItem.title }} />
 										</li>
 									)
 								}
@@ -221,18 +282,39 @@ const Header = ({ header, footer }) => {
 						</div>
 						<ul className='mt-12 w-full'>
 							{!isEmpty(headerMenuItems) && headerMenuItems.length ? headerMenuItems.map(menuItem => {
-								if (menuItem?.title == 'Categories') {
+								if (menuItem?.classes == 'external') {
 									return (
 										<li className='block border-b border-slate-200'>
-											<Link href={!WEB_DEVICE ? '/cat?sname=all' : '/c'} className="block p-3 font-medium font-jost hover:bg-chelsea-500 hover:text-white"
+											<Link href={menuItem?.url ?? ''} target="_blank"
+												className={'block p-3 font-medium font-jost hover:bg-chelsea-500 hover:text-white ' + clsActive}
+												dangerouslySetInnerHTML={{ __html: menuItem.title }} />
+										</li>
+
+									)
+								} else if (menuItem?.title == 'Categories') {
+									var clsActive = '';
+									if ('/cat?sname=all/' == pageslug || '/c/' == pageslug) {
+										clsActive = 'bg-chelsea-500 text-white';
+									}
+									return (
+										<li className='block border-b border-slate-200'>
+											<Link href={!WEB_DEVICE ? '/cat?sname=all' : '/c'}
+												className={'block p-3 font-medium font-jost hover:bg-chelsea-500 hover:text-white ' + clsActive}
 												dangerouslySetInnerHTML={{ __html: menuItem.title }} />
 										</li>
 
 									)
 								} else {
+									var menu_slug = getPathNameFromUrl(menuItem?.url ?? '') || '/';
+									var clsActive = '';
+									if (menu_slug == pageslug) {
+										clsActive = 'bg-chelsea-500 text-white';
+									}
 									return (
 										<li className='block border-b border-slate-200'>
-											<Link href={getPathNameFromUrl(menuItem?.url ?? '') || '/'} className="block p-3 font-medium font-jost hover:bg-chelsea-500 hover:text-white" dangerouslySetInnerHTML={{ __html: menuItem.title }} />
+											<Link href={getPathNameFromUrl(menuItem?.url ?? '') || '/'}
+												className={'block p-3 font-medium font-jost hover:bg-chelsea-500 hover:text-white ' + clsActive}
+												dangerouslySetInnerHTML={{ __html: menuItem.title }} />
 										</li>
 									)
 								}
@@ -240,6 +322,20 @@ const Header = ({ header, footer }) => {
 							) : null}
 							<li className='block border-b border-slate-200'>
 								<Link href='/shop' className="block p-3 font-medium font-jost hover:bg-chelsea-500 hover:text-white">Shop</Link>
+							</li>
+							<li className='block border-b border-slate-200'>
+								<Link href='/wishlist' className="block p-3 font-medium font-jost hover:bg-chelsea-500 hover:text-white">Wishlist</Link>
+							</li>
+							<li className='block border-b border-slate-200'>
+								<Link href='/my-account' className="block p-3 font-medium font-jost hover:bg-chelsea-500 hover:text-white">My Account</Link>
+							</li>
+							<li className='block border-b border-slate-200'>
+								{tokenValid
+								 ?
+									<button onClick={logoutHanlder} className="block p-3 font-medium font-jost hover:bg-chelsea-500 hover:text-white">Logout</button>
+									:
+									<Link onClick={toggleMenu}  href='/my-account' className="block p-3 font-medium font-jost hover:bg-chelsea-500 hover:text-white">Login</Link>
+									}
 							</li>
 						</ul>
 						<div className='applink flex p-2 border-b border-slate-200'>

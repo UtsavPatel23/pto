@@ -13,6 +13,9 @@ import Image from 'next/image';
 import playstoreicon from '../../../../public/assets/img/google-play-store.svg';
 import appstoreicon from '../../../../public/assets/img/app-store.svg';
 import appbarcode from '../../../../public/assets/img/pto-app.png';
+import { WEB_DEVICE } from '../../../utils/constants/endpoints';
+import SubscribeEmail from '../../../components/subscribe_email'
+import { useRouter } from 'next/router';
 
 const Footer = ({ footer, header }) => {
 
@@ -20,6 +23,12 @@ const Footer = ({ footer, header }) => {
 	const { social_media_list, payments, whatsapp_link, whatsapp, facebook_link, app_store_link, play_store_link } = footer?.options || {};
 	const { siteTitle } = header || {};
 	const [isMounted, setMount] = useState(false);
+	const router = useRouter();
+	var pageslug = router.asPath.split('/').splice(-1, 1)[0];
+	pageslug = '/' + pageslug;
+	if (pageslug != '/') {
+		pageslug = pageslug + '/';
+	}
 
 	useEffect(() => {
 		setMount(true);
@@ -93,16 +102,9 @@ const Footer = ({ footer, header }) => {
 
 	return (
 		<>
-			<div className="container mx-auto py-20">
-				<button
-					onClick={() => setModalOpen(true)}
-					className="rounded-full bg-victoria-800 py-3 px-6 font-medium text-white"
-				>
-					Open Modal
-				</button>
-			</div>
 			<footer className="footer bg-chelsea-50 font-inter pt-10 border-t-2 border-victoria-800">
 				<div className="container mx-auto">
+					<SubscribeEmail></SubscribeEmail>
 					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 overflow-hidden">
 						<div className='md:bg-inherit bg-victoria-100 rounded'>
 							<h2 onClick={toggleMenuFooter1} className="md:pointer-events-none relative md:text-2xl text-lg font-medium md:mb-5 md:text-chelsea-400 font-jost before:content-[''] md:before:w-12 before:h-[3px] before:absolute before:-bottom-1 before:left-0 before:bg-chelsea-400 before:rounded md:p-0 p-2">
@@ -111,11 +113,21 @@ const Footer = ({ footer, header }) => {
 							</h2>
 							{!isEmpty(footerMenuItems) && isArray(footerMenuItems) ? (
 								<ul className={`bottom-menu md:opacity-100 transition-all duration-500 ease-in-out opacity-${isOpen1 ? '100' : '0'} transform ${isOpen1 ? ' translate-y-0 border-t border-victoria-800 p-2' : '-translate-y-2'}`} style={{ maxHeight: isOpen1 ? '1000px' : '0' }}>
-									{footerMenuItems.map(menuItem => (
-										<li key={menuItem?.ID}>
-											<Link href={getPathNameFromUrl(menuItem?.url ?? '') || '/'} dangerouslySetInnerHTML={{ __html: menuItem.title }} className='relative transition-all duration-500 ease hover:text-victoria-800 hover:pl-5 hover:font-medium before:content-["\f061"] before:left-[-15px] hover:before:left-0 before:absolute before:opacity-0 hover:before:opacity-100 before:transition-all before:duration-500 before:ease' />
-										</li>
-									))}
+									{footerMenuItems.map(menuItem => {
+										if (menuItem?.classes == 'external') {
+											return (<li key={menuItem?.ID}>
+												<Link href={menuItem?.url ?? ''} target="_blank" dangerouslySetInnerHTML={{ __html: menuItem.title }} className='relative transition-all duration-500 ease hover:text-victoria-800 hover:pl-5 hover:font-medium  before:left-[-15px] hover:before:left-0 before:absolute before:opacity-0 hover:before:opacity-100 before:transition-all before:duration-500 before:ease' />
+											</li>)
+										}
+										else {
+											var menu_slug = getPathNameFromUrl(menuItem?.url ?? '') || '/';
+
+											return (<li key={menuItem?.ID}>
+												<Link href={menu_slug} dangerouslySetInnerHTML={{ __html: menuItem.title }} className={`relative transition-all duration-500 ease hover:text-victoria-800 hover:pl-5 hover:font-medium before:left-[-15px] hover:before:left-0 before:absolute before:opacity-0 hover:before:opacity-100 before:transition-all before:duration-500 before:ease ${menu_slug == pageslug ? 'text-victoria-800 font-medium' : ''}`} />
+											</li>);
+										}
+									}
+									)}
 								</ul>
 							) : null}
 						</div>
@@ -126,11 +138,26 @@ const Footer = ({ footer, header }) => {
 							</h2>
 							{!isEmpty(footerMenuItems2) && isArray(footerMenuItems2) ? (
 								<ul className={`bottom-menu md:opacity-100 transition-all duration-500 ease-in-out opacity-${isOpen2 ? '100' : '0'} transform ${isOpen2 ? ' translate-y-0 border-t border-victoria-800 p-2' : '-translate-y-2'}`} style={{ maxHeight: isOpen2 ? '1000px' : '0' }}>
-									{footerMenuItems2.map(menuItem => (
-										<li key={menuItem?.ID}>
-											<Link href={getPathNameFromUrl(menuItem?.url ?? '') || '/'} dangerouslySetInnerHTML={{ __html: menuItem.title }} className='relative transition-all duration-500 ease hover:text-victoria-800 hover:pl-5 hover:font-medium before:content-["\f061"] before:left-[-15px] hover:before:left-0 before:absolute before:opacity-0 hover:before:opacity-100 before:transition-all before:duration-500 before:ease' />
-										</li>
-									))}
+									{footerMenuItems2.map(menuItem => {
+										var menu_slug = getPathNameFromUrl(menuItem?.url ?? '') || '/';
+										var clsActive = '';
+										if (menu_slug == pageslug) {
+											clsActive = 'text-victoria-800 font-medium';
+										}
+										if (menuItem.classes == 'cat') {
+											pageslug = pageslug.replace("/cat?sname=", "/");
+											if (menu_slug == pageslug) {
+												clsActive = 'text-victoria-800 font-medium';
+											}
+										}
+										return (<li key={menuItem?.ID}>
+											{menuItem.classes == 'cat' ?
+												<Link href={!WEB_DEVICE ? '/cat?sname=' + getPathNameFromUrl(menuItem?.url ?? '').replaceAll('/', '') : '/c' + getPathNameFromUrl(menuItem?.url ?? '')} dangerouslySetInnerHTML={{ __html: menuItem.title }} className={'relative transition-all duration-500 ease hover:text-victoria-800 hover:pl-5 hover:font-medium  before:left-[-15px] hover:before:left-0 before:absolute before:opacity-0 hover:before:opacity-100 before:transition-all before:duration-500 before:ease ' + clsActive} />
+												:
+												<Link href={menu_slug} dangerouslySetInnerHTML={{ __html: menuItem.title }} className={'relative transition-all duration-500 ease hover:text-victoria-800 hover:pl-5 hover:font-medium  before:left-[-15px] hover:before:left-0 before:absolute before:opacity-0 hover:before:opacity-100 before:transition-all before:duration-500 before:ease ' + clsActive} />
+											}
+										</li>)
+									})}
 								</ul>
 							) : null}
 						</div>
@@ -141,11 +168,23 @@ const Footer = ({ footer, header }) => {
 							</h2>
 							{!isEmpty(footerMenuItems3) && isArray(footerMenuItems3) ? (
 								<ul className={`bottom-menu md:opacity-100 transition-all duration-500 ease-in-out opacity-${isOpen3 ? '100' : '0'} transform ${isOpen3 ? ' translate-y-0 border-t border-victoria-800 p-2' : '-translate-y-2'}`} style={{ maxHeight: isOpen3 ? '1000px' : '0' }}>
-									{footerMenuItems3.map(menuItem => (
-										<li key={menuItem?.ID}>
-											<Link href={getPathNameFromUrl(menuItem?.url ?? '') || '/'} dangerouslySetInnerHTML={{ __html: menuItem.title }} className='relative transition-all duration-500 ease hover:text-victoria-800 hover:pl-5 hover:font-medium before:content-["\f061"] before:left-[-15px] hover:before:left-0 before:absolute before:opacity-0 hover:before:opacity-100 before:transition-all before:duration-500 before:ease' />
-										</li>
-									))}
+									{footerMenuItems3.map(menuItem => {
+										if (menuItem?.classes == 'external') {
+											return (<li key={menuItem?.ID}>
+												<Link href={menuItem?.url ?? ''} target="_blank" dangerouslySetInnerHTML={{ __html: menuItem.title }} className='relative transition-all duration-500 ease hover:text-victoria-800 hover:pl-5 hover:font-medium before:left-[-15px] hover:before:left-0 before:absolute before:opacity-0 hover:before:opacity-100 before:transition-all before:duration-500 before:ease' />
+											</li>)
+										}
+										else {
+											var menu_slug = getPathNameFromUrl(menuItem?.url ?? '') || '/';
+											var clsActive = '';
+											if (menu_slug == pageslug) {
+												clsActive = 'text-victoria-800 font-medium';
+											}
+											return (<li key={menuItem?.ID}>
+												<Link href={menu_slug} dangerouslySetInnerHTML={{ __html: menuItem.title }} className={'relative transition-all duration-500 ease hover:text-victoria-800 hover:pl-5 hover:font-medium before:left-[-15px] hover:before:left-0 before:absolute before:opacity-0 hover:before:opacity-100 before:transition-all before:duration-500 before:ease ' + clsActive} />
+											</li>);
+										}
+									})}
 								</ul>
 							) : null}
 						</div>
@@ -281,6 +320,14 @@ const Footer = ({ footer, header }) => {
 				</div>
 			</footer>
 			<button onClick={scrollToTop} className={`fixed right-5 w-10 h-10 rounded bg-victoria-800 text-white transition-all duration-300 ease-in-out ${isVisible ? 'opacity-100 bottom-5' : 'opacity-0 -bottom-5'}`}><i className='fa fa-arrow-up'></i> </button>
+			<div className="hidden container mx-auto py-20">
+				<button
+					onClick={() => setModalOpen(true)}
+					className="rounded-full bg-victoria-800 py-3 px-6 font-medium text-white"
+				>
+					Open Modal
+				</button>
+			</div>
 			<section className='home-auto-popup'>
 				{modalOpen && (
 					<div className="fixed z-20 top-0 left-0 flex h-full min-h-screen w-full items-center justify-center bg-black bg-opacity-90 px-4 py-5">

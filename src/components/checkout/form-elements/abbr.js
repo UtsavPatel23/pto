@@ -1,11 +1,11 @@
 import PropTypes from 'prop-types';
 
-const Abbr = ({required}) => {
-	if ( !required ) {
+const Abbr = ({ required }) => {
+	if (!required) {
 		return null;
 	}
-	
-	return <abbr className="text-red-500" style={{textDecoration: 'none'}} title="required">*</abbr>
+
+	return <span className="text-red-600" title="required">*</span>
 }
 
 Abbr.propTypes = {

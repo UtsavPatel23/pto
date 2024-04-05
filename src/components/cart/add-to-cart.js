@@ -36,7 +36,7 @@ const AddToCart = ({ product, productCountQty, singleProduct = false }) => {
 		<>
 			{!(isAddedToCart && !loading && addcartMsg == '') ? (
 				<button
-					className={`text-white bg-victoria-700 duration-500 font-medium text-center hover:bg-white border hover:text-victoria-700 border-victoria-700 relative ${singleProduct ? 'w-32 p-2' : 'sm:w-32 sm:p-2'} ${addClass}`}
+					className={`text-white bg-victoria-700 duration-500 font-medium text-center hover:bg-white border hover:text-victoria-700 border-victoria-700 relative ${singleProduct ? 'w-28 sm:w-32 p-2' : 'sm:w-32 sm:p-2'} ${addClass}`}
 					onClick={() => addToCart(product?.id ?? 0, productCountQty, setCart, setIsAddedToCart, setLoading, setAddcartMsg)}
 					disabled={loading}
 				>

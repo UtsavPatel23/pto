@@ -20,6 +20,38 @@ import Link from 'next/link';
 
 import img1 from '../public/assets/img/home/sofas-sofa-bed.webp';
 
+import img2 from '../public/assets/img/home/1.webp';
+import img3 from '../public/assets/img/home/2.webp';
+import img4 from '../public/assets/img/home/3.webp';
+import img5 from '../public/assets/img/home/4.webp';
+import img6 from '../public/assets/img/home/5.webp';
+import img7 from '../public/assets/img/home/6.webp';
+
+import img8 from '../public/assets/img/home/delivery-truck.png';
+import img9 from '../public/assets/img/home/return.png';
+import img10 from '../public/assets/img/home/rewards.png';
+import img11 from '../public/assets/img/home/bnpl.png';
+import img12 from '../public/assets/img/home/7.webp';
+import img13 from '../public/assets/img/home/8.webp';
+
+import img14 from '../public/assets/img/home/9.webp';
+import img15 from '../public/assets/img/home/10.webp';
+import img16 from '../public/assets/img/home/11.webp';
+import img17 from '../public/assets/img/home/12.webp';
+import img18 from '../public/assets/img/home/13.webp';
+import img19 from '../public/assets/img/home/14.webp';
+import img20 from '../public/assets/img/home/15.webp';
+import img21 from '../public/assets/img/home/16.webp';
+import img22 from '../public/assets/img/home/17.webp';
+import img23 from '../public/assets/img/home/18.webp';
+import img24 from '../public/assets/img/home/19.webp';
+import img25 from '../public/assets/img/home/20.webp';
+
+import img26 from '../public/assets/img/home/21.webp';
+import img27 from '../public/assets/img/home/22.webp';
+import img28 from '../public/assets/img/home/23.webp';
+import img29 from '../public/assets/img/home/24.webp';
+
 export default function Home({ headerFooter, pageData }) {
 	const { slider_options } = pageData?.acf;
 	const [sliderList, setSliderList] = useState(null);
@@ -39,8 +71,8 @@ export default function Home({ headerFooter, pageData }) {
 		const { onClick } = props;
 		return (
 			<div className="absolute top-1/2 left-0 transform -translate-y-1/2 cursor-pointer z-10">
-				<p onClick={onClick} className="size-10 bg-victoria-700 inline-block flex items-center justify-center">
-					<i class="fa-light fa-arrow-left text-white fa-lg"></i>
+				<p onClick={onClick} className="size-10 bg-victoria-700 flex items-center justify-center">
+					<i className="fa-light fa-arrow-left text-white fa-lg"></i>
 				</p>
 			</div>
 		);
@@ -50,8 +82,8 @@ export default function Home({ headerFooter, pageData }) {
 		const { onClick } = props;
 		return (
 			<div className="absolute top-1/2 right-0 transform -translate-y-1/2 cursor-pointer z-10">
-				<p onClick={onClick} className="size-10 bg-victoria-700 inline-block flex items-center justify-center">
-					<i class="fa-light fa-arrow-right text-white fa-lg"></i>
+				<p onClick={onClick} className="size-10 bg-victoria-700 flex items-center justify-center">
+					<i className="fa-light fa-arrow-right text-white fa-lg"></i>
 				</p>
 			</div>
 		);
@@ -113,19 +145,18 @@ export default function Home({ headerFooter, pageData }) {
 			{(() => {
 				return (slider_options.length ? <>
 					<section className='top-banner w-full overflow-hidden'>
-						<Slider {...heroslider}>
-
-						</Slider>
+						<Slider {...heroslider}></Slider>
 					</section>
 				</> : null)
 			})()}
 
 			<section className='my-11'>
-				<div className='container'>
-					<h2 className='top-title font-jost text-center text-4xl font-semibold mb-8'>Title Title Title TitleTitle Title</h2>
+				<div className='md:max-w-[760px] lg:max-w-[1140px] xl:max-w-[1320px] mx-auto px-3'>
+					<h2 className="relative pb-2 text-center font-jost text-2xl md:text-3xl lg:text-4xl font-semibold mb-5 title-border">
+						Title Title Title TitleTitle Title</h2>
 					<div className='grid grid-cols-2 lg:grid-cols-4 gap-2 gap-y-3 sm:gap-4'>
 						<div className='hover:-translate-y-2 transition-all duration-200'>
-							<Link href='' target='_blank'>
+							<Link href='' target='_self'>
 								<Image
 									src={img1}
 									alt="Category Image"
@@ -135,7 +166,7 @@ export default function Home({ headerFooter, pageData }) {
 							</Link>
 						</div>
 						<div className='hover:-translate-y-2 transition-all duration-200'>
-							<Link href='' target='_blank'>
+							<Link href='' target='_self'>
 								<Image
 									src={img1}
 									alt="Category Image"
@@ -145,7 +176,7 @@ export default function Home({ headerFooter, pageData }) {
 							</Link>
 						</div>
 						<div className='hover:-translate-y-2 transition-all duration-200'>
-							<Link href='' target='_blank'>
+							<Link href='' target='_self'>
 								<Image
 									src={img1}
 									alt="Category Image"
@@ -155,7 +186,7 @@ export default function Home({ headerFooter, pageData }) {
 							</Link>
 						</div>
 						<div className='hover:-translate-y-2 transition-all duration-200'>
-							<Link href='' target='_blank'>
+							<Link href='' target='_self'>
 								<Image
 									src={img1}
 									alt="Category Image"
@@ -165,7 +196,7 @@ export default function Home({ headerFooter, pageData }) {
 							</Link>
 						</div>
 						<div className='hover:-translate-y-2 transition-all duration-200'>
-							<Link href='' target='_blank'>
+							<Link href='' target='_self'>
 								<Image
 									src={img1}
 									alt="Category Image"
@@ -175,7 +206,7 @@ export default function Home({ headerFooter, pageData }) {
 							</Link>
 						</div>
 						<div className='hover:-translate-y-2 transition-all duration-200'>
-							<Link href='' target='_blank'>
+							<Link href='' target='_self'>
 								<Image
 									src={img1}
 									alt="Category Image"
@@ -185,7 +216,7 @@ export default function Home({ headerFooter, pageData }) {
 							</Link>
 						</div>
 						<div className='hover:-translate-y-2 transition-all duration-200'>
-							<Link href='' target='_blank'>
+							<Link href='' target='_self'>
 								<Image
 									src={img1}
 									alt="Category Image"
@@ -195,7 +226,7 @@ export default function Home({ headerFooter, pageData }) {
 							</Link>
 						</div>
 						<div className='hover:-translate-y-2 transition-all duration-200'>
-							<Link href='' target='_blank'>
+							<Link href='' target='_self'>
 								<Image
 									src={img1}
 									alt="Category Image"
@@ -203,6 +234,522 @@ export default function Home({ headerFooter, pageData }) {
 									height={400}
 								/>
 							</Link>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<section className='my-11'>
+				<div className='md:max-w-[760px] lg:max-w-[1140px] xl:max-w-[1320px] mx-auto px-3'>
+					<h2 className="relative pb-2 text-center font-jost text-2xl md:text-3xl lg:text-4xl font-semibold mb-5 title-border">Elevate Your Game With Discounted Pool Tables!</h2>
+					<div className='grid sm:grid-cols-2 lg:grid-cols-3 gap-2 gap-y-3 sm:gap-4'>
+						<div className='relative shadow-full img-boxani'>
+							<Link href='' target='_self'>
+								<Image
+									src={img2}
+									alt="Category Image"
+									width={440}
+									height={330}
+								/>
+							</Link>
+						</div>
+						<div className='relative shadow-full img-boxani'>
+							<Link href='' target='_self'>
+								<Image
+									src={img3}
+									alt="Category Image"
+									width={440}
+									height={330}
+								/>
+							</Link>
+						</div>
+						<div className='relative shadow-full img-boxani'>
+							<Link href='' target='_self'>
+								<Image
+									src={img4}
+									alt="Category Image"
+									width={440}
+									height={330}
+								/>
+							</Link>
+						</div>
+						<div className='relative shadow-full img-boxani'>
+							<Link href='' target='_self'>
+								<Image
+									src={img5}
+									alt="Category Image"
+									width={440}
+									height={330}
+								/>
+							</Link>
+						</div>
+						<div className='relative shadow-full img-boxani'>
+							<Link href='' target='_self'>
+								<Image
+									src={img6}
+									alt="Category Image"
+									width={440}
+									height={330}
+								/>
+							</Link>
+						</div>
+						<div className='relative shadow-full img-boxani'>
+							<Link href='' target='_self'>
+								<Image
+									src={img7}
+									alt="Category Image"
+									width={440}
+									height={330}
+								/>
+							</Link>
+						</div>
+					</div>
+					<div className='text-center'>
+						<Link href='/c' className='mt-5 inline-block w-44 p-3 text-white bg-victoria-700 duration-500 font-medium text-center hover:bg-white border hover:text-victoria-700 border-victoria-700'>
+							View All
+						</Link>
+					</div>
+				</div>
+			</section>
+
+			<section className='my-11'>
+				<div className='md:max-w-[760px] lg:max-w-[1140px] xl:max-w-[1320px] mx-auto px-3'>
+					<div className='grid sm:grid-cols-2 lg:grid-cols-4 gap-2 gap-y-3 sm:gap-4'>
+						<div className='border border-victoria-700 p-2 rounded flex gap-3 items-center group'>
+							<Image
+								src={img8}
+								alt="Free Shipping"
+								width={60}
+								height={60}
+								className='group-hover:rotate-360 transition-all duration-500 ease'
+							/>
+							<div>
+								<h3 className="font-semibold">Free Shipping</h3>
+								<p>For selected Products</p>
+							</div>
+						</div>
+						<div className='border border-victoria-700 p-2 rounded'>
+							<Link href='/warranty-return' className=' flex gap-3 items-center group'>
+								<Image
+									src={img9}
+									alt="14 Days Return"
+									width={60}
+									height={60}
+									className='group-hover:rotate-360 transition-all duration-500 ease'
+								/>
+								<div>
+									<h3 className="font-semibold">14 Days Return</h3>
+									<p>Please check our return policy</p>
+								</div>
+							</Link>
+						</div>
+						<div className='border border-victoria-700 p-2 rounded'>
+							<Link href='/rewards-program' className=' flex gap-3 items-center group'>
+								<Image
+									src={img10}
+									alt="Rewards Program"
+									width={60}
+									height={60}
+									className='group-hover:rotate-360 transition-all duration-500 ease'
+								/>
+								<div>
+									<h3 className="font-semibold">Rewards Program</h3>
+									<p>Sign up to get Instant rewards</p>
+								</div>
+							</Link>
+						</div>
+						<div className='border border-victoria-700 p-2 rounded flex gap-3 items-center group'>
+							<Image
+								src={img11}
+								alt="Multiple BNPL option"
+								width={60}
+								height={60}
+								className='group-hover:rotate-360 transition-all duration-500 ease'
+							/>
+							<div>
+								<h3 className="font-semibold">Multiple BNPL option</h3>
+								<p>BNPL Payment Methods</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+
+
+			<section className='my-11'>
+				<div className='md:max-w-[760px] lg:max-w-[1140px] xl:max-w-[1320px] mx-auto px-3'>
+					<h2 className="relative pb-2 text-center font-jost text-2xl md:text-3xl lg:text-4xl font-semibold mb-5 title-border">Choose Your Preferred Style From Our Huge Varieties Of Bikes </h2>
+					<div className='grid sm:grid-cols-2 gap-2 gap-y-3 sm:gap-4'>
+						<div className='relative shadow-full img-boxani'>
+							<Link href='' target='_self'>
+								<Image
+									src={img12}
+									alt="Category Image"
+									width={660}
+									height={450}
+								/>
+							</Link>
+						</div>
+						<div className='relative shadow-full img-boxani'>
+							<Link href='' target='_self'>
+								<Image
+									src={img13}
+									alt="Category Image"
+									width={660}
+									height={450}
+								/>
+							</Link>
+						</div>
+					</div>
+					<div className='grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-2 gap-y-3 sm:gap-4 mt-10'>
+						<div className='relative img-boxani'>
+							<Link href='' target='_self'>
+								<Image
+									src={img14}
+									alt="Category Image"
+									width={220}
+									height={220}
+								/>
+							</Link>
+						</div>
+						<div className='relative img-boxani'>
+							<Link href='' target='_self'>
+								<Image
+									src={img15}
+									alt="Category Image"
+									width={220}
+									height={220}
+								/>
+							</Link>
+						</div>
+						<div className='relative img-boxani'>
+							<Link href='' target='_self'>
+								<Image
+									src={img16}
+									alt="Category Image"
+									width={220}
+									height={220}
+								/>
+							</Link>
+						</div>
+						<div className='relative img-boxani'>
+							<Link href='' target='_self'>
+								<Image
+									src={img17}
+									alt="Category Image"
+									width={220}
+									height={220}
+								/>
+							</Link>
+						</div>
+						<div className='relative img-boxani'>
+							<Link href='' target='_self'>
+								<Image
+									src={img18}
+									alt="Category Image"
+									width={220}
+									height={220}
+								/>
+							</Link>
+						</div>
+						<div className='relative img-boxani'>
+							<Link href='' target='_self'>
+								<Image
+									src={img19}
+									alt="Category Image"
+									width={220}
+									height={220}
+								/>
+							</Link>
+						</div>
+						<div className='relative img-boxani'>
+							<Link href='' target='_self'>
+								<Image
+									src={img20}
+									alt="Category Image"
+									width={220}
+									height={220}
+								/>
+							</Link>
+						</div>
+						<div className='relative img-boxani'>
+							<Link href='' target='_self'>
+								<Image
+									src={img21}
+									alt="Category Image"
+									width={220}
+									height={220}
+								/>
+							</Link>
+						</div>
+						<div className='relative img-boxani'>
+							<Link href='' target='_self'>
+								<Image
+									src={img22}
+									alt="Category Image"
+									width={220}
+									height={220}
+								/>
+							</Link>
+						</div>
+						<div className='relative img-boxani'>
+							<Link href='' target='_self'>
+								<Image
+									src={img23}
+									alt="Category Image"
+									width={220}
+									height={220}
+								/>
+							</Link>
+						</div>
+						<div className='relative img-boxani'>
+							<Link href='' target='_self'>
+								<Image
+									src={img24}
+									alt="Category Image"
+									width={220}
+									height={220}
+								/>
+							</Link>
+						</div>
+						<div className='relative img-boxani'>
+							<Link href='' target='_self'>
+								<Image
+									src={img25}
+									alt="Category Image"
+									width={220}
+									height={220}
+								/>
+							</Link>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<section className='my-11'>
+				<div className='md:max-w-[760px] lg:max-w-[1140px] xl:max-w-[1320px] mx-auto px-3'>
+					<h2 className="relative pb-2 text-center font-jost text-2xl md:text-3xl lg:text-4xl font-semibold mb-5 title-border">Choose Your Discover More Categories</h2>
+					<div className='grid grid-cols-2 md:grid-cols-4 gap-2 gap-y-3 sm:gap-4'>
+						<div className='relative shadow-full img-boxani'>
+							<Link href='' target='_self'>
+								<Image
+									src={img26}
+									alt="Category Image"
+									width={330}
+									height={400}
+								/>
+							</Link>
+						</div>
+						<div className='relative shadow-full img-boxani'>
+							<Link href='' target='_self'>
+								<Image
+									src={img27}
+									alt="Category Image"
+									width={330}
+									height={400}
+								/>
+							</Link>
+						</div>
+						<div className='relative shadow-full img-boxani'>
+							<Link href='' target='_self'>
+								<Image
+									src={img28}
+									alt="Category Image"
+									width={330}
+									height={400}
+								/>
+							</Link>
+						</div>
+						<div className='relative shadow-full img-boxani'>
+							<Link href='' target='_self'>
+								<Image
+									src={img29}
+									alt="Category Image"
+									width={330}
+									height={400}
+								/>
+							</Link>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<section className='my-11'>
+				<div className='md:max-w-[760px] lg:max-w-[1140px] xl:max-w-[1320px] mx-auto px-3'>
+					<h2 className="relative pb-2 text-center font-jost text-2xl md:text-3xl lg:text-4xl font-semibold mb-5 title-border">New Arrivals Slider</h2>
+					<div className='grid sm:grid-cols-2 md:grid-cols-4 gap-2 gap-y-3 sm:gap-4'>
+						<div className='relative shadow-full img-boxani'>
+							<Link href='' target='_self'>
+								<Image
+									src={img26}
+									alt="Category Image"
+									width={330}
+									height={400}
+								/>
+							</Link>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<section className='my-11'>
+				<div className='md:max-w-[760px] lg:max-w-[1140px] xl:max-w-[1320px] mx-auto px-3'>
+					<h2 className="relative pb-2 text-center font-jost text-2xl md:text-3xl lg:text-4xl font-semibold mb-5 title-border">Free Shipping Slider</h2>
+					<div className='grid sm:grid-cols-2 md:grid-cols-4 gap-2 gap-y-3 sm:gap-4'>
+						<div className='relative shadow-full img-boxani'>
+							<Link href='' target='_self'>
+								<Image
+									src={img26}
+									alt="Category Image"
+									width={330}
+									height={400}
+								/>
+							</Link>
+						</div>
+					</div>
+				</div>
+			</section>
+			<section className="overflow-hidden pt-20 pb-12 lg:pt-[120px] lg:pb-[90px]">
+				<div className="container mx-auto">
+					<div className="-mx-4 flex flex-wrap items-center justify-between">
+						<div className="w-full px-4 lg:w-6/12">
+							<div className="-mx-3 flex items-center sm:-mx-4">
+								<div className="w-full px-3 sm:px-4 xl:w-1/2">
+									<div className="py-3 sm:py-4">
+										<Image
+											src={img26}
+											alt="Category Image"
+											width={330}
+											height={400}
+											className="w-full rounded"
+										/>
+									</div>
+									<div className="py-3 sm:py-4">
+										<Image
+											src={img26}
+											alt="Category Image"
+											width={330}
+											height={400}
+											className="w-full rounded"
+										/>
+									</div>
+								</div>
+								<div className="w-full px-3 sm:px-4 xl:w-1/2">
+									<div className="relative z-10 my-4">
+										<Image
+											src={img26}
+											alt="Category Image"
+											width={330}
+											height={400}
+											className="w-full rounded"
+										/>
+										<span className="absolute -right-7 -bottom-7 z-[-1]">
+											<svg width="134" height="106" viewBox="0 0 134 106" fill="none" xmlns="http://www.w3.org/2000/svg">
+												<circle cx="1.66667" cy="104" r="1.66667" transform="rotate(-90 1.66667 104)" fill="#3056D3" />
+												<circle cx="16.3333" cy="104" r="1.66667" transform="rotate(-90 16.3333 104)" fill="#3056D3" />
+												<circle cx="31" cy="104" r="1.66667" transform="rotate(-90 31 104)" fill="#3056D3" />
+												<circle cx="45.6667" cy="104" r="1.66667" transform="rotate(-90 45.6667 104)" fill="#3056D3" />
+												<circle cx="60.3334" cy="104" r="1.66667" transform="rotate(-90 60.3334 104)" fill="#3056D3" />
+												<circle cx="88.6667" cy="104" r="1.66667" transform="rotate(-90 88.6667 104)" fill="#3056D3" />
+												<circle cx="117.667" cy="104" r="1.66667" transform="rotate(-90 117.667 104)" fill="#3056D3" />
+												<circle cx="74.6667" cy="104" r="1.66667" transform="rotate(-90 74.6667 104)" fill="#3056D3" />
+												<circle cx="103" cy="104" r="1.66667" transform="rotate(-90 103 104)" fill="#3056D3" />
+												<circle cx="132" cy="104" r="1.66667" transform="rotate(-90 132 104)" fill="#3056D3" />
+												<circle cx="1.66667" cy="89.3333" r="1.66667" transform="rotate(-90 1.66667 89.3333)" fill="#3056D3" />
+												<circle cx="16.3333" cy="89.3333" r="1.66667" transform="rotate(-90 16.3333 89.3333)" fill="#3056D3" />
+												<circle cx="31" cy="89.3333" r="1.66667" transform="rotate(-90 31 89.3333)" fill="#3056D3" />
+												<circle cx="45.6667" cy="89.3333" r="1.66667" transform="rotate(-90 45.6667 89.3333)" fill="#3056D3" />
+												<circle cx="60.3333" cy="89.3338" r="1.66667" transform="rotate(-90 60.3333 89.3338)" fill="#3056D3" />
+												<circle cx="88.6667" cy="89.3338" r="1.66667" transform="rotate(-90 88.6667 89.3338)" fill="#3056D3" />
+												<circle cx="117.667" cy="89.3338" r="1.66667" transform="rotate(-90 117.667 89.3338)" fill="#3056D3" />
+												<circle cx="74.6667" cy="89.3338" r="1.66667" transform="rotate(-90 74.6667 89.3338)" fill="#3056D3" />
+												<circle cx="103" cy="89.3338" r="1.66667" transform="rotate(-90 103 89.3338)" fill="#3056D3" />
+												<circle cx="132" cy="89.3338" r="1.66667" transform="rotate(-90 132 89.3338)" fill="#3056D3" />
+												<circle cx="1.66667" cy="74.6673" r="1.66667" transform="rotate(-90 1.66667 74.6673)" fill="#3056D3" />
+												<circle cx="1.66667" cy="31.0003" r="1.66667" transform="rotate(-90 1.66667 31.0003)" fill="#3056D3" />
+												<circle cx="16.3333" cy="74.6668" r="1.66667" transform="rotate(-90 16.3333 74.6668)" fill="#3056D3" />
+												<circle cx="16.3333" cy="31.0003" r="1.66667" transform="rotate(-90 16.3333 31.0003)" fill="#3056D3" />
+												<circle cx="31" cy="74.6668" r="1.66667" transform="rotate(-90 31 74.6668)" fill="#3056D3" />
+												<circle cx="31" cy="31.0003" r="1.66667" transform="rotate(-90 31 31.0003)" fill="#3056D3" />
+												<circle cx="45.6667" cy="74.6668" r="1.66667" transform="rotate(-90 45.6667 74.6668)" fill="#3056D3" />
+												<circle cx="45.6667" cy="31.0003" r="1.66667" transform="rotate(-90 45.6667 31.0003)" fill="#3056D3" />
+												<circle cx="60.3333" cy="74.6668" r="1.66667" transform="rotate(-90 60.3333 74.6668)" fill="#3056D3" />
+												<circle cx="60.3333" cy="30.9998" r="1.66667" transform="rotate(-90 60.3333 30.9998)" fill="#3056D3" />
+												<circle cx="88.6667" cy="74.6668" r="1.66667" transform="rotate(-90 88.6667 74.6668)" fill="#3056D3" />
+												<circle cx="88.6667" cy="30.9998" r="1.66667" transform="rotate(-90 88.6667 30.9998)" fill="#3056D3" />
+												<circle cx="117.667" cy="74.6668" r="1.66667" transform="rotate(-90 117.667 74.6668)" fill="#3056D3" />
+												<circle cx="117.667" cy="30.9998" r="1.66667" transform="rotate(-90 117.667 30.9998)" fill="#3056D3" />
+												<circle cx="74.6667" cy="74.6668" r="1.66667" transform="rotate(-90 74.6667 74.6668)" fill="#3056D3" />
+												<circle cx="74.6667" cy="30.9998" r="1.66667" transform="rotate(-90 74.6667 30.9998)" fill="#3056D3" />
+												<circle cx="103" cy="74.6668" r="1.66667" transform="rotate(-90 103 74.6668)" fill="#3056D3" />
+												<circle cx="103" cy="30.9998" r="1.66667" transform="rotate(-90 103 30.9998)" fill="#3056D3" />
+												<circle cx="132" cy="74.6668" r="1.66667" transform="rotate(-90 132 74.6668)" fill="#3056D3" />
+												<circle cx="132" cy="30.9998" r="1.66667" transform="rotate(-90 132 30.9998)" fill="#3056D3" />
+												<circle cx="1.66667" cy="60.0003" r="1.66667" transform="rotate(-90 1.66667 60.0003)" fill="#3056D3" />
+												<circle cx="1.66667" cy="16.3333" r="1.66667" transform="rotate(-90 1.66667 16.3333)" fill="#3056D3" />
+												<circle cx="16.3333" cy="60.0003" r="1.66667" transform="rotate(-90 16.3333 60.0003)" fill="#3056D3" />
+												<circle cx="16.3333" cy="16.3333" r="1.66667" transform="rotate(-90 16.3333 16.3333)" fill="#3056D3" />
+												<circle cx="31" cy="60.0003" r="1.66667" transform="rotate(-90 31 60.0003)" fill="#3056D3" />
+												<circle cx="31" cy="16.3333" r="1.66667" transform="rotate(-90 31 16.3333)" fill="#3056D3" />
+												<circle cx="45.6667" cy="60.0003" r="1.66667" transform="rotate(-90 45.6667 60.0003)" fill="#3056D3" />
+												<circle cx="45.6667" cy="16.3333" r="1.66667" transform="rotate(-90 45.6667 16.3333)" fill="#3056D3" />
+												<circle cx="60.3333" cy="60.0003" r="1.66667" transform="rotate(-90 60.3333 60.0003)" fill="#3056D3" />
+												<circle cx="60.3333" cy="16.3333" r="1.66667" transform="rotate(-90 60.3333 16.3333)" fill="#3056D3" />
+												<circle cx="88.6667" cy="60.0003" r="1.66667" transform="rotate(-90 88.6667 60.0003)" fill="#3056D3" />
+												<circle cx="88.6667" cy="16.3333" r="1.66667" transform="rotate(-90 88.6667 16.3333)" fill="#3056D3" />
+												<circle cx="117.667" cy="60.0003" r="1.66667" transform="rotate(-90 117.667 60.0003)" fill="#3056D3" />
+												<circle cx="117.667" cy="16.3333" r="1.66667" transform="rotate(-90 117.667 16.3333)" fill="#3056D3" />
+												<circle cx="74.6667" cy="60.0003" r="1.66667" transform="rotate(-90 74.6667 60.0003)" fill="#3056D3" />
+												<circle cx="74.6667" cy="16.3333" r="1.66667" transform="rotate(-90 74.6667 16.3333)" fill="#3056D3" />
+												<circle cx="103" cy="60.0003" r="1.66667" transform="rotate(-90 103 60.0003)" fill="#3056D3" />
+												<circle cx="103" cy="16.3333" r="1.66667" transform="rotate(-90 103 16.3333)" fill="#3056D3" />
+												<circle cx="132" cy="60.0003" r="1.66667" transform="rotate(-90 132 60.0003)" fill="#3056D3" />
+												<circle cx="132" cy="16.3333" r="1.66667" transform="rotate(-90 132 16.3333)" fill="#3056D3" />
+												<circle cx="1.66667" cy="45.3333" r="1.66667" transform="rotate(-90 1.66667 45.3333)" fill="#3056D3" />
+												<circle cx="1.66667" cy="1.66683" r="1.66667" transform="rotate(-90 1.66667 1.66683)" fill="#3056D3" />
+												<circle cx="16.3333" cy="45.3333" r="1.66667" transform="rotate(-90 16.3333 45.3333)" fill="#3056D3" />
+												<circle cx="16.3333" cy="1.66683" r="1.66667" transform="rotate(-90 16.3333 1.66683)" fill="#3056D3" />
+												<circle cx="31" cy="45.3333" r="1.66667" transform="rotate(-90 31 45.3333)" fill="#3056D3" />
+												<circle cx="31" cy="1.66683" r="1.66667" transform="rotate(-90 31 1.66683)" fill="#3056D3" />
+												<circle cx="45.6667" cy="45.3333" r="1.66667" transform="rotate(-90 45.6667 45.3333)" fill="#3056D3" />
+												<circle cx="45.6667" cy="1.66683" r="1.66667" transform="rotate(-90 45.6667 1.66683)" fill="#3056D3" />
+												<circle cx="60.3333" cy="45.3338" r="1.66667" transform="rotate(-90 60.3333 45.3338)" fill="#3056D3" />
+												<circle cx="60.3333" cy="1.66683" r="1.66667" transform="rotate(-90 60.3333 1.66683)" fill="#3056D3" />
+												<circle cx="88.6667" cy="45.3338" r="1.66667" transform="rotate(-90 88.6667 45.3338)" fill="#3056D3" />
+												<circle cx="88.6667" cy="1.66683" r="1.66667" transform="rotate(-90 88.6667 1.66683)" fill="#3056D3" />
+												<circle cx="117.667" cy="45.3338" r="1.66667" transform="rotate(-90 117.667 45.3338)" fill="#3056D3" />
+												<circle cx="117.667" cy="1.66683" r="1.66667" transform="rotate(-90 117.667 1.66683)" fill="#3056D3" />
+												<circle cx="74.6667" cy="45.3338" r="1.66667" transform="rotate(-90 74.6667 45.3338)" fill="#3056D3" />
+												<circle cx="74.6667" cy="1.66683" r="1.66667" transform="rotate(-90 74.6667 1.66683)" fill="#3056D3" />
+												<circle cx="103" cy="45.3338" r="1.66667" transform="rotate(-90 103 45.3338)" fill="#3056D3" />
+												<circle cx="103" cy="1.66683" r="1.66667" transform="rotate(-90 103 1.66683)" fill="#3056D3" />
+												<circle cx="132" cy="45.3338" r="1.66667" transform="rotate(-90 132 45.3338)" fill="#3056D3" />
+												<circle cx="132" cy="1.66683" r="1.66667" transform="rotate(-90 132 1.66683)" fill="#3056D3" />
+											</svg>
+										</span>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div className="w-full px-4 lg:w-1/2 xl:w-5/12">
+							<div className="mt-10 lg:mt-0">
+								<h2 className="mb-8 text-3xl font-bold text-dark sm:text-4xl">
+									Make your customers happy by giving services.
+								</h2>
+								<p className="mb-8 text-base text-body-color">
+									It is a long established fact that a reader will be distracted
+									by the readable content of a page when looking at its layout.
+									The point of using Lorem Ipsum is that it has a more-or-less.
+								</p>
+								<p className="mb-12 text-base text-body-color">
+									A domain name is one of the first steps to establishing your
+									brand. Secure a consistent brand image with a domain name that
+									matches your business.
+								</p>
+								<Link href="javascript:void(0)" className='mt-5 inline-block w-44 p-3 text-white bg-victoria-700 duration-500 font-medium text-center hover:bg-white border hover:text-victoria-700 border-victoria-700'>
+									View All
+								</Link>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -417,6 +964,7 @@ export default function Home({ headerFooter, pageData }) {
 					</div>
 				</div>
 			</section>
+
 		</Layout>
 	)
 }

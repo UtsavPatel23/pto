@@ -27,13 +27,13 @@ const BuyNow = ({ product, productCountQty }) => {
 	return (
 		<>
 			<button
-				className='w-32 p-2 text-white bg-victoria-700 duration-500 font-medium text-center hover:bg-white border hover:text-victoria-700 border-victoria-700 relative'
+				className='w-28 sm:w-32 p-2 text-white bg-victoria-700 duration-500 font-medium text-center hover:bg-white border hover:text-victoria-700 border-victoria-700 relative'
 				onClick={() => addToCart(product?.id ?? 0, productCountQty, setCart, setIsAddedToCart, setLoading, setAddcartMsg)}
 				disabled={loading}
 			>
 				{loading ?
 					<>
-						<span className='size-10 sm:size-full bg-white sm:bg-transparent inline-block grid place-content-center'>
+						<span className='size-10 sm:size-full bg-white sm:bg-transparent grid place-content-center'>
 							<span className='wishloader mx-auto'></span>
 						</span>
 					</>

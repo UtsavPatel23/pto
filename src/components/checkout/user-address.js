@@ -4,21 +4,19 @@ import StateSelection from "./states-selection";
 import InputField from "./form-elements/input-field";
 import SuburbSelection from './suburb-selection';
 
-const Address = ({suburbs,input, countries, states, handleOnChange, isFetchingStates, isShipping,isFetchingSuburb}) => {
-	
-	const {errors} = input || {};
-	if(!suburbs.length && input?.postcode)
-	{
-		if(isShipping)
-		{
+const Address = ({ suburbs, input, countries, states, handleOnChange, isFetchingStates, isShipping, isFetchingSuburb }) => {
+
+	const { errors } = input || {};
+	if (!suburbs.length && input?.postcode) {
+		if (isShipping) {
 			document.getElementById("postcode_shipping").focus();
-		}else{
-			document.getElementById("postcode_billing").focus();		
+		} else {
+			document.getElementById("postcode_billing").focus();
 		}
 	}
 	return (
 		<>
-			<div className="flex flex-wrap overflow-hidden sm:-mx-3">
+			<div className="grid grid-cols-1 md:grid-cols-2 gap-3">
 				<InputField
 					name="firstName"
 					inputValue={input?.firstName}
@@ -27,7 +25,6 @@ const Address = ({suburbs,input, countries, states, handleOnChange, isFetchingSt
 					label="First name"
 					errors={errors}
 					isShipping={isShipping}
-					containerClassNames="w-full overflow-hidden sm:my-2 sm:px-2 md:w-1/2"
 				/>
 				<InputField
 					name="lastName"
@@ -37,7 +34,6 @@ const Address = ({suburbs,input, countries, states, handleOnChange, isFetchingSt
 					label="Last name"
 					errors={errors}
 					isShipping={isShipping}
-					containerClassNames="w-full overflow-hidden sm:my-2 sm:px-2 md:w-1/2"
 				/>
 			</div>
 			<InputField
@@ -47,7 +43,6 @@ const Address = ({suburbs,input, countries, states, handleOnChange, isFetchingSt
 				label="Company Name (Optional)"
 				errors={errors}
 				isShipping={isShipping}
-				containerClassNames="mb-4"
 			/>
 			{/* Country Selection*/}
 			<CountrySelection
@@ -65,7 +60,6 @@ const Address = ({suburbs,input, countries, states, handleOnChange, isFetchingSt
 				placeholder="House number and street name"
 				errors={errors}
 				isShipping={isShipping}
-				containerClassNames="mb-4"
 			/>
 			<InputField
 				name="address2"
@@ -75,20 +69,18 @@ const Address = ({suburbs,input, countries, states, handleOnChange, isFetchingSt
 				placeholder="Apartment floor unit building floor etc(optional)"
 				errors={errors}
 				isShipping={isShipping}
-				containerClassNames="mb-4"
 			/>
 			<InputField
-					name="postcode"
-					inputValue={input?.postcode}
-					required
-					handleOnChange={handleOnChange}
-					label="Post code"
-					errors={!suburbs.length && input?.postcode ?{
-						"postcode": "Enter valide postcode ",
-					} : errors}
-					isShipping={isShipping}
-					containerClassNames="mb-4"
-				/>
+				name="postcode"
+				inputValue={input?.postcode}
+				required
+				handleOnChange={handleOnChange}
+				label="Post code"
+				errors={!suburbs.length && input?.postcode ? {
+					"postcode": "Enter valide postcode ",
+				} : errors}
+				isShipping={isShipping}
+			/>
 			{/* Suburb */}
 			<SuburbSelection
 				input={input}
@@ -105,8 +97,6 @@ const Address = ({suburbs,input, countries, states, handleOnChange, isFetchingSt
 				isShipping={isShipping}
 				isFetchingStates={isFetchingStates}
 			/>
-			
-				
 			<InputField
 				name="phone"
 				inputValue={input?.phone}
@@ -115,20 +105,18 @@ const Address = ({suburbs,input, countries, states, handleOnChange, isFetchingSt
 				label="Phone"
 				errors={errors}
 				isShipping={isShipping}
-				containerClassNames="mb-4"
 			/>
-			{!isShipping?
-			<InputField
-				name="email"
-				type="email"
-				inputValue={input?.email}
-				required
-				handleOnChange={handleOnChange}
-				label="Email"
-				errors={errors}
-				isShipping={isShipping}
-				containerClassNames="mb-4"
-			/>:null}
+			{!isShipping ?
+				<InputField
+					name="email"
+					type="email"
+					inputValue={input?.email}
+					required
+					handleOnChange={handleOnChange}
+					label="Email"
+					errors={errors}
+					isShipping={isShipping}
+				/> : null}
 			{/*	@TODO Create an Account */}
 			{/*<div className="form-check">*/}
 			{/*	<label className="leading-7 text-sm text-gray-600" className="form-check-label">*/}

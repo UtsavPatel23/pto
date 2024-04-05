@@ -17,34 +17,39 @@ import Image from '../../src/components/image';
 import PostMeta from '../../src/components/post-meta';
 import Comments from '../../src/components/comments';
 
-const Post = ( { headerFooter, postData, commentsData } ) => {
+const Post = ({ headerFooter, postData, commentsData }) => {
 	const router = useRouter();
 
 	/**
 	 * If the page is not yet generated, this will be displayed
 	 * initially until getStaticProps() finishes running
 	 */
-	if ( router.isFallback ) {
+	if (router.isFallback) {
 		return <div>Loading...</div>;
 	}
 
 	return (
-		<Layout headerFooter={ headerFooter || {} } seo={ postData?.yoast_head_json ?? {} }>
-			<div className="mb-8 w-4/5 m-auto">
-				<figure className="overflow-hidden mb-4">
-					<Image
-						sourceUrl={ postData?._embedded[ 'wp:featuredmedia' ]?.[ 0 ]?.source_url ?? '' }
-						title={ postData?.title?.rendered ?? '' }
-						width="600"
-						height="400"
-						layout="fill"
-						containerClassNames="w-full h-600px"
-					/>
-				</figure>
-				<PostMeta date={ getFormattedDate( postData?.date ?? '' ) } authorName={ postData?._embedded?.author?.[0]?.name ?? '' }/>
-				<h1 dangerouslySetInnerHTML={ { __html: sanitize( postData?.title?.rendered ?? '' ) } }/>
-				<div dangerouslySetInnerHTML={ { __html: sanitize( postData?.content?.rendered ?? '' ) } }/>
-				<Comments comments={ commentsData } postId={ postData?.id ?? '' }/>
+		<Layout headerFooter={headerFooter || {}} seo={postData?.yoast_head_json ?? {}}>
+			<div className='grid md:grid-cols-4 gap-5'>
+				<div className="md:col-span-3 blog-wrapper border border-gray-300">
+					<figure className="overflow-hidden mb-4">
+						<Image
+							sourceUrl={postData?._embedded['wp:featuredmedia']?.[0]?.source_url ?? ''}
+							title={postData?.title?.rendered ?? ''}
+							width="1150"
+							height="600"
+						/>
+					</figure>
+					<div className='p-4'>
+						<PostMeta date={getFormattedDate(postData?.date ?? '')} authorName={postData?._embedded?.author?.[0]?.name ?? ''} />
+						<h1 className='font-semibold text-2xl mb-2' dangerouslySetInnerHTML={{ __html: sanitize(postData?.title?.rendered ?? '') }} />
+						<div dangerouslySetInnerHTML={{ __html: sanitize(postData?.content?.rendered ?? '') }} />
+						<Comments comments={commentsData} postId={postData?.id ?? ''} />
+					</div>
+				</div>
+				<div className='border border-gray-300 bg-gray-100 p-3 rounded h-fit'>
+					<h5 className='font-semibold text-lg border-b border-gray-300 pb-2 mb-5'>Latest Post</h5>
+				</div>
 			</div>
 		</Layout>
 	);
@@ -52,10 +57,10 @@ const Post = ( { headerFooter, postData, commentsData } ) => {
 
 export default Post;
 
-export async function getStaticProps( { params } ) {
-	const { data: headerFooterData } = await axios.get( HEADER_FOOTER_ENDPOINT );
-	const postData = await getPost( params?.slug ?? '' );
-	const commentsData = await getComments( postData?.[0]?.id ?? 0 );
+export async function getStaticProps({ params }) {
+	const { data: headerFooterData } = await axios.get(HEADER_FOOTER_ENDPOINT);
+	const postData = await getPost(params?.slug ?? '');
+	const commentsData = await getComments(postData?.[0]?.id ?? 0);
 
 	const defaultProps = {
 		props: {
@@ -68,10 +73,10 @@ export async function getStaticProps( { params } ) {
 		 * if the data is changed, if it is changed then it will update the
 		 * static file inside .next folder with the new data, so that any 'SUBSEQUENT' requests should have updated data.
 		 */
-		
+
 	};
 
-	return handleRedirectsAndReturnData( defaultProps, postData );
+	return handleRedirectsAndReturnData(defaultProps, postData);
 }
 
 /**
@@ -95,12 +100,12 @@ export async function getStaticPaths() {
 	const { data: postsData } = await getPosts();
 
 	const pathsData = [];
-	
-	postsData?.posts_data.length && postsData?.posts_data.map( post => {
-		if ( ! isEmpty( post?.slug ) ) {
-			pathsData.push( { params: { slug: post?.slug } } );
+
+	postsData?.posts_data.length && postsData?.posts_data.map(post => {
+		if (!isEmpty(post?.slug)) {
+			pathsData.push({ params: { slug: post?.slug } });
 		}
-	} );
+	});
 
 	return {
 		paths: pathsData,

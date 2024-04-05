@@ -24,7 +24,7 @@ const Breadcrumbs = ({ pageData = '' }) => {
 			const pathArray = linkPath.map((path, i) => {
 				return { breadcrumb: path, href: '/' + linkPath.slice(0, i + 1).join('/') };
 			});
-			pathArray.splice(-1, 1)
+			if (pathArray[0]?.breadcrumb == 'c') { pathArray.splice(-1, 1) }
 			setBreadcrumbs(pathArray);
 		}
 	}, [router]);
@@ -47,8 +47,8 @@ const Breadcrumbs = ({ pageData = '' }) => {
 						return (
 							<li key={breadcrumb.href} className="relative flex items-center">
 								<i className="fa-regular fa-angle-right text-xl"></i>
-								<Link href={breadcrumb.href} className="flex h-10 items-center px-5 text-sm font-medium transition hover:text-victoria-800">
-									{convertBreadcrumb(breadcrumb.breadcrumb)}
+								<Link href={breadcrumb.href.split("?")[0]} className="flex h-10 items-center px-5 text-sm font-medium transition hover:text-victoria-800">
+									{convertBreadcrumb(breadcrumb.breadcrumb.split("?")[0].split("#")[0])}
 								</Link>
 							</li>
 						);
