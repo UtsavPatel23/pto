@@ -138,7 +138,7 @@ export default function orders({ headerFooter, states }) {
 											<h3 className="font-semibold font-jost text-3xl">${(rewardPoints / 100).toFixed(2)} </h3>
 											<p className="mb-0">Total Point {rewardPoints}</p>
 										</div>
-										{membership_level == 'Bronze' ? <Image src={bronze} alt="Bronze Trophy" width={100} height={100} />:null}
+										{membership_level == 'Bronze' || membership_level == null  || membership_level == '' ? <Image src={bronze} alt="Bronze Trophy" width={100} height={100} />:null}
 										{membership_level == 'Silver' ? <Image src={silver} alt="Silver Trophy" width={100} height={100} />:null}
 										{membership_level == 'Gold' ? <Image src={gold} alt="Gold Trophy" width={100} height={100} />:null}
 										{membership_level == 'Platinum' ? <Image src={platinum} alt="Platinum Trophy" width={100} height={100} />:null}

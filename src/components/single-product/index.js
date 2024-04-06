@@ -27,9 +27,14 @@ import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import Image from 'next/image';
 import splashlogo from '../../../public/assets/img/logo-splash.webp';
-import bronzetrophy from '../../../public/assets/img/bronze.webp';
 import { useRouter } from 'next/router';
 import Enquiry from '../enquiry'
+import Loaderspin from "../loaderspin";
+
+import bronze from '../../../public/assets/img/bronze.webp';
+import silver from '../../../public/assets/img/silver.webp';
+import gold from '../../../public/assets/img/gold.webp';
+import platinum from '../../../public/assets/img/platinum.webp';
 
 
 
@@ -52,6 +57,8 @@ const SingleProduct = ({ singleProduct, reviews, options }) => {
 
 	const [isEnquiryOpen, setEnquiryOpen] = useState(false);
 	const [default_attr_val, setDefault_attr_val] = useState(null);
+
+	const { membership_level } = customerData?.meta_data ?? '';
 
 	const openEnquiry = () => {
 		setEnquiryOpen(true);
@@ -140,8 +147,28 @@ const SingleProduct = ({ singleProduct, reviews, options }) => {
 		}
 	}
 	// reward 
-	const [cashback, setCashback] = useState(Math.round(product.price) / 10);
-	const [cashbackpoints, setCashbackpoints] = useState(Math.round(product.price) * 10);
+	const [cashback, setCashback] = useState(Math.round(product.price) / 3);
+	const [cashbackpoints, setCashbackpoints] = useState(Math.round(product.price) * 3);
+
+	const membership_levels = ['Bronze', 'Silver', 'Gold', 'Platinum'];
+
+	/* cashback , lvl , voucher , milestone */
+	const membership_benefits = [
+		["3", 'Bronze', '$10', 750],
+		["5", 'Silver', '$15', 1750],
+		["7", 'Gold', '$20', 5000],
+		["10", 'Platinum', '$25'],
+	];
+	const [mem_level, setMem_level] = useState(0);
+	// set defaulte user login data 
+	useEffect(() => {
+		membership_levels.map((level, i) => {
+			if (level == membership_level) {
+				setMem_level(i);
+			}
+		})
+	}, [customerData]);
+	console.log('mem_level', mem_level);
 	// Dicount timer
 	useEffect(() => {
 		if ((singleProduct.type == 'simple' || product.type == 'variation') && (product.meta_data.product_discount != '') && product.meta_data.product_discount != undefined) {
@@ -202,13 +229,13 @@ const SingleProduct = ({ singleProduct, reviews, options }) => {
 				}, 1000);*/
 			} else {
 				setTimer(0);
-				setCashback((Math.round((product.price)) / 10));
-				setCashbackpoints((Math.round((product.price)) * 10));
+				setCashback((Math.round((product.price)) / membership_benefits[mem_level][0]));
+				setCashbackpoints((Math.round((product.price)) * membership_benefits[mem_level][0]));
 			}
 		} else {
 			setTimer(0);
-			setCashback((Math.round((product.price)) / 10));
-			setCashbackpoints((Math.round((product.price)) * 10));
+			setCashback((Math.round((product.price)) / membership_benefits[mem_level][0]));
+			setCashbackpoints((Math.round((product.price)) * membership_benefits[mem_level][0]));
 		}
 		setProductCountQty(1);
 		setShippingCharge('<span>Calculate Shipping</span>');
@@ -561,16 +588,13 @@ const SingleProduct = ({ singleProduct, reviews, options }) => {
 							return (<>
 								<div key="reward-wrapper" className='border-2 border-victoria-800'>
 									<div key="reward-inner" className='flex items-center p-1'>
-										<Image
-											src={bronzetrophy}
-											alt="Trophy"
-											width={100}
-											height='auto'
-											className='mx-2'
-										/>
+										{membership_level == 'Bronze' || membership_level == null || membership_level == '' ? <Image src={bronze} alt="Bronze Trophy" width={100} height='auto' className='mx-2' /> : null}
+										{membership_level == 'Silver' ? <Image src={silver} alt="Silver Trophy" width={100} height='auto' className='mx-2' /> : null}
+										{membership_level == 'Gold' ? <Image src={gold} alt="Gold Trophy" width={100} height='auto' className='mx-2' /> : null}
+										{membership_level == 'Platinum' ? <Image src={platinum} alt="Platinum Trophy" width={100} height='auto' className='mx-2' /> : null}
 										<div key="co-tips">
-											<p>Buy &amp; Get 10% Cashback <b>{cashbackpoints}</b> Reward points Worth <b>${cashback}</b> </p>
-											<Link href="/my-account/rewards/" className='text-victoria-700 underline underline-offset-4'>Manage</Link> Your Reward Points.
+											<p>Buy &amp; Get {membership_benefits[mem_level][0]}% Cashback <b>{cashbackpoints}</b> Reward points Worth <b>${cashback.toFixed(2)}</b> </p>
+											<Link href="/my-account/splashpass" className='text-victoria-700 underline underline-offset-4'>Manage</Link> Your Rewards. <Link href="/splash-pass" className='text-victoria-700 underline underline-offset-4'> Know More</Link>
 										</div>
 									</div>
 									<div className='bg-black p-1'>
@@ -589,7 +613,7 @@ const SingleProduct = ({ singleProduct, reviews, options }) => {
 					{(() => {
 						if (product?.type == 'simple' || product?.type == 'variation') {
 							return (<>
-								<div key="product_info7" className='border border-gray-300 p-1 flex flex-wrap items-center gap-3'>
+								<div key="product_info7" className='border border-gray-300 p-1 flex flex-wrap items-center gap-3 relative'>
 									<input
 										id="shippingCalculation_input"
 										type="number"
@@ -602,12 +626,18 @@ const SingleProduct = ({ singleProduct, reviews, options }) => {
 										className='w-36 outline-none py-1 px-2 text-sm border border-gray-300  focus:border-victoria-400'
 										disabled={inputshipdisabled}
 									/>
-									<span
-										dangerouslySetInnerHTML={{
-											__html: shippingCharge ?? '',
-										}}
-										className="product-price"
-									/>
+									{inputshipdisabled ?
+										<>
+											<div className='absolute inset-x-0 mx-auto'>
+												<Loaderspin></Loaderspin>
+											</div>
+										</> :
+										<span
+											dangerouslySetInnerHTML={{
+												__html: shippingCharge ?? '',
+											}}
+											className="product-price"
+										/>}
 								</div>
 							</>);
 						}
@@ -654,7 +684,7 @@ const SingleProduct = ({ singleProduct, reviews, options }) => {
 									}}
 									className="text-lg text-wrap font-semibold capitalize"
 								/>
-								<Enquiry product={ product }></Enquiry>
+								<Enquiry product={product}></Enquiry>
 							</div>
 						</section>
 					)}
@@ -698,7 +728,7 @@ const SingleProduct = ({ singleProduct, reviews, options }) => {
 						}
 					}
 				})()}
-				<div className="space-y-4 mb-5">
+				<div className="space-y-4">
 					<details className="group shadow-[0_0_6px_1px_#ddd] [&_summary::-webkit-details-marker]:hidden" open>
 						<summary className="py-3 px-4 flex cursor-pointer items-center justify-between gap-1.5">
 							<h2 className="font-medium">Description</h2>
@@ -918,7 +948,7 @@ const SingleProduct = ({ singleProduct, reviews, options }) => {
 				</div>
 
 				<div key="brand-productcode" className='mb-5'>
-					{product.meta_data.product_code ? <div key="product_code"><b>Product Code :</b>{product.meta_data.product_code}-{product.sku}</div> : null}
+					{product.meta_data.product_code ? <div key="product_code" className='text-white'><b>Product Code :</b>{product.meta_data.product_code}-{product.sku}</div> : null}
 					{product.meta_data.custom_sku_code ? <div key="custom_sku_code"><b>SKU :</b>{product.meta_data.custom_sku_code}</div> : null}
 					{product?.tags?.length ? <div key="tags"><b>Tags :</b>
 						{
