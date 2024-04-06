@@ -14,10 +14,6 @@ $primary: #4e4a88;
 // Image Gallery Styles.
 @import "~react-image-gallery/styles/scss/image-gallery.scss";
 
-.search_input {
-    @apply block w-full rounded-md border border-gray-200 bg-white py-2.5 font-cabin pl-5 pr-12 text-sm shadow-lg font-medium focus:border-black focus:outline-none focus:ring-0;
-}
-
 .bg-facebook {
     background-color: #3b5999;
 }
@@ -425,7 +421,10 @@ $primary: #4e4a88;
         }
     }
     .payment-logo {
-        -webkit-transform: translate3d(0, 0, 0);
+        -webkit-transform: translate3d(0, 0, 0); /* Chrome, Safari, Opera */
+        -moz-transform: translate3d(0, 0, 0); /* Firefox */
+        -ms-transform: translate3d(0, 0, 0); /* IE 9 */
+        transform: translate3d(0, 0, 0); /* Standard syntax */
         animation: scroll linear infinite 10s;
         width: calc(2 * 600px);
         transition: animation-play-state ease 0.3s;

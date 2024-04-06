@@ -79,14 +79,14 @@ function Sidebar({ setTokenValid, setIsMyaccountOpen, isMyaccountOpen }) {
 
                             </li>
                             <li>
-                                <Link href="/my-account/#" className='flex gap-3 items-center shadow-full border border-gray-300 hover:border-victoria-700 py-1 px-2 w-full text-base font-medium'>
+                                <Link href="/my-account/splashpass" className='flex gap-3 items-center shadow-full border border-gray-300 hover:border-victoria-700 py-1 px-2 w-full text-base font-medium'>
                                     <Image
                                         src={icon4}
                                         alt="Dashboard"
                                         width={40}
                                         height={40}
                                     />
-                                    Reward Points
+                                    Splash Pass Rewards
                                 </Link>
                             </li>
                             <li>

@@ -17,6 +17,7 @@ import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { isEmpty } from 'lodash';
 import Link from 'next/link';
+import Product from '../src/components/products/product';
 
 import img1 from '../public/assets/img/home/sofas-sofa-bed.webp';
 
@@ -54,7 +55,10 @@ import img29 from '../public/assets/img/home/24.webp';
 
 export default function Home({ headerFooter, pageData }) {
 	const { slider_options } = pageData?.acf;
+	const options = headerFooter?.footer?.options ?? '';
 	const [sliderList, setSliderList] = useState(null);
+	const [tokenValid, setTokenValid] = useState(0);
+	const [customerData, setCustomerData] = useState(0);
 	const seo = {
 		title: 'Next JS WooCommerce REST API',
 		description: 'Next JS WooCommerce Theme',
@@ -123,6 +127,40 @@ export default function Home({ headerFooter, pageData }) {
 		}
 	}, []);
 
+	const prodslidesettings = {
+		dots: false,
+		arrows: true,
+		infinite: false,
+		slidesToShow: 4,
+		slidesToScroll: 1,
+		centerMode: false,
+		responsive: [
+			{
+				breakpoint: 1024,
+				settings: {
+					slidesToShow: 2,
+					slidesToScroll: 1
+				}
+			},
+			{
+				breakpoint: 575,
+				settings: {
+					slidesToShow: 1,
+					slidesToScroll: 1
+				}
+			}
+		],
+	};
+	useEffect(() => {
+		if (localStorage.getItem('token')) {
+			setTokenValid(1);
+			if (localStorage.getItem('customerData')) {
+				var customerDataTMP = JSON.parse(localStorage.getItem('customerData'));
+				setCustomerData(customerDataTMP);
+			}
+		}
+	}, []);
+	console.log('pageData', pageData);
 	return (
 		<Layout headerFooter={headerFooter || {}} seo={seo} uri={'home'}>
 			{sliderList ? <>
@@ -573,43 +611,72 @@ export default function Home({ headerFooter, pageData }) {
 					</div>
 				</div>
 			</section>
+			{
+				(() => {
+					if (undefined != pageData.new_arrivals) {
+						return (
+							<section className='my-11'>
+								<div className='md:max-w-[760px] lg:max-w-[1140px] xl:max-w-[1320px] mx-auto px-3'>
+									<h2 className="relative pb-2 text-center font-jost text-2xl md:text-3xl lg:text-4xl font-semibold mb-5 title-border">New Arrivals Slider</h2>
+									{pageData.new_arrivals.length ?
+										<Slider {...prodslidesettings}>
+											{
+												pageData.new_arrivals.map(productRel => {
+													var Membersonly = '';
+													if (tokenValid == 1 && options?.discount_type_3 == 1) {
+														var messageText = options?.nj_display_box_member_only ?? '';
+														Membersonly = getMemberOnlyProduct(options, productRel, messageText);
+													}
+													return (
+														<div className='p-2'>
+															<Product key={productRel?.id} product={productRel} Membersonly={Membersonly} tokenValid={tokenValid} options={options} customerData={customerData} setCustomerData={setCustomerData} />
+														</div>
+													)
+												})
+											}
+										</Slider>
+										: null
+									}
+								</div>
+							</section>
+						)
+					}
+				})()
+			}
 
-			<section className='my-11'>
-				<div className='md:max-w-[760px] lg:max-w-[1140px] xl:max-w-[1320px] mx-auto px-3'>
-					<h2 className="relative pb-2 text-center font-jost text-2xl md:text-3xl lg:text-4xl font-semibold mb-5 title-border">New Arrivals Slider</h2>
-					<div className='grid sm:grid-cols-2 md:grid-cols-4 gap-2 gap-y-3 sm:gap-4'>
-						<div className='relative shadow-full img-boxani'>
-							<Link href='' target='_self'>
-								<Image
-									src={img26}
-									alt="Category Image"
-									width={330}
-									height={400}
-								/>
-							</Link>
-						</div>
-					</div>
-				</div>
-			</section>
-
-			<section className='my-11'>
-				<div className='md:max-w-[760px] lg:max-w-[1140px] xl:max-w-[1320px] mx-auto px-3'>
-					<h2 className="relative pb-2 text-center font-jost text-2xl md:text-3xl lg:text-4xl font-semibold mb-5 title-border">Free Shipping Slider</h2>
-					<div className='grid sm:grid-cols-2 md:grid-cols-4 gap-2 gap-y-3 sm:gap-4'>
-						<div className='relative shadow-full img-boxani'>
-							<Link href='' target='_self'>
-								<Image
-									src={img26}
-									alt="Category Image"
-									width={330}
-									height={400}
-								/>
-							</Link>
-						</div>
-					</div>
-				</div>
-			</section>
-			<section className="overflow-hidden pt-20 pb-12 lg:pt-[120px] lg:pb-[90px]">
+			{
+				(() => {
+					if (undefined != pageData.free_shipping) {
+						return (
+							<section className='my-11'>
+								<div className='md:max-w-[760px] lg:max-w-[1140px] xl:max-w-[1320px] mx-auto px-3'>
+									<h2 className="relative pb-2 text-center font-jost text-2xl md:text-3xl lg:text-4xl font-semibold mb-5 title-border">Free Shipping Slider</h2>
+									{pageData.free_shipping.length ?
+										<Slider {...prodslidesettings}>
+											{
+												pageData.free_shipping.map(productRel => {
+													var Membersonly = '';
+													if (tokenValid == 1 && options?.discount_type_3 == 1) {
+														var messageText = options?.nj_display_box_member_only ?? '';
+														Membersonly = getMemberOnlyProduct(options, productRel, messageText);
+													}
+													return (
+														<div className='p-2'>
+															<Product key={productRel?.id} product={productRel} Membersonly={Membersonly} tokenValid={tokenValid} options={options} customerData={customerData} setCustomerData={setCustomerData} />
+														</div>
+													)
+												})
+											}
+										</Slider>
+										: null
+									}
+								</div>
+							</section>
+						)
+					}
+				})()
+			}
+			<section className="overflow-hidden pt-20 pb-12 lg:pt-[120px] lg:pb-[90px] hidden">
 				<div className="container mx-auto">
 					<div className="-mx-4 flex flex-wrap items-center justify-between">
 						<div className="w-full px-4 lg:w-6/12">
@@ -755,7 +822,7 @@ export default function Home({ headerFooter, pageData }) {
 				</div>
 			</section>
 
-			<section className='my-5'>
+			<section className='my-5 hidden'>
 				<div className="container px-4 py-8 sm:px-6 sm:py-12 lg:px-8 lg:py-16">
 					<div className="grid grid-cols-1 gap-y-8 lg:grid-cols-2 lg:items-center lg:gap-x-16">
 						<div className="mx-auto max-w-lg text-center lg:mx-0 ltr:lg:text-left rtl:lg:text-right">
