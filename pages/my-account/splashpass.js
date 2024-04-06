@@ -64,14 +64,14 @@ export default function splashpass({ headerFooter, countriesData }) {
 	}, [customerData]);
 	useEffect(()=>{
 		(async () => {
-			if (customerData != undefined) 
+			if (customerData?.id != undefined) 
 			{ 
 					let config = {
 						method: 'post',
 						maxBodyLength: Infinity,
 						url: SPLASHPASS,
 						data: {
-							user_id: '403',
+							user_id: customerData?.id,
 						}
 					  };
 				  await axios.request(config)	
