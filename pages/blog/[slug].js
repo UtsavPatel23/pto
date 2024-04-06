@@ -16,8 +16,11 @@ import { getComments, getPost, getPosts } from '../../src/utils/blog';
 import Image from '../../src/components/image';
 import PostMeta from '../../src/components/post-meta';
 import Comments from '../../src/components/comments';
+import placeholder from '../../public/assets/img/placeholder-300.png'
+import Link from 'next/link';
 
-const Post = ({ headerFooter, postData, commentsData }) => {
+
+const Post = ({ headerFooter, postData, commentsData, postsData }) => {
 	const router = useRouter();
 
 	/**
@@ -27,7 +30,7 @@ const Post = ({ headerFooter, postData, commentsData }) => {
 	if (router.isFallback) {
 		return <div>Loading...</div>;
 	}
-
+	console.log('postsData', postsData);
 	return (
 		<Layout headerFooter={headerFooter || {}} seo={postData?.yoast_head_json ?? {}}>
 			<div className='grid md:grid-cols-4 gap-5'>
@@ -49,6 +52,25 @@ const Post = ({ headerFooter, postData, commentsData }) => {
 				</div>
 				<div className='border border-gray-300 bg-gray-100 p-3 rounded h-fit'>
 					<h5 className='font-semibold text-lg border-b border-gray-300 pb-2 mb-5'>Latest Post</h5>
+					<ul className='space-y-3'>
+						{(() => {
+							return postsData?.posts_data.map((post, index) => {
+								return (
+									<li key={`${post?.id ?? ''}-${index}` ?? ''}>
+										<Link href={`/blog/${post?.slug}/`} className='flex gap-3 items-center'>
+											<Image
+												src={post?.attachment_image?.img_src?.[0] ?? placeholder}
+												width={80}
+												height={80}
+												alt="Placeholder"
+											/>
+											<p className='line-clamp-2 hover:text-victoria-700' dangerouslySetInnerHTML={{ __html: sanitize(post?.title ?? '') }}></p>
+										</Link>
+									</li>
+								);
+							})
+						})()}
+					</ul>
 				</div>
 			</div>
 		</Layout>
@@ -61,11 +83,13 @@ export async function getStaticProps({ params }) {
 	const { data: headerFooterData } = await axios.get(HEADER_FOOTER_ENDPOINT);
 	const postData = await getPost(params?.slug ?? '');
 	const commentsData = await getComments(postData?.[0]?.id ?? 0);
+	const { data: postsData } = await getPosts(1);
 
 	const defaultProps = {
 		props: {
 			headerFooter: headerFooterData?.data ?? {},
 			postData: postData?.[0] ?? {},
+			postsData: postsData,
 			commentsData: commentsData || []
 		},
 		/**
