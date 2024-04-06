@@ -22,7 +22,7 @@ const Category = ({ category }) => {
 		<div key={'cat_li' + category?.id} className="border border-victoria-700 text-center group">
 			<Link href={`${cat_slug}`} >
 				<Image
-					sourceUrl={category.category_icon}
+					sourceUrl={category.category_thumb}
 					altText={category?.name ?? ''}
 					title={category?.name ?? ''}
 					width="200"

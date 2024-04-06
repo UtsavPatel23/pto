@@ -38,19 +38,23 @@ const Categories = ({ categories }) => {
 								<div className={`sub-category${categorylayout === 'categoryBox' ? '' : ' flex items-center gap-3'}`}>
 									<div className={`sub-category${categorylayout === 'categoryBox' ? '' : ' rounded border border-violet-700 overflow-hidden mb-4'}`}>
 										{category.category_thumb ? (
+											<Link href={`${cat_slug}`}>
 											<Image
 												src={category.category_thumb}
 												width={categorylayout === 'categoryBox' ? 290 : 80}
 												height={categorylayout === 'categoryBox' ? 290 : 80}
 												alt={category.name}
 											/>
+											</Link>
 										) : (
+											<Link href={`${cat_slug}`}>
 											<Image
 												src={placeholder}
 												width={categorylayout === 'categoryBox' ? 290 : 80}
 												height={categorylayout === 'categoryBox' ? 290 : 80}
 												alt="Placeholder"
 											/>
+											</Link>
 										)}
 									</div>
 									<h6 className='font-medium p-2 flex items-center justify-between'>
