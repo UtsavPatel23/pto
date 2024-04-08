@@ -123,7 +123,7 @@ function Sidebar({ setTokenValid, setIsMyaccountOpen, isMyaccountOpen }) {
                                 </Link>
                             </li>
                             <li>
-                                <Link href="/my-account/track-order/" className='flex gap-3 items-center shadow-full border border-gray-300 hover:border-victoria-700 py-1 px-2 w-full text-base font-medium'>
+                                <Link href="/track-order/" className='flex gap-3 items-center shadow-full border border-gray-300 hover:border-victoria-700 py-1 px-2 w-full text-base font-medium'>
                                     <Image
                                         src={icon8}
                                         alt="Dashboard"

@@ -180,6 +180,9 @@ const Footer = ({ footer, header }) => {
 											if (menu_slug == pageslug) {
 												clsActive = 'text-victoria-800 font-medium';
 											}
+											//if (menu_slug == '/track-order/') {
+											//	menu_slug = '/my-account/track-order';
+											//}
 											return (<li key={menuItem?.ID}>
 												<Link href={menu_slug} dangerouslySetInnerHTML={{ __html: menuItem.title }} className={'relative transition-all duration-500 ease hover:text-victoria-800 hover:pl-5 hover:font-medium before:left-[-15px] hover:before:left-0 before:absolute before:opacity-0 hover:before:opacity-100 before:transition-all before:duration-500 before:ease ' + clsActive} />
 											</li>);
