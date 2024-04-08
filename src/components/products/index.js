@@ -22,6 +22,7 @@ const Products = ({ products, options, tokenValid }) => {
 
 	// -----------------------------------
 	var ProductsTmp = products;
+	var banner_counter = 0;
 	if (isEmpty(ProductsTmp) || !isArray(ProductsTmp)) {
 		return null;
 	}
@@ -461,7 +462,7 @@ const Products = ({ products, options, tokenValid }) => {
 		}
 	}
 
-
+	
 
 
 	const [isFilterOpen, setIsFilterOpen] = useState(false);
@@ -1120,11 +1121,15 @@ const Products = ({ products, options, tokenValid }) => {
 														{(() => {
 															if (i == (product_sale_banner_in_gridview[0]?.please_select_the_row_number / 3)) {
 																i = 1;
+																banner_counter++;
+																if (banner_counter > product_sale_banner_in_gridview.length) { 
+																	banner_counter = 1;
+																}
 																return (
 																	<div className='grid md:grid-cols-1 gap-4'>
-																		<Link href={product_sale_banner_in_gridview[0]?.category_url}>
+																		<Link href={product_sale_banner_in_gridview[banner_counter-1]?.category_url}>
 																			<Image
-																				src={product_sale_banner_in_gridview[0]?.category_image}
+																				src={product_sale_banner_in_gridview[banner_counter-1]?.category_image}
 																				alt="Top banner"
 																				width={1320}
 																				height={300}

@@ -143,9 +143,9 @@ export default function Home({ headerFooter }) {
                                 </tbody>
                             </table>
                         </div>
-                        <div className='text-center'>
+                        { /*} <div className='text-center'>
                             <button className='text-white bg-victoria-700 duration-500 font-medium text-center hover:bg-white border hover:text-victoria-700 border-victoria-700 relative inline-block py-2 px-5 mt-4'>Clear All</button>
-                        </div>
+                                </div>{*/}
                     </> :
                     <>
                         {(() => {

@@ -1,0 +1,8 @@
+.breadcrumb li {
+    display: inline-block;
+    position: relative;
+    color:#0f15e1;
+    font-size: 17px;
+    padding: 0px 5px;
+}
+.focusbox {width: 1px;}

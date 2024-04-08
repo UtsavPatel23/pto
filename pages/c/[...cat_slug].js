@@ -62,24 +62,32 @@ export default function cat_slug({ headerFooter, categories, cacheValid }) {
                         </Link>
                         : null}
                     {(() => {
+                        //console.log('index', category_image_select_category_section);
                         if (category_image_select_category_section?.length) {
-                            const toDay = new Date();
-                            var start_date = new Date(category_image_select_category_section[0]?.start_date);
-                            var end_date = new Date(category_image_select_category_section[0]?.end_date);
-                            if (start_date <= toDay && toDay <= end_date) {
-
-                                return (category_image_select_category_section[0]?.category_image != '' ?
-                                    <Link href={category_image_select_category_section[0]?.category_url}>
-                                        <Image
-                                            src={category_image_select_category_section[0]?.category_image}
-                                            alt="Category Banner"
-                                            width={1320}
-                                            height={300}
-                                            className='mx-auto'
-                                        />
-                                    </Link>
-                                    : null)
-                            }
+                           return  category_image_select_category_section.map((val, index) => {
+                                const toDay = new Date();
+                                var start_date = new Date(val?.start_date);
+                                var end_date = new Date(val?.end_date);
+                                if (start_date <= toDay && toDay <= end_date) {
+                                    const found = val?.select_category.find((element) => element == cat_data?.id);
+                                    if (found) { 
+                                        return (val?.category_image != '' ?
+                                        <Link href={val?.category_url}>
+                                            <Image
+                                                src={val?.category_image}
+                                                alt="Category Banner"
+                                                width={1320}
+                                                height={300}
+                                                className='mx-auto'
+                                            />
+                                        </Link>
+                                        : null)
+                                    }
+                                    
+                                }
+                            });
+                            
+                            
                         }
                     })()}
                 </div>
