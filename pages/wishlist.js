@@ -1,7 +1,7 @@
 /**
  * Internal Dependencies.
  */
-import { HEADER_FOOTER_ENDPOINT, WEB_DEVICE, WISHLIST_LIST } from '../src/utils/constants/endpoints';
+import { HEADER_FOOTER_ENDPOINT, WEB_DEVICE, WISHLIST_LIST, WISHLIST_URL } from '../src/utils/constants/endpoints';
 
 /**
  * External Dependencies.
@@ -19,7 +19,6 @@ import WishlistButton from '../src/components/wishlist/wishlistbutton'
 
 export default function Home({ headerFooter }) {
 
-    const options = headerFooter?.footer?.options;
     const [tokenValid, setTokenValid] = useState(0);
     const [customerData, setCustomerData] = useState(0);
     const [wishlistProducts, setWishlistProducts] = useState(null);
@@ -48,7 +47,6 @@ export default function Home({ headerFooter }) {
 
     useEffect(() => {
         if (customerWishlist && customerWishlist != '') {
-            console.log('customerWishlist str', customerWishlist.toString());
             (async () => {
                 setLoading(true);
                 const productlist = await get_products_ids(customerWishlist.toString());
@@ -56,8 +54,6 @@ export default function Home({ headerFooter }) {
                     product_ids: customerWishlist.toString()
                 };
                 const { data: wishlistList } = await axios.post(WISHLIST_LIST, payload);
-                console.log('wishlistList ----1111--', wishlistList);
-                console.log('wishlistList ----222----', productlist.productList);
                 setWishlistProducts(wishlistList);
                 //setWishlistProducts(productlist.productList);
                 setLoading(false);
@@ -67,8 +63,26 @@ export default function Home({ headerFooter }) {
             // this now gets called when the component unmounts
         };
     }, [customerWishlist]);
-    console.log('wishlistProducts', wishlistProducts);
-    console.log('customerWishlist', customerWishlist);
+   
+    const clearAll = async() => {
+            setLoading(true);
+            const payload = {
+                user_id: customerData?.id,
+                action: 'remove',
+                remove: 'all'
+            };
+            const { data: wishlistData } = await axios.post(WISHLIST_URL, payload);
+            
+        if (wishlistData?.code == '200') {
+                
+                    setCustomerData({ ...customerData, wishlist: null });
+                    setWishlistProducts(null);
+                    localStorage.setItem('customerData', JSON.stringify({ ...customerData, wishlist: null }));
+            }
+           
+        setLoading(false);
+        
+    }
 
     return (
         <Layout headerFooter={headerFooter || {}} seo={seo}>
@@ -103,8 +117,6 @@ export default function Home({ headerFooter }) {
                                         if (!WEB_DEVICE) {
                                             p_slug = '/product/?sname=' + product?.slug;
                                         }
-                                        const productType = product?.type ?? '';
-                                        console.log('product', product);
                                         return (
                                             <tr>
                                                 <td className='border border-slate-300 p-2'>
@@ -143,9 +155,9 @@ export default function Home({ headerFooter }) {
                                 </tbody>
                             </table>
                         </div>
-                        { /*} <div className='text-center'>
-                            <button className='text-white bg-victoria-700 duration-500 font-medium text-center hover:bg-white border hover:text-victoria-700 border-victoria-700 relative inline-block py-2 px-5 mt-4'>Clear All</button>
-                                </div>{*/}
+                        <div className='text-center'>
+                            <button onClick={clearAll} className='text-white bg-victoria-700 duration-500 font-medium text-center hover:bg-white border hover:text-victoria-700 border-victoria-700 relative inline-block py-2 px-5 mt-4'>Clear All</button>
+                        </div>
                     </> :
                     <>
                         {(() => {
