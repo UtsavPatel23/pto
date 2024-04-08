@@ -1,7 +1,0 @@
-// To be applied to li.
-.no-dots-list {
-	@apply ml-0;
-	&::before {
-		@apply hidden;
-	}
-}
