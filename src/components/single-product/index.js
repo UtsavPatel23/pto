@@ -29,6 +29,7 @@ import Image from 'next/image';
 import splashlogo from '../../../public/assets/img/logo-splash.webp';
 import { useRouter } from 'next/router';
 import Enquiry from '../enquiry'
+import ReviewPopup from '../review-popup'
 import Loaderspin from "../loaderspin";
 
 import bronze from '../../../public/assets/img/bronze.webp';
@@ -688,8 +689,10 @@ const SingleProduct = ({ singleProduct, reviews, options }) => {
 							</div>
 						</section>
 					)}
+					<ReviewPopup product={product} tokenValid={tokenValid} customerData={customerData}></ReviewPopup>
 				</div>
 			</div>
+			
 			<div key="product-top" className="grid grid-cols-1 gap-8">
 				{(() => {
 					if (!isEmpty(paymentOptions)) {

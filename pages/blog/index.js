@@ -19,6 +19,7 @@ import { getPosts } from '../../src/utils/blog';
  * @param {Object} postsData Post Data.
  */
 const Blog = ({ headerFooter, postsData }) => {
+	console.log('postsData',postsData);
 	const seo = {
 		title: 'Blog Page',
 		description: 'Blog Page',

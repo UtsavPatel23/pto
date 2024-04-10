@@ -2,7 +2,7 @@
  * Internal Dependencies.
  */
 import Products from '../src/components/products';
-import { HEADER_FOOTER_ENDPOINT } from '../src/utils/constants/endpoints';
+import { HEADER_FOOTER_ENDPOINT, WEB_DEVICE } from '../src/utils/constants/endpoints';
 
 /**
  * External Dependencies.
@@ -59,6 +59,8 @@ export default function Home({ headerFooter, pageData }) {
 	const [sliderList, setSliderList] = useState(null);
 	const [tokenValid, setTokenValid] = useState(0);
 	const [customerData, setCustomerData] = useState(0);
+	const [limitContent, setLimitContent] = useState(true);
+	const [cat_slug, setCat_slug] = useState('/c');
 	const seo = {
 		title: 'Next JS WooCommerce REST API',
 		description: 'Next JS WooCommerce Theme',
@@ -159,6 +161,9 @@ export default function Home({ headerFooter, pageData }) {
 				setCustomerData(customerDataTMP);
 			}
 		}
+		if (!WEB_DEVICE) {
+			setCat_slug('/cat?sname=');
+		}
 	}, []);
 	console.log('pageData', pageData);
 	return (
@@ -188,7 +193,7 @@ export default function Home({ headerFooter, pageData }) {
 				</> : null)
 			})()}
 
-			<section className='my-11'>
+			<section className='my-11 hidden'>
 				<div className='md:max-w-[760px] lg:max-w-[1140px] xl:max-w-[1320px] mx-auto px-3'>
 					<h2 className="relative pb-2 text-center font-jost text-2xl md:text-3xl lg:text-4xl font-semibold mb-5 title-border">
 						Title Title Title TitleTitle Title</h2>
@@ -282,7 +287,7 @@ export default function Home({ headerFooter, pageData }) {
 					<h2 className="relative pb-2 text-center font-jost text-2xl md:text-3xl lg:text-4xl font-semibold mb-5 title-border">Elevate Your Game With Discounted Pool Tables!</h2>
 					<div className='grid sm:grid-cols-2 lg:grid-cols-3 gap-2 gap-y-3 sm:gap-4'>
 						<div className='relative shadow-full img-boxani'>
-							<Link href='' target='_self'>
+						<Link href='' target='_self'>
 								<Image
 									src={img2}
 									alt="Category Image"
@@ -419,7 +424,7 @@ export default function Home({ headerFooter, pageData }) {
 					<h2 className="relative pb-2 text-center font-jost text-2xl md:text-3xl lg:text-4xl font-semibold mb-5 title-border">Choose Your Preferred Style From Our Huge Varieties Of Bikes </h2>
 					<div className='grid sm:grid-cols-2 gap-2 gap-y-3 sm:gap-4'>
 						<div className='relative shadow-full img-boxani'>
-							<Link href='' target='_self'>
+							<Link href={cat_slug + '/dirt-bike/'}  target='_self'>
 								<Image
 									src={img12}
 									alt="Category Image"
@@ -429,7 +434,7 @@ export default function Home({ headerFooter, pageData }) {
 							</Link>
 						</div>
 						<div className='relative shadow-full img-boxani'>
-							<Link href='' target='_self'>
+							<Link href={cat_slug + '/quad-bike/'} target='_self'>
 								<Image
 									src={img13}
 									alt="Category Image"
@@ -441,7 +446,7 @@ export default function Home({ headerFooter, pageData }) {
 					</div>
 					<div className='grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-2 gap-y-3 sm:gap-4 mt-10'>
 						<div className='relative img-boxani'>
-							<Link href='' target='_self'>
+							<Link href={cat_slug + '/dirt-bike/50cc/'} target='_self'>
 								<Image
 									src={img14}
 									alt="Category Image"
@@ -451,7 +456,7 @@ export default function Home({ headerFooter, pageData }) {
 							</Link>
 						</div>
 						<div className='relative img-boxani'>
-							<Link href='' target='_self'>
+							<Link href={cat_slug + '/dirt-bike/70cc-dirt-bike/'} target='_self'>
 								<Image
 									src={img15}
 									alt="Category Image"
@@ -461,7 +466,7 @@ export default function Home({ headerFooter, pageData }) {
 							</Link>
 						</div>
 						<div className='relative img-boxani'>
-							<Link href='' target='_self'>
+							<Link href={cat_slug + '/dirt-bike/90cc/'} target='_self'>
 								<Image
 									src={img16}
 									alt="Category Image"
@@ -471,7 +476,7 @@ export default function Home({ headerFooter, pageData }) {
 							</Link>
 						</div>
 						<div className='relative img-boxani'>
-							<Link href='' target='_self'>
+							<Link href={cat_slug + '/quad-bike/dune-buggy/'} target='_self'>
 								<Image
 									src={img17}
 									alt="Category Image"
@@ -481,7 +486,7 @@ export default function Home({ headerFooter, pageData }) {
 							</Link>
 						</div>
 						<div className='relative img-boxani'>
-							<Link href='' target='_self'>
+							<Link href={cat_slug + '/quad-bike/farm-quad-bikes/'} target='_self'>
 								<Image
 									src={img18}
 									alt="Category Image"
@@ -491,7 +496,7 @@ export default function Home({ headerFooter, pageData }) {
 							</Link>
 						</div>
 						<div className='relative img-boxani'>
-							<Link href='' target='_self'>
+							<Link href={cat_slug + '/quad-bike/junior/'} target='_self'>
 								<Image
 									src={img19}
 									alt="Category Image"
@@ -501,7 +506,7 @@ export default function Home({ headerFooter, pageData }) {
 							</Link>
 						</div>
 						<div className='relative img-boxani'>
-							<Link href='' target='_self'>
+							<Link href={cat_slug + '/dirt-bike/125cc-dirt-bike/'} target='_self'>
 								<Image
 									src={img20}
 									alt="Category Image"
@@ -511,7 +516,7 @@ export default function Home({ headerFooter, pageData }) {
 							</Link>
 						</div>
 						<div className='relative img-boxani'>
-							<Link href='' target='_self'>
+							<Link href={cat_slug + '/dirt-bike/150cc-dirt-bike/'} target='_self'>
 								<Image
 									src={img21}
 									alt="Category Image"
@@ -521,7 +526,7 @@ export default function Home({ headerFooter, pageData }) {
 							</Link>
 						</div>
 						<div className='relative img-boxani'>
-							<Link href='' target='_self'>
+							<Link href={cat_slug + '/dirt-bike/250cc-dirt-bike/'} target='_self'>
 								<Image
 									src={img22}
 									alt="Category Image"
@@ -531,7 +536,7 @@ export default function Home({ headerFooter, pageData }) {
 							</Link>
 						</div>
 						<div className='relative img-boxani'>
-							<Link href='' target='_self'>
+							<Link href={cat_slug + '/quad-bike/mini/'} target='_self'>
 								<Image
 									src={img23}
 									alt="Category Image"
@@ -541,7 +546,7 @@ export default function Home({ headerFooter, pageData }) {
 							</Link>
 						</div>
 						<div className='relative img-boxani'>
-							<Link href='' target='_self'>
+							<Link href={cat_slug + '/quad-bike/sports/'} target='_self'>
 								<Image
 									src={img24}
 									alt="Category Image"
@@ -551,7 +556,7 @@ export default function Home({ headerFooter, pageData }) {
 							</Link>
 						</div>
 						<div className='relative img-boxani'>
-							<Link href='' target='_self'>
+							<Link href={cat_slug + '/quad-bike/'} target='_self'>
 								<Image
 									src={img25}
 									alt="Category Image"
@@ -569,7 +574,7 @@ export default function Home({ headerFooter, pageData }) {
 					<h2 className="relative pb-2 text-center font-jost text-2xl md:text-3xl lg:text-4xl font-semibold mb-5 title-border">Choose Your Discover More Categories</h2>
 					<div className='grid grid-cols-2 md:grid-cols-4 gap-2 gap-y-3 sm:gap-4'>
 						<div className='relative shadow-full img-boxani'>
-							<Link href='' target='_self'>
+							<Link href={cat_slug + '/table-tennis/'} target='_self'>
 								<Image
 									src={img26}
 									alt="Category Image"
@@ -579,7 +584,7 @@ export default function Home({ headerFooter, pageData }) {
 							</Link>
 						</div>
 						<div className='relative shadow-full img-boxani'>
-							<Link href='' target='_self'>
+							<Link href={cat_slug + '/soccer-table/'} target='_self'>
 								<Image
 									src={img27}
 									alt="Category Image"
@@ -589,7 +594,7 @@ export default function Home({ headerFooter, pageData }) {
 							</Link>
 						</div>
 						<div className='relative shadow-full img-boxani'>
-							<Link href='' target='_self'>
+							<Link href={cat_slug + '/multi-game-table/'} target='_self'>
 								<Image
 									src={img28}
 									alt="Category Image"
@@ -599,7 +604,7 @@ export default function Home({ headerFooter, pageData }) {
 							</Link>
 						</div>
 						<div className='relative shadow-full img-boxani'>
-							<Link href='' target='_self'>
+							<Link href={cat_slug + '/poker-table/'} target='_self'>
 								<Image
 									src={img29}
 									alt="Category Image"
@@ -637,6 +642,12 @@ export default function Home({ headerFooter, pageData }) {
 										</Slider>
 										: null
 									}
+									<div className='text-center'>
+									<Link href='/shop?orderby=date_created' className='mt-5 inline-block w-44 p-3 text-white bg-victoria-700 duration-500 font-medium text-center hover:bg-white border hover:text-victoria-700 border-victoria-700'>
+										View All
+									</Link>
+									</div>
+									
 								</div>
 							</section>
 						)
@@ -670,6 +681,11 @@ export default function Home({ headerFooter, pageData }) {
 										</Slider>
 										: null
 									}
+									<div className='text-center'>
+									<Link href='/shop?shipping-multiple-=Free-Shipping' className='mt-5 inline-block w-44 p-3 text-white bg-victoria-700 duration-500 font-medium text-center hover:bg-white border hover:text-victoria-700 border-victoria-700'>
+										View All
+									</Link>
+									</div>
 								</div>
 							</section>
 						)
@@ -1029,6 +1045,61 @@ export default function Home({ headerFooter, pageData }) {
 							</a>
 						</div>
 					</div>
+				</div>
+			</section>
+			<section className='my-11'>
+				<div className='md:max-w-[760px] lg:max-w-[1140px] xl:max-w-[1320px] mx-auto px-3'>
+					<h2 className="relative pb-2 text-center font-jost text-2xl md:text-3xl lg:text-4xl font-semibold mb-5 title-border">Versatile Pool Table For Sale with Exciting Deals </h2>
+						<div className='border border-slate-300 p-2'>
+							<p className="mb-8 text-base text-body-color">
+								Pool Table Offers is a leading pool table supplier with an extensive range of pool table for sale to ship Australia-wide. Our pool tables are designed as to sturdier and durable with the 1-inch thickness of playing surface board and 150kg overall weight of the table. What sets us apart from other departmental stores as well as online stores is our premium quality tables and unique Buy Now, Pay Later payment service. Our pool table for sale range gives you numerous choices over features, size and price from which you can pull out the perfect piece on your preferences. Not only do we sell pool tables but make sure, when you are here at Pool Table Offers, you’ll have deals on soccer table, poker table, ping pong table and other best-selling items.
+						</p>
+						<p className="mb-8 text-base text-body-color">
+							So, don’t wait to shoot the pool with your buddies. Order your table now, and we’ll deliver it to your doorsteps in a while, whether you’re located in Sydney, Melbourne, Brisbane, Adelaide or anywhere across Australia.
+						</p>
+						<h2 className='relative pb-2 font-jost text-2xl md:text-3xl lg:text-4xl font-semibold mb-5 '>Buy Pool Table Now & Pay Later</h2>
+						<p className="mb-8 text-base text-body-color"> The pool is one of the royal sports games, and it isn’t very affordable. Yet, we’ve exciting pool table offers for you, and our way to Buy-Now-Pay-Later is sure to impress your savings. No matter, if you’re low on budget or running dizzy on bank balance, our payment options will serve to break your pay-off into easy and interest-free instalments. So, don’t you worry, buy a pool table now, enjoy the real sporting experience and pay later with any of our best payment options such as Afterpay, Humm, Zippay and LayBuy.{ limitContent ? <span>...</span> : null}</p>
+						{ !limitContent ? 
+						<span>
+							<h2 className='relative pb-2 font-jost text-2xl md:text-3xl lg:text-4xl font-semibold mb-5 '>Grab an Accessory Kit</h2>
+							<p className="mb-8 text-base text-body-color">You might be excited after ordering a pool table that you’re going to have it real nowhere but at your own home. But you didn’t expect the same pool table ruining your excitement when you find out the pool table set doesn’t have an accessory kit. Sounds lamb? Never mind, Pool Table Offers does provide a full accessory kit FREE worth $400. The free accessory kit includes not only primary pool associates but also additional billiards and supporting accessories are provided for a multiple of your snooker tricks.</p>
+						
+							<h2 className='relative pb-2 font-jost text-2xl md:text-3xl lg:text-4xl font-semibold mb-5 '>Authentic Sporting Experience With Our Exclusive Range of Games.</h2>
+							<p className="mb-8 text-base text-body-color"> Pool Table Offers ensures authentic sporting experience with all our unique pool table for sale products. Our pool tables are designed with pub pool table standards, so you get the realistic and practical snooker experience. Not only billiard tables but all our different games are designed with practical features to give you the true sense of fun and recreation at your place.</p>
+						
+							<h2 className='relative pb-2 font-jost text-2xl md:text-3xl lg:text-4xl font-semibold mb-5 '>
+									<Link href={cat_slug + '/pool-table/'}  className="alink-color"> Pool Table For Sale:
+								</Link>
+							</h2>
+							<p className="mb-8 text-base text-body-color">Sturdier and durable tables as per standard pool table size with a free accessory kit will appear as to a grand sports game in your entertaining space. With high-speed wool felt playing surface, ball returning system and feet adjustment - the game will run even smoother and stimulate your exciting moments at the table.</p>
+						
+							<h2 className='relative pb-2 font-jost text-2xl md:text-3xl lg:text-4xl font-semibold mb-5 '>
+									<Link href={cat_slug + '/multi-game-table/'}  className="alink-color"> 4-in-1 Versatile Pool Table :
+								</Link>
+							</h2>
+							<p className="mb-8 text-base text-body-color">Make sure with a 4-in-1 versatile pool table from us; you don’t need to go out to find a collection of games to entertain your day. Our 4-in-1 fabulous pool table is all you need to turn your space into a recreation area. The versatile table can be modified into a range of games with different tabletops such as ping pong table, soccer table and air hockey table. With having this multiple of games, you can comfortably make use of any table without occupying space of your living area.</p>
+							<p className="mb-8 text-base text-body-color">Also, accessories of such games are provided free, so you don’t need to peek into your bank balance for extra bucks.</p>
+						
+							<h2 className='relative pb-2 font-jost text-2xl md:text-3xl lg:text-4xl font-semibold mb-5 '>
+								<Link href={cat_slug +'/soccer-table/'}  className="alink-color"> Soccer Table | Foosball Table:
+								</Link>
+							</h2>
+							<p className="mb-8 text-base text-body-color">Soccer table, also known as a foosball table is a fun game, especially for those who love football. We have 4-ft foosball tables as well as 5-ft foosball tables much as the same you play in a pub and an entertainment centre. Features like anti-slip handles, durable ABS moulded players, convenient score counter and more make it an exciting game on occasions like family bonding, office parties and group entertainment.</p>
+						
+							<h2 className='relative pb-2 font-jost text-2xl md:text-3xl lg:text-4xl font-semibold mb-5 '>
+								<Link href={cat_slug +'/table-tennis/'}  className="alink-color"> Ping pong Table | Table Tennis Table: 
+								</Link>
+							</h2>
+							<p className="mb-8 text-base text-body-color">Whether you’re a ping pong champion or enjoy the game with your partner, we have ping pong tables to suit every need. Our standard ping pong tables are best-selling with our brand’s popularity in the International Table Tennis Federation for its higher-quality boards with 25mm thickness that ensure a long lifespan of tables. With free accessory kit provided, classy features and portable design; a ping pong table is a sure-shot winner in terms of games.</p>
+							<p className="mb-8 text-base text-body-color">Providing pool tables at affordable prices with the cheapest possible freight is indeed the job of ours. With our unique Buy Now, Pay Later service and great quality products, we’re working to reach up to every corner across the country. Grab Pool Table Offers now, enjoy your game and pay later in easy instalments.</p>
+							</span> : null
+							}
+						{limitContent ?
+							<button onClick={(e)=> setLimitContent(false)} className='text-white bg-victoria-700 duration-500 font-medium text-center hover:bg-white border hover:text-victoria-700 border-victoria-700 relative inline-block py-2 px-5 '>Read more</button>
+							:
+							<button onClick={(e)=> setLimitContent(true)} className='text-white bg-victoria-700 duration-500 font-medium text-center hover:bg-white border hover:text-victoria-700 border-victoria-700 relative inline-block py-2 px-5 '>Read less</button>
+						}
+						</div>
 				</div>
 			</section>
 

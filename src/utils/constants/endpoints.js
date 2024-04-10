@@ -75,3 +75,7 @@ export const PRODUCT_ENQUIRY = `${process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL}/wp
 
 //splashpass
 export const SPLASHPASS = `${process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL}/wp-json/shop-nj/v1/splashpass`;
+
+//reviewlist 
+export const REVIEWLIST = `${process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL}/wp-json/shop-nj/v1/reviewlist`;
+export const REVIEW = `${process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL}/wp-json/shop-nj/v1/review`;

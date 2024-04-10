@@ -16,7 +16,7 @@ import { payment_capture_laybuy } from '../src/utils/thank-you/laybuy-capture';
 import { getStates } from '../src/utils/checkout';
 import { get_order, update_order } from '../src/utils/apiFun/order';
 import { updateCustomers } from '../src/utils/apiFun/customer';
-
+import ReviewForm from '../src/components/review-form'
 
 const ThankYouContent = ({headerFooter,states}) => {
 	const [ cart, setCart ] = useContext( AppContext );
@@ -33,6 +33,8 @@ const ThankYouContent = ({headerFooter,states}) => {
 	const [subtotal,setSubtotal] = useState(0);
 	const [updateweb_to_mobil,setUpdateweb_to_mobil] = useState(0);
 	const paymentModes = headerFooter?.footer?.options?.nj_payment_method ?? '';
+	const [tokenValid, setTokenValid] = useState(0);
+	const [customerData, setCustomerData] = useState(0);
 	
 	// stripe
 	useEffect( () => {
@@ -132,6 +134,7 @@ console.log('sessionData',sessionData);
 	}
 	console.log('orderData',orderData);
 	console.log('orderToken',orderToken);
+	console.log('customerData',customerData);
 	 
 	useEffect(()=>{
 		if(orderData?.status != undefined)
@@ -192,7 +195,7 @@ console.log('sessionData',sessionData);
 					responseCus.success = true;
 							responseCus.customers = response.data.customers;
 							responseCus.message = "User update successfully";
-							localStorage.setItem('customerData',JSON.stringify(responseCus.customers));
+					localStorage.setItem('customerData', JSON.stringify(responseCus.customers));
 				}else{
 					responseCus.error = error.response.data.error;
 					responseCus.message = "Invalid data";
@@ -220,6 +223,17 @@ console.log('sessionData',sessionData);
 			
 		}
 	}
+
+	useEffect(() => {
+		if (localStorage.getItem('token')) {
+			setTokenValid(1);
+			if (localStorage.getItem('customerData')) {
+				var customerDataTMP = JSON.parse(localStorage.getItem('customerData'));
+				setCustomerData(customerDataTMP);
+			}
+		}
+	}, []);
+
 	console.log('states',states);
 	if (WEB_DEVICEQuery == 'false') { 
 		return (<>Pament process ....</>);
@@ -245,7 +259,10 @@ console.log('sessionData',sessionData);
 						<Link href="/shop/">
 							<div className="bg-purple-600 text-white px-5 py-3 rounded-sm w-auto">Shop more</div>
 						</Link>
-						<OrderAddress orderData={orderData} states={states}/>
+						<OrderAddress orderData={orderData} states={states} />
+						<div key='ReviewForm' className='border-collapse w-full border border-slate-300 p-2'>
+						<ReviewForm product={null} orderData={orderData} tokenValid={tokenValid} customerData={customerData}></ReviewForm>
+						</div>
 					</>
 				) }
 			</div>

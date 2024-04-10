@@ -32,6 +32,8 @@ export default function splashpass({ headerFooter, countriesData }) {
 	const [rewardPoints, setRewardPoints] = useState(0);
 	const { membership_level } = customerData?.meta_data ?? '';
 	const [total_order_amount, setTotal_order_amount] = useState(null);
+	const [reward_points_history, setReward_points_history] = useState('');
+	const [order_reward_points, setOrder_reward_points] = useState('');
 	const membership_levels = ['Bronze', 'Silver', 'Gold', 'Platinum'];
 
 	/* cashback , lvl , voucher , milestone */
@@ -77,6 +79,9 @@ export default function splashpass({ headerFooter, countriesData }) {
 				  await axios.request(config)	
 							.then((response) => {
 								setTotal_order_amount(response?.data?.total_order_amount ?? '');
+								setReward_points_history(response?.data?.reward_points_history ?? '');
+								setOrder_reward_points(response?.data?.order_reward_points ?? '');
+								console.log('response?.data', response?.data);
 							  })
 							  .catch((error) => {
 								console.log('response eeeee',error.response.data);
@@ -96,7 +101,6 @@ export default function splashpass({ headerFooter, countriesData }) {
 			Router.push("/my-account/");
 		}
 	}, [tokenValid]);
-
 
 	if (tokenValid) {
 		return (
@@ -198,6 +202,58 @@ export default function splashpass({ headerFooter, countriesData }) {
 										<Link href="/splash-pass/" target="_blank" class="mt-5 inline-block w-44 p-3 text-white bg-victoria-700 duration-500 font-medium text-center hover:bg-white border hover:text-victoria-700 border-victoria-700">Learn More</Link>
 									</div>
 								</div>
+							</div>
+							<div className="shadow-full border border-gray-300 p-2 mt-5">
+								{reward_points_history != '' ? 
+								<><h3 className='border-b border-gray-300 mb-3 pb-2 text-center font-semibold text-xl'>Additional Reward Points</h3>
+								<div className="relative overflow-x-auto my-5">
+									<table className="border-collapse w-full border border-slate-300">
+										<thead>
+											<tr>
+												<th className="border border-slate-300 p-2 text-left">Date</th>
+												<th className="border border-slate-300 p-2 text-left">Reason</th>
+												<th className="border border-slate-300 p-2 text-left">Points</th>
+											</tr>
+										</thead>
+										<tbody>
+													{reward_points_history.length ? reward_points_history.map((history) => {
+														return (<tr>
+															<td className="border border-slate-300 p-2">{ history?.date}</td>
+															<td className="border border-slate-300 p-2">{ history?.store_credit_reason}</td>
+															<td className="border border-slate-300 p-2">{ history?.points}</td>
+														</tr>)
+														}
+													) : null}			
+											
+										</tbody>
+									</table>
+								</div>
+									</> : null}
+								{order_reward_points != '' ? 
+								<><h3 className='border-b border-gray-300 mb-3 pb-2 text-center font-semibold text-xl'>Order Reward Points</h3>
+								<div className="relative overflow-x-auto my-5">
+									<table className="border-collapse w-full border border-slate-300">
+										<thead>
+											<tr>
+												<th className="border border-slate-300 p-2 text-left">Order</th>
+												<th className="border border-slate-300 p-2 text-left">Earned</th>
+												<th className="border border-slate-300 p-2 text-left">Redeemed</th>
+											</tr>
+										</thead>
+										<tbody>
+													{order_reward_points.length ? order_reward_points.map((points) => {
+														return (<tr>
+															<td className="border border-slate-300 p-2">{ points?.order_number}</td>
+															<td className="border border-slate-300 p-2">{ points?._earned_reward_points}</td>
+															<td className="border border-slate-300 p-2">{ points?._redeemed_reward_points}</td>
+														</tr>)
+														}
+													) : null}			
+											
+										</tbody>
+									</table>
+								</div>
+								</>: null}
 							</div>
 						</div>
 					</div >

@@ -16,7 +16,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 
-
 const Products = ({ products, options, tokenValid }) => {
 
 
@@ -182,6 +181,8 @@ const Products = ({ products, options, tokenValid }) => {
 		setPriceValue([minPrice, maxPrice]);
 		setPriceValueTMP([minPrice, maxPrice]);
 		setSearchBoxText('');
+		//console.log('router', router?.asPath);
+		Router.push(router?.asPath);
 	};
 
 	// ********************** Pagination event *******************************
@@ -811,7 +812,7 @@ const Products = ({ products, options, tokenValid }) => {
 													</summary>
 													<div className="border-t border-gray-200 px-3 py-2">
 														{
-															Object.keys(filter_attributes[key]).length > 5 ?
+															Object?.keys(filter_attributes[key]).length > 5 ?
 																<>
 																	<input
 																		type="text"

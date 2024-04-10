@@ -3,7 +3,7 @@ import { get_stateFullName_by_short_name } from '../../utils/customjs/custome'
 function orderAddress({ orderData, states }) {
 	return (
 		<>
-			<div key='coustomer-details' className='grid md:grid-cols-2 gap-5'>
+			<div key='coustomer-details' className='grid md:grid-cols-2 gap-5 my-5'>
 				<div className='border border-slate-300 p-2'>
 					<h4 className='font-semibold mb-3'>Billing address</h4>
 					{orderData?.billing?.first_name ? <p>{orderData?.billing?.first_name} </p> : null}
