@@ -134,7 +134,7 @@ const Header = ({ header, footer }) => {
 											<i className="fa-light fa-user text-2xl"></i>
 										</div>
 										<div className='details mx-2 xl:block hidden'>
-											<p className='text-sm font-normal'>Sign In</p>
+											<p className='text-sm font-normal'>{ tokenValid ?'Log Out':'Sign In'}</p>
 											<p className='text-md font-medium'>Account</p>
 										</div>
 									</Link>

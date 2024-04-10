@@ -186,11 +186,11 @@ export default function Home({ headerFooter, pageData }) {
 				</Slider>
 			</> : null}
 			{(() => {
-				return (slider_options.length ? <>
+				/*return (slider_options.length ? <>
 					<section className='top-banner w-full overflow-hidden'>
 						<Slider {...heroslider}></Slider>
 					</section>
-				</> : null)
+				</> : null)*/
 			})()}
 
 			<section className='my-11 hidden'>

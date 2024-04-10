@@ -698,3 +698,8 @@ export function get_discount_bundle(cartItems, options, totalPrice, coutData) {
   return parseFloat(returnValue).toFixed(2);;
 }
 
+export const replace_wordpress_url = (url) => {
+  url = url.replace(process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL, "");
+  return url;
+}
+

@@ -16,6 +16,7 @@ import appbarcode from '../../../../public/assets/img/pto-app.png';
 import { WEB_DEVICE } from '../../../utils/constants/endpoints';
 import SubscribeEmail from '../../../components/subscribe_email'
 import { useRouter } from 'next/router';
+import { replace_wordpress_url } from '../../../utils/customjs/custome';
 
 const Footer = ({ footer, header }) => {
 
@@ -288,7 +289,7 @@ const Footer = ({ footer, header }) => {
 												if (payments.payment_url != '') {
 													return (
 														<li className='bg-white border mx-1 p-0.5'>
-															<Link href={payments.payment_url} target='_blank'>
+															<Link href={replace_wordpress_url(payments.payment_url)} target='_blank'>
 																<Image
 																	src={payments.payment_logos}
 																	alt={payments.payment_title}

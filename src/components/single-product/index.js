@@ -14,7 +14,7 @@ import Reward_points_tab from './Reward_points_tab';
 import Product from '../products/product';
 import Review from './../review/Review';
 import { isEmpty } from 'lodash';
-import { getMemberOnlyProduct, getNewProductTag, storeYourBrowsingHistory } from '../../utils/customjs/custome';
+import { getMemberOnlyProduct, getNewProductTag, replace_wordpress_url, storeYourBrowsingHistory } from '../../utils/customjs/custome';
 import BuyNow from '../cart/buy-now';
 import InputQty from '../single-product/input-qty';
 import $ from 'jquery';
@@ -706,7 +706,7 @@ const SingleProduct = ({ singleProduct, reviews, options }) => {
 													if (paymentOption.payment_url != '') {
 														return (
 															<li className='border border-gray-300 p-1 text-center m-1 flex items-center justify-center'>
-																<Link className='inline-block' href={paymentOption.payment_url}>
+																<Link className='inline-block' href={replace_wordpress_url(paymentOption.payment_url)}>
 																	<img src={paymentOption.payment_logos} alt={`${paymentOption.payment_title} logo`}
 																		width="100"
 																		height="40" />
