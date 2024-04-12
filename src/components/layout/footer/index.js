@@ -15,6 +15,7 @@ import appstoreicon from '../../../../public/assets/img/app-store.svg';
 import appbarcode from '../../../../public/assets/img/pto-app.png';
 import { WEB_DEVICE } from '../../../utils/constants/endpoints';
 import SubscribeEmail from '../../../components/subscribe_email'
+import SubscribeEmailPopup from '../../../components/subscribe_email_popup'
 import { useRouter } from 'next/router';
 import { replace_wordpress_url } from '../../../utils/customjs/custome';
 
@@ -356,28 +357,14 @@ const Footer = ({ footer, header }) => {
 								</svg>
 							</button>
 							<h3 className="pb-2 text-xl font-bold text-dark sm:text-2xl">
-								Your Message Sent Successfully
+							<p>Welcome</p> Join the Squad and get $10 off
 							</h3>
 							<span className="mx-auto mb-6 inline-block h-1 w-[90px] rounded bg-victoria-800"></span>
 							<p className="mb-10 text-base leading-relaxed text-body-color">
-								Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since
+							Be the first to hear about new launches. Sales, and Offers, and $10 off when you sign up	
 							</p>
-							<div className="-mx-3 flex flex-wrap">
-								<div className="w-1/2 px-3">
-									<button
-										onClick={closeModal}
-										className="block w-full rounded-lg border border-[#E9EDF9] p-3 text-center text-base font-medium text-dark transition hover:border-red-600 hover:bg-red-600 hover:text-white"
-									>
-										Cancel
-									</button>
-								</div>
-								<div className="w-1/2 px-3">
-									<button
-										className="block w-full rounded-lg border border-primary bg-victoria-800 p-3 text-center text-base font-medium text-white transition hover:bg-opacity-90"
-									>
-										View Details
-									</button>
-								</div>
+							<div className="">
+								<SubscribeEmailPopup></SubscribeEmailPopup>
 							</div>
 						</div>
 					</div>

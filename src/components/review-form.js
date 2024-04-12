@@ -68,6 +68,7 @@ function reviewForm({ product, tokenValid ,customerData , orderData}) {
 				console.log('res', res);
 				setReviewFields({
 					...reviewFields,
+					c_review: '1',
 					review_error: '',
 					review_success: 'Review Successfully Send',
 					review_loading: false
@@ -118,13 +119,22 @@ function reviewForm({ product, tokenValid ,customerData , orderData}) {
 			}
             
             <React.Fragment>
-                <div className='border-t border-gray-200 pt-3 mt-3'>
+                <div  className='border-t border-gray-200 pt-3 mt-3'>
                     <form onSubmit={handleSubmit(onFormSubmitreview)}>
-                        <input type="radio" name="c_review" id="rs0" onClick={regishandleOnChange} {...register('c_review')} value={1} checked={reviewFields?.c_review == 1}/><label className="pr-5"  for="rs0">*</label>
-                        <input type="radio" name="c_review" id="rs1" onClick={regishandleOnChange} {...register('c_review')} value={2} checked={reviewFields?.c_review == 2}/><label className="pr-5"  for="rs1">**</label>
-                        <input type="radio" name="c_review" id="rs2" onClick={regishandleOnChange} {...register('c_review')} value={3} checked={reviewFields?.c_review == 3}/><label className="pr-5"  for="rs2">***</label>
-                        <input type="radio" name="c_review" id="rs3" onClick={regishandleOnChange} {...register('c_review')} value={4} checked={reviewFields?.c_review == 4}/><label className="pr-5"  for="rs3">****</label>
-                        <input type="radio" name="c_review" id="rs4" onClick={regishandleOnChange} {...register('c_review')} value={5} checked={reviewFields?.c_review == 5}/><label className="pr-5"  for="rs4">*****</label>
+					<div id="full-stars-example">
+    					<div className="rating-group">
+								<label aria-label="1 star" className="rating__label" for="rs0"><i className="rating__icon rating__icon--star fa fa-star"></i></label>
+								<input type="radio" className="rating__input" name="c_review" id="rs0" onClick={regishandleOnChange} {...register('c_review')} value={1} checked={reviewFields?.c_review == 1} />
+								<label aria-label="1 star" className="rating__label" for="rs1"><i className="rating__icon rating__icon--star fa fa-star"></i></label>
+								<input type="radio" className="rating__input" name="c_review" id="rs1" onClick={regishandleOnChange} {...register('c_review')} value={2} checked={reviewFields?.c_review == 2} />
+								<label aria-label="1 star" className="rating__label" for="rs2"><i className="rating__icon rating__icon--star fa fa-star"></i></label>
+								<input type="radio" className="rating__input" name="c_review" id="rs2" onClick={regishandleOnChange} {...register('c_review')} value={3} checked={reviewFields?.c_review == 3} />
+								<label aria-label="1 star" className="rating__label" for="rs3"><i className="rating__icon rating__icon--star fa fa-star"></i></label>
+								<input type="radio" className="rating__input" name="c_review" id="rs3" onClick={regishandleOnChange} {...register('c_review')} value={4} checked={reviewFields?.c_review == 4} />
+								<label aria-label="1 star" className="rating__label" for="rs4"><i className="rating__icon rating__icon--star fa fa-star"></i></label>
+								<input type="radio" className="rating__input" name="c_review" id="rs4" onClick={regishandleOnChange} {...register('c_review')} value={5} checked={reviewFields?.c_review == 5} />
+						</div>
+					</div>
                         <div className="d-block text-red-500">{errors.c_review?.message}</div>
                         <label className="block mb-4">
                             <span className='block text-base mb-1'>Review</span>

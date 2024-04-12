@@ -52,6 +52,7 @@ import img26 from '../public/assets/img/home/21.webp';
 import img27 from '../public/assets/img/home/22.webp';
 import img28 from '../public/assets/img/home/23.webp';
 import img29 from '../public/assets/img/home/24.webp';
+import { randomIntFromInterval, replace_wordpress_url } from '../src/utils/customjs/custome';
 
 export default function Home({ headerFooter, pageData }) {
 	const { slider_options } = pageData?.acf;
@@ -199,7 +200,7 @@ export default function Home({ headerFooter, pageData }) {
 						Title Title Title TitleTitle Title</h2>
 					<div className='grid grid-cols-2 lg:grid-cols-4 gap-2 gap-y-3 sm:gap-4'>
 						<div className='hover:-translate-y-2 transition-all duration-200'>
-							<Link href='' target='_self'>
+							<Link href='' target='_self' >
 								<Image
 									src={img1}
 									alt="Category Image"
@@ -692,6 +693,148 @@ export default function Home({ headerFooter, pageData }) {
 					}
 				})()
 			}
+			{
+				(() => {
+					if (undefined != pageData.shop_review) {
+						return (
+							<section className='my-11'>
+								<div className='md:max-w-[760px] lg:max-w-[1140px] xl:max-w-[1320px] mx-auto px-3'>
+									<h2 className="relative pb-2 text-center font-jost text-2xl md:text-3xl lg:text-4xl font-semibold mb-5 title-border">Shop Reviews</h2>
+									{pageData.shop_review.length ?
+										<Slider {...prodslidesettings}>
+											{
+												pageData.shop_review.map((review,i) => {
+													var p_slug = '/p/' + replace_wordpress_url(review?.product_permalink);
+													if (!WEB_DEVICE) {
+														p_slug = '/product/?sname=' + replace_wordpress_url(review?.product_permalink);
+													}
+													return ( 
+														<div className='p-2 '>
+																<div className='h-full shadow-full relative rev-wapper'>
+																			<div className="rating-info p-2">
+																				<p className="feedback-star mb-0 me-2">
+																					<span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+																				</p>
+																				<p className="veri-info mb-0"> <i className="fa fa-check me-1"></i> Verified </p>
+																			</div>
+																			<div key={review}																			dangerouslySetInnerHTML={{
+																				__html: review?.review ?? '',
+																			}} className="line-clamp-2 feedback-content p-2"																				
+																			/>
+																			<p className="feedname mb-0 p-2"><b>
+																					{review?.reviewer}
+																			</b> <span>
+																					{(i*2)+3} days ago
+																				</span></p>
+																</div>
+															</div>
+																	
+													)
+												})
+											}
+										</Slider>
+										: null
+									}
+									<div className='text-center'>
+									<div className="review-count d-block d-md-flex text-center">
+
+										<div className="d-flex align-items-center justify-content-center">
+											
+											<b className='me-2 align-super'>Rated</b>
+
+											<span className="feedback-star-total mb-0 me-2">
+																					<span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+																				</span>
+											<b  className='align-super'>	{pageData?.shop_reviewid_count} Number of product review by customer</b>
+										</div>
+										</div>
+									<Link href='/all-reviews/' className='mt-5 inline-block w-44 p-3 text-white bg-victoria-700 duration-500 font-medium text-center hover:bg-white border hover:text-victoria-700 border-victoria-700'>
+										View All
+									</Link>
+									</div>
+								</div>
+							</section>
+						)
+					}
+				})()
+				
+			}
+			{
+				(() => {
+					if (undefined != pageData.products_review) {
+						return (
+							<section className='my-11'>
+								<div className='md:max-w-[760px] lg:max-w-[1140px] xl:max-w-[1320px] mx-auto px-3'>
+									<h2 className="relative pb-2 text-center font-jost text-2xl md:text-3xl lg:text-4xl font-semibold mb-5 title-border">Product Reviews</h2>
+									{pageData.products_review.length ?
+										<Slider {...prodslidesettings}>
+											{
+												pageData.products_review.map((review,i) => {
+													var p_slug = '/p/' + replace_wordpress_url(review?.product_permalink);
+													if (!WEB_DEVICE) {
+														p_slug = '/product/?sname=' + replace_wordpress_url(review?.product_permalink);
+													}
+													return ( 
+														<div className='p-2'>
+																<div className='h-full shadow-full relative '>
+																			<div className="rating-info p-2">
+																				<p className="feedback-star mb-0 me-2">
+																					<span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+																				</p>
+																				<p className="veri-info mb-0"> <i className="fa fa-check me-1"></i> Verified </p>
+																			</div>
+																			<p className="title-link mb-0 p-2">
+																				<Link href={`${p_slug}`} legacyBehavior>
+																				<a key="review_title"
+																					dangerouslySetInnerHTML={{
+																						__html: review.product_name,
+																					}}
+																					className="line-clamp-1 font-medium group-hover:text-victoria-800"
+																				/>
+																				</Link>
+																			</p>
+																			<div key={review}																			dangerouslySetInnerHTML={{
+																				__html: review?.review ?? '',
+																			}} className="line-clamp-2 feedback-content p-2"																				
+																			/>
+																			<p className="feedname mb-0 p-2"><b>
+																					{review?.reviewer}
+																			</b> <span>
+																			{(i*2)+3} days ago
+																				</span></p>
+																</div>
+															</div>
+																	
+													)
+												})
+											}
+										</Slider>
+										: null
+									}
+									<div className='text-center'>
+									<div className="review-count d-block d-md-flex text-center">
+
+										<div className="d-flex align-items-center justify-content-center">
+											
+											<b className='me-2 align-super'>Rated</b>
+
+											<span className="feedback-star-total mb-0 me-2">
+																					<span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+																				</span>
+											<b  className='align-super'>	{pageData?.products_review_count} Number of product review by customer</b>
+										</div>
+										</div>
+									<Link href='/all-reviews/' className='mt-5 inline-block w-44 p-3 text-white bg-victoria-700 duration-500 font-medium text-center hover:bg-white border hover:text-victoria-700 border-victoria-700'>
+										View All
+									</Link>
+									</div>
+								</div>
+							</section>
+						)
+					}
+				})()
+				
+			}
 			<section className="overflow-hidden pt-20 pb-12 lg:pt-[120px] lg:pb-[90px] hidden">
 				<div className="container mx-auto">
 					<div className="-mx-4 flex flex-wrap items-center justify-between">
@@ -979,6 +1122,7 @@ export default function Home({ headerFooter, pageData }) {
 									Lorem ipsum dolor sit amet consectetur.
 								</p>
 							</a>
+
 							<a
 								className="block rounded-xl border border-gray-100 p-4 shadow-sm hover:border-gray-200 hover:ring-1 hover:ring-gray-200 focus:outline-none focus:ring"
 								href="#"

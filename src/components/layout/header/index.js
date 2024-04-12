@@ -70,7 +70,7 @@ const Header = ({ header, footer }) => {
 			setTokenValid(1)
 		}
 	}, []);
-	console.log('tokenValid', tokenValid)
+	//console.log('tokenValid', tokenValid)
 	const tokenCheck = () => {
 		if (localStorage.getItem('token')) {
 			setTokenValid(1)

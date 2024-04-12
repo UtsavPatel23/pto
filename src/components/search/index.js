@@ -8,7 +8,7 @@ import placeholder from '/public/assets/img/placeholder-300.png';
 
 function Search({ search, resultsShow, setResultsShow }) {
     // return '';
-    console.log('search', search)
+    //console.log('search', search)
     const { product, category } = search;
 
     const [results, setResults] = useState({});
@@ -65,10 +65,10 @@ function Search({ search, resultsShow, setResultsShow }) {
     }, [])
 
     const submitSearch = () => {
-        console.log('input', input);
+       // console.log('input', input);
     }
-    console.log('results', results);
-    console.log('resultsCat', resultsCat);
+    //console.log('results', results);
+    //console.log('resultsCat', resultsCat);
     return (
         <div key="searchsection" className=''>
             <div className="relative overflow-hidden rounded md:block hidden" >
