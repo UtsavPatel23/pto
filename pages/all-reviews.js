@@ -13,6 +13,7 @@ import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { useEffect } from 'react';
 import Image from 'next/image';
+import CanvasTxtToImage from '../src/components/canvas-txt-to-image';
 
 export default function Product( { headerFooter } ) {
 	//console.log('reviews',reviews);
@@ -73,8 +74,6 @@ export default function Product( { headerFooter } ) {
     })();
 	}, [page])
 	
-	
-
 	if(loading && page == 1)
     {
          return(
@@ -105,13 +104,7 @@ export default function Product( { headerFooter } ) {
 					return (
 						
 						<div key={"comment-" + review.id} className="review-wrp flex items-start gap-2 mt-3">
-						<Image
-							src='https://secure.gravatar.com/avatar/?s=24&d=mm&r=g'
-							alt={review.product_name}
-							title={review.product_name}
-							width="50"
-							height="50"
-						/>
+						<CanvasTxtToImage authorname={review.reviewer}></CanvasTxtToImage>
 						<div key="title" className="review-body border border-gray-200 p-2 w-full">
 								<p className='font-semibold	text-lg'>{review.reviewer}</p>
 								<p key="review-time" className="meta">
@@ -126,13 +119,7 @@ export default function Product( { headerFooter } ) {
 									{
 										review.replaycomment && review.replaycomment[0] ? 
 										<div key={"comment-" + review.replaycomment[0].id} className="review-wrp flex items-start gap-2 mt-3">
-											<Image
-												src='https://secure.gravatar.com/avatar/?s=24&d=mm&r=g'
-												alt={review.replaycomment[0].product_name}
-												title={review.replaycomment[0].product_name}
-												width="50"
-												height="50"
-											/>
+											<CanvasTxtToImage  authorname={review.replaycomment[0].author_name}></CanvasTxtToImage>
 											<div key="title" className="review-body border border-gray-200 p-2 w-full">
 													<p className='font-semibold	text-lg'>{review.replaycomment[0].author_name}</p>
 													<p key="review-time" className="meta">
