@@ -18,6 +18,7 @@ import PostMeta from '../../src/components/post-meta';
 import Comments from '../../src/components/comments';
 import placeholder from '../../public/assets/img/placeholder-300.png'
 import Link from 'next/link';
+import AuthorImage from '../../public/assets/img/Hitesh-Sir-min.jpg'
 
 
 const Post = ({ headerFooter, postData, commentsData, postsData }) => {
@@ -50,7 +51,8 @@ const Post = ({ headerFooter, postData, commentsData, postsData }) => {
 						<Comments comments={commentsData} postId={postData?.id ?? ''} />
 					</div>
 				</div>
-				<div className='border border-gray-300 bg-gray-100 p-3 rounded h-fit'>
+				<div className=''>
+					<div className='border border-gray-300 bg-gray-100 p-3 rounded h-fit mb-5'>
 					<h5 className='font-semibold text-lg border-b border-gray-300 pb-2 mb-5'>Latest Post</h5>
 					<ul className='space-y-3'>
 						{(() => {
@@ -71,7 +73,18 @@ const Post = ({ headerFooter, postData, commentsData, postsData }) => {
 							})
 						})()}
 					</ul>
+					</div>
+					<div className='border border-gray-300 bg-gray-100 p-3 rounded h-fit  mb-5'>
+					<h5 className='font-semibold text-lg border-b border-gray-300 pb-2 mb-5'>About Author</h5>
+					<div>
+						<Image className={'rounded-3xl'} src={AuthorImage}>
+
+						</Image>
+						<h4>Pooltable Offers</h4>
+					</div>
+					</div>
 				</div>
+				
 			</div>
 		</Layout>
 	);

@@ -12,7 +12,7 @@ import axios from 'axios';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { useEffect } from 'react';
-import { isEmpty } from 'lodash';
+import Image from 'next/image';
 
 export default function Product( { headerFooter } ) {
 	//console.log('reviews',reviews);
@@ -73,6 +73,8 @@ export default function Product( { headerFooter } ) {
     })();
 	}, [page])
 	
+	
+
 	if(loading && page == 1)
     {
          return(
@@ -82,7 +84,7 @@ export default function Product( { headerFooter } ) {
         )
     }
 	else {
-		//console.log('reviews', reviews);
+		console.log('reviews', reviews);
 		//console.log('average', average);
 		//console.log('approve_review_count', approve_review_count);
 		return (
@@ -91,24 +93,72 @@ export default function Product( { headerFooter } ) {
 				seo={seo}
 				uri={ '/all-reviews/' }
 			>
-				{average > 0 ? <div>Average :{ average}</div> : null}
-				{approve_review_count > 0 ? <div>Count : { approve_review_count}</div> : null}
+				<div className='text-center'>
+				<span>{average} Based on {approve_review_count} reviews</span>
+				</div>
+				<div className='grid md:grid-cols-2 gap-4 mb-10'>
 				{reviews.length ? reviews.map((review , i) => {
+					const date = new Date(review.date_created);
+					const monthName = date.toLocaleString('default', { month: 'long' });
+					const day = date.getDate();
+					const year = date.getFullYear();
 					return (
-						<div>
-							<h3>{review?.reviewer}</h3>
-							{review?.replaycomment && !isEmpty(review?.replaycomment) ?
-								<>
-									Replay : { review?.replaycomment[0]?.author_name}
-								</>
-								: null}
+						
+						<div key={"comment-" + review.id} className="review-wrp flex items-start gap-2 mt-3">
+						<Image
+							src='https://secure.gravatar.com/avatar/?s=24&d=mm&r=g'
+							alt={review.product_name}
+							title={review.product_name}
+							width="50"
+							height="50"
+						/>
+						<div key="title" className="review-body border border-gray-200 p-2 w-full">
+								<p className='font-semibold	text-lg'>{review.reviewer}</p>
+								<p key="review-time" className="meta">
+									<em className="verified">(verified owner)</em>
+									<time> {monthName} {day}, {year}</time>
+								</p>
+								<div key="review-review"
+									dangerouslySetInnerHTML={{
+										__html: review?.review ?? '',
+									}}
+								/>
+									{
+										review.replaycomment && review.replaycomment[0] ? 
+										<div key={"comment-" + review.replaycomment[0].id} className="review-wrp flex items-start gap-2 mt-3">
+											<Image
+												src='https://secure.gravatar.com/avatar/?s=24&d=mm&r=g'
+												alt={review.replaycomment[0].product_name}
+												title={review.replaycomment[0].product_name}
+												width="50"
+												height="50"
+											/>
+											<div key="title" className="review-body border border-gray-200 p-2 w-full">
+													<p className='font-semibold	text-lg'>{review.replaycomment[0].author_name}</p>
+													<p key="review-time" className="meta">
+														<em className="verified"> Store manager - </em>
+														<time> {monthName} {day}, {year}</time>
+													</p>
+													<div key="review-review"
+														dangerouslySetInnerHTML={{
+															__html: review.replaycomment[0]?.content?.rendered ?? '',
+														}}
+													/>
+												</div>
+											</div>
+										:null
+									}
+								
+								</div>
+							
 						</div>
 					)
 				}):null}
+				</div>
 				{viewMore && !loading ?
-					<button onClick={(e) => setPage(page + 1)} className='text-white bg-victoria-700 duration-500 font-medium text-center hover:bg-white border hover:text-victoria-700 border-victoria-700 relative inline-block py-2 px-5 mt-4'> Show more reviews </button>
+					<div className='text-center'><button onClick={(e) => setPage(page + 1)} className='text-white bg-victoria-700 duration-500 font-medium text-center hover:bg-white border hover:text-victoria-700 border-victoria-700 relative inline-block py-2 px-5 mt-4'> Show more reviews </button></div>
 					: null}
-				{ loading && <Loader/> }
+				{ loading && <div className='mt-5'><Loader/></div> }
 			</Layout>
 		);
 	}
