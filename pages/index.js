@@ -55,6 +55,7 @@ import img29 from '../public/assets/img/home/24.webp';
 import { randomIntFromInterval, replace_wordpress_url } from '../src/utils/customjs/custome';
 
 export default function Home({ headerFooter, pageData }) {
+	console.log('pageData',pageData);
 	const { slider_options } = pageData?.acf;
 	const options = headerFooter?.footer?.options ?? '';
 	const [sliderList, setSliderList] = useState(null);
@@ -168,7 +169,7 @@ export default function Home({ headerFooter, pageData }) {
 	}, []);
 	console.log('pageData', pageData);
 	return (
-		<Layout headerFooter={headerFooter || {}} seo={seo} uri={'home'}>
+		<Layout headerFooter={headerFooter || {}} seo={ pageData?.yoast_head_json ?? {} } uri={''}>
 			{sliderList ? <>
 				<Slider {...heroslider}>
 					{sliderList.map(function (slide) {

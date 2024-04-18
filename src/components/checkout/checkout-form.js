@@ -780,8 +780,7 @@ const CheckoutForm = ({ countriesData, paymentModes, options }) => {
 				<div key="check-outform">
 					{!tokenValid && !guestCheckOut ?
 						<div className='border border-gray-200 p-3 rounded max-w-2xl mx-auto'>
-							<LoginForm setTokenValid={setTokenValid} setCustomerData={setCustomerData}></LoginForm>
-							<div key='setguestcheckout'>
+							<div key='setguestcheckout' className=' text-center'>
 								<button
 									className='bg-victoria-800 inline-block px-2 py-2 text-white text-center w-60 text-lg cursor-pointer '
 									onClick={() => {
@@ -790,6 +789,7 @@ const CheckoutForm = ({ countriesData, paymentModes, options }) => {
 									Continue as guest
 								</button>
 							</div>
+							<LoginForm setTokenValid={setTokenValid} setCustomerData={setCustomerData}></LoginForm>
 						</div>
 						: null
 					}

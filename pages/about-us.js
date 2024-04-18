@@ -8,21 +8,11 @@ import { HEADER_FOOTER_ENDPOINT } from '../src/utils/constants/endpoints';
  */
 import axios from 'axios';
 import Layout from '../src/components/layout';
+import { getPage } from '../src/utils/blog';
 
-export default function Home({ headerFooter }) {
-	const seo = {
-		title: 'Next JS WooCommerce REST API',
-		description: 'Next JS WooCommerce Theme',
-		og_image: [],
-		og_site_name: 'React WooCommerce Theme',
-		robots: {
-			index: 'index',
-			follow: 'follow',
-		},
-	}
-
+export default function Home({ headerFooter ,pageData}) {
 	return (
-		<Layout headerFooter={headerFooter || {}} seo={seo} >
+		<Layout headerFooter={headerFooter || {}} seo={pageData?.yoast_head_json ?? {}} >
 			<section className='my-11'>
 				<div className="mx-auto max-w-screen-xl px-2">
 					<h2 className='relative pb-2 text-center font-jost text-2xl md:text-3xl lg:text-4xl font-semibold mb-5 title-border'>POOL TABLE OFFERS – Champions Are Made Not Born– AFTERPAY STORE | BUY NOW PAY LATER</h2>
@@ -58,12 +48,14 @@ export default function Home({ headerFooter }) {
 	)
 }
 
-export async function getStaticProps() {
+export async function getStaticProps({ params }) {
 
 	const { data: headerFooterData } = await axios.get(HEADER_FOOTER_ENDPOINT);
+	const pageData = await getPage(params?.slug.pop() ?? 'home');
 	return {
 		props: {
 			headerFooter: headerFooterData?.data ?? {},
+			pageData: pageData?.[0] ?? {}
 		},
 
 		/**
