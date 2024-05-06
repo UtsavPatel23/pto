@@ -23,7 +23,7 @@ function runMiddleware(req, res, fn) {
 
 const { NEXT_PUBLIC_PAYPAL_CLIENT_ID, NEXT_PUBLIC_PAYPAL_CLIENT_SECRET,NEXT_PUBLIC_PAYPAL_API_URL, PORT = 3000 } = process.env;
 ///const base = "https://api-m.sandbox.paypal.com";
-const base = PAYPAL_API_URL;
+const base = NEXT_PUBLIC_PAYPAL_API_URL;
 const app = express();
 
 // host static files
